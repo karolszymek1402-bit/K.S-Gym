@@ -1,0 +1,83 @@
+{
+  "CHEST": [
+    "Wyciskanie sztangi na ławce poziomej",
+    "Wyciskanie sztangi na skosie dodatnim (głową w górę)",
+    "Wyciskanie sztangi na skosie ujemnym (głową w dół)",
+    "Wyciskanie sztangi wąskim chwytem",
+    "Wyciskanie sztangi podchwytem (Reverse Grip)",
+    "Wyciskanie sztangi typu Gilotyna (do szyi)",
+    "Wyciskanie hantli na ławce poziomej",
+    "Wyciskanie hantli na skosie dodatnim",
+    "Wyciskanie hantli na skosie ujemnym",
+    "Wyciskanie hantli z rotacją (korkociągowe)",
+    "Wyciskanie hantli chwytem neutralnym (młotkowym)",
+    "Wyciskanie hantli złączonych (Hex Press / Squeeze Press)",
+    "Wyciskanie z podłogi (Floor Press) – sztangą lub hantlami",
+    "Wyciskanie na maszynie Smitha (poziom / skos dodatni / skos ujemny)",
+    "Wyciskanie na maszynie typu Hammer (siedząc)",
+    "Wyciskanie na maszynie typu Chest Press (maszyna stosowa)",
+    "Rozpiętki z hantlami na ławce poziomej",
+    "Rozpiętki z hantlami na skosie dodatnim",
+    "Rozpiętki na maszynie Butterfly (Pec Deck)",
+    "Rozpiętki z linkami wyciągu górnego (krzyżowanie w bramie)",
+    "Rozpiętki z linkami wyciągu dolnego (unoszenie przed sobą)",
+    "Rozpiętki jednorącz na wyciągu (Cable Flye)",
+    "Przenoszenie hantla za głowę (Pullover)",
+    "Przenoszenie talerza za głowę leżąc",
+    "Svend Press (ściskanie talerza i wypychanie przed klatkę)",
+    "Landmine Press (wyciskanie końca sztangi oburącz lub jednorącz)",
+    "Pompki klasyczne (średni rozstaw dłoni)",
+    "Pompki szerokie",
+    "Pompki diamentowe (wąskie)",
+    "Pompki na podwyższeniu (nogi na ławce – skos dodatni)",
+    "Pompki z dłońmi na podwyższeniu (skos ujemny)",
+    "Pompki łucznicze (Archer Push-ups)",
+    "Pompki plyometryczne (z odrywaniem dłoni / klaśnięciem)",
+    "Pompki w deficycie (na uchwytach lub hantlach)",
+    "Dipy (pompki na poręczach) z pochyleniem tułowia w przód",
+    "Pompki na kółkach gimnastycznych",
+    "Wyciskanie z gumą oporową (Resistance Band Press)",
+    "Rozpiętki z gumami oporowymi",
+    "Pompki z gumą oporową na plecach",
+    "Wyciskanie sztangi z łańcuchami",
+    "Wyciskanie z Slingshotem (specjalna taśma wspomagająca)"
+  ],
+  "BACK": [
+    "Deadlift",
+    "Pull Ups",
+    "Bent Over Row",
+    "Lat Pulldown",
+    "Seated Cable Row"
+  ],
+  "BICEPS": [
+    "Barbell Curl",
+    "Dumbbell Hammer Curl",
+    "Concentration Curl",
+    "Cable Curl"
+  ],
+  "TRICEPS": [
+    "Triceps Pushdown",
+    "Skull Crushers",
+    "Overhead Triceps Extension",
+    "Close-grip Bench Press"
+  ],
+  "SHOULDERS": [
+    "Overhead Press",
+    "Lateral Raise",
+    "Front Raise",
+    "Rear Delt Fly"
+  ],
+  "ABS": [
+    "Plank",
+    "Crunches",
+    "Leg Raises",
+    "Russian Twist"
+  ],
+  "LEGS": [
+    "Squat",
+    "Romanian Deadlift",
+    "Lunges",
+    "Leg Press",
+    "Calf Raise"
+  ]
+}

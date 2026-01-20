@@ -1,0 +1,29 @@
+﻿name: silownia_app
+description: A Flutter app for tracking workouts
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_local_notifications: ^12.0.4
+  shared_preferences: ^2.0.15
+  vibration: ^1.7.4
+  audioplayers: ^6.5.1
+  flutter_svg: ^1.1.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/ks_gym_logo.png
+    - assets/ks_gym_logo_electro_bw.svg
+    - assets/sounds/alert.mp3

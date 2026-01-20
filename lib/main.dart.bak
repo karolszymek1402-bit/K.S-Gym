@@ -1,0 +1,1268 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle, HapticFeedback;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibration/vibration.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+extension ColorWithValues on Color {
+  Color withValues({double alpha = 1.0}) {
+    final int a = (alpha.clamp(0.0, 1.0) * 255).round();
+    return withAlpha(a);
+  }
+}
+
+/// Notification helper (singleton)
+class NotificationService {
+  NotificationService._internal();
+  static final NotificationService instance = NotificationService._internal();
+
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
+
+  Future<void> init() async {
+    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const iosInit = DarwinInitializationSettings();
+    const initSettings =
+        InitializationSettings(android: androidInit, iOS: iosInit);
+    await _plugin.initialize(initSettings);
+    const channel = AndroidNotificationChannel(
+      'ks_gym_channel',
+      'K.S-Gym notifications',
+      description: 'Notifications for timer completions',
+      importance: Importance.defaultImportance,
+    );
+    try {
+      await _plugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+    } catch (_) {}
+  }
+
+  Future<void> showNotification(
+      {required String title, required String body}) async {
+    const androidDetails = AndroidNotificationDetails(
+      'ks_gym_channel',
+      'K.S-Gym notifications',
+      channelDescription: 'Notifications for timer completions',
+      importance: Importance.defaultImportance,
+      priority: Priority.defaultPriority,
+    );
+    const details = NotificationDetails(
+        android: androidDetails, iOS: DarwinNotificationDetails());
+    await _plugin.show(0, title, body, details);
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.instance.init();
+  runApp(const KsGymApp());
+}
+
+class KsGymApp extends StatelessWidget {
+  const KsGymApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const seed = Color(0xFF448AFF);
+    return MaterialApp(
+      title: 'K.S-GYM',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: seed, brightness: Brightness.dark),
+        scaffoldBackgroundColor: const Color(0xFF0F111A),
+        appBarTheme:
+            const AppBarTheme(backgroundColor: Color(0xFF0F1220), elevation: 0),
+        cardColor: const Color(0xFF142033),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFF0B0D12),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: seed,
+            foregroundColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            elevation: 2,
+          ),
+        ),
+        sliderTheme: SliderThemeData(
+          activeTrackColor: seed,
+          thumbColor: seed,
+          overlayColor: seed.withValues(alpha: 0.14),
+        ),
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+          bodyLarge: TextStyle(fontSize: 15),
+        ),
+      ),
+      home: const CategoryScreen(),
+    );
+  }
+}
+
+/// Logo helpers
+Widget _logoPlaceholder(Color accentColor) {
+  return Container(
+    width: 34,
+    height: 34,
+    decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
+    alignment: Alignment.center,
+    child: const Text('KS',
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+  );
+}
+
+Future<bool> _assetExists(String path) async {
+  try {
+    await rootBundle.load(path);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+Future<String?> _findExistingAsset(List<String> paths) async {
+  for (final p in paths) {
+    if (await _assetExists(p) == true) {
+      return p;
+    }
+  }
+  return null;
+}
+
+Widget buildLogo(BuildContext context, Color accentColor) {
+  // Try common paths (supports both assets/ks_gym_logo.png and assets/assets/ks_gym_logo.png)
+  return FutureBuilder<String?>(
+    future: _findExistingAsset([
+      'assets/ks_gym_logo.png',
+      'assets/assets/ks_gym_logo.png',
+    ]),
+    builder: (ctx, snapPng) {
+      if (snapPng.connectionState != ConnectionState.done) {
+        return _logoPlaceholder(accentColor);
+      }
+      if (snapPng.data != null) {
+        return Image.asset(snapPng.data!, height: 34, fit: BoxFit.contain);
+      }
+      if (!kIsWeb) {
+        return FutureBuilder<String?>(
+          future: _findExistingAsset([
+            'assets/ks_gym_logo_electro_bw.svg',
+            'assets/assets/ks_gym_logo_electro_bw.svg',
+          ]),
+          builder: (ctx2, snapSvg) {
+            if (snapSvg.connectionState != ConnectionState.done) {
+              return _logoPlaceholder(accentColor);
+            }
+            if (snapSvg.data != null) {
+              try {
+                return SizedBox(
+                    height: 34,
+                    child:
+                        SvgPicture.asset(snapSvg.data!, fit: BoxFit.contain));
+              } catch (_) {
+                return _logoPlaceholder(accentColor);
+              }
+            }
+            return _logoPlaceholder(accentColor);
+          },
+        );
+      }
+      return _logoPlaceholder(accentColor);
+    },
+  );
+}
+
+PreferredSizeWidget buildCustomAppBar(BuildContext context,
+    {required Color accentColor}) {
+  return AppBar(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    centerTitle: true,
+    title: Row(mainAxisSize: MainAxisSize.min, children: [
+      buildLogo(context, accentColor),
+      const SizedBox(width: 10),
+      const Text('K.S-GYM',
+          style: TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 20,
+              color: Colors.white,
+              letterSpacing: 1.2)),
+    ]),
+  );
+}
+
+class ExerciseLog {
+  final String date;
+  final String sets;
+  final String weight;
+  final String reps;
+  final String exercise;
+
+  ExerciseLog({
+    required this.date,
+    required this.sets,
+    required this.weight,
+    required this.reps,
+    required this.exercise,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'date': date,
+        'sets': sets,
+        'weight': weight,
+        'reps': reps,
+        'exercise': exercise,
+      };
+
+  factory ExerciseLog.fromJson(Map<String, dynamic> json,
+      {String defaultExercise = ''}) {
+    return ExerciseLog(
+      date: json['date'] ?? '',
+      sets: json['sets'] ?? '',
+      weight: json['weight'] ?? '',
+      reps: json['reps'] ?? '',
+      exercise: json['exercise'] ?? defaultExercise,
+    );
+  }
+}
+
+/// ProgressChart: shows bars and under each bar the set number, reps and weight.
+class ProgressChart extends StatelessWidget {
+  final List<ExerciseLog> history;
+  final Color accentColor;
+  final String title;
+
+  const ProgressChart(
+      {super.key,
+      required this.history,
+      required this.accentColor,
+      this.title = ""});
+
+  @override
+  Widget build(BuildContext context) {
+    if (history.isEmpty) {
+      return Container(
+          height: 160,
+          alignment: Alignment.center,
+          child: Text("No data",
+              style: TextStyle(color: accentColor.withValues(alpha: 0.6))));
+    }
+
+    final values = history.map((h) {
+      final w = double.tryParse(h.weight) ?? 0.0;
+      final r = double.tryParse(h.reps) ?? 0.0;
+      final raw = w * r;
+      return raw.clamp(0.0, double.infinity).toDouble();
+    }).toList();
+
+    final maxVal = values.fold<double>(0.0, (prev, v) => v > prev ? v : prev);
+
+    return Container(
+      height: 220,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: accentColor.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: accentColor.withValues(alpha: 0.08)),
+      ),
+      child: Column(children: [
+        if (title.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Text(title,
+                style: TextStyle(
+                    color: accentColor.withValues(alpha: 0.9),
+                    fontWeight: FontWeight.bold)),
+          ),
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: List.generate(history.length, (i) {
+              final v = values[i];
+              final heightFactor = maxVal == 0.0 ? 0.0 : (v / maxVal);
+              final log = history[i];
+              return Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text(v == 0.0 ? '-' : v.toStringAsFixed(0),
+                          style: TextStyle(
+                              color: accentColor.withValues(alpha: 0.9),
+                              fontSize: 11)),
+                    ),
+                    Expanded(
+                      child: FractionallySizedBox(
+                        heightFactor: 0.05 + 0.9 * heightFactor,
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                              color: accentColor,
+                              borderRadius: BorderRadius.circular(6)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Column(children: [
+                      Text('S: ${log.sets}',
+                          style: TextStyle(
+                              color: accentColor.withValues(alpha: 0.8),
+                              fontSize: 10)),
+                      Text('${log.reps} × ${log.weight}kg',
+                          style: TextStyle(
+                              color: accentColor.withValues(alpha: 0.8),
+                              fontSize: 10)),
+                    ]),
+                    const SizedBox(height: 4),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Align(
+            alignment: Alignment.centerRight,
+            child: Text("${history.length} sets",
+                style: TextStyle(
+                    color: accentColor.withValues(alpha: 0.7), fontSize: 12))),
+      ]),
+    );
+  }
+}
+
+class CategoryScreen extends StatelessWidget {
+  const CategoryScreen({super.key});
+  static const List<Map<String, dynamic>> categories = [
+    {'name': 'CHEST', 'icon': Icons.fitness_center, 'color': Color(0xFF448AFF)},
+    {'name': 'BACK', 'icon': Icons.list, 'color': Color(0xFF00E676)},
+    {'name': 'BICEPS', 'icon': Icons.bolt, 'color': Color(0xFFFFD600)},
+    {
+      'name': 'TRICEPS',
+      'icon': Icons.trending_down,
+      'color': Color(0xFFFF5252)
+    },
+    {
+      'name': 'SHOULDERS',
+      'icon': Icons.architecture,
+      'color': Color(0xFFE040FB)
+    },
+    {'name': 'ABS', 'icon': Icons.grid_view, 'color': Color(0xFF18FFFF)},
+    {'name': 'LEGS', 'icon': Icons.directions_walk, 'color': Color(0xFFFF6E40)},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: buildCustomAppBar(context, accentColor: Colors.white),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final cat = categories[index];
+          final color = cat['color'] as Color;
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            color: Theme.of(context).cardColor,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () {
+                // ignore: avoid_print
+                print('DEBUG: tapped category ${cat['name']}');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ExerciseListScreen(
+                            category: cat['name'] as String,
+                            themeColor: color)));
+              },
+              child: ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                leading: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [color, color.withValues(alpha: 0.6)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                          color: color.withValues(alpha: 0.16),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3))
+                    ],
+                  ),
+                  child: Icon(cat['icon'] as IconData, color: Colors.white),
+                ),
+                title: Text(cat['name'] as String,
+                    style: theme.textTheme.titleLarge
+                        ?.copyWith(color: Colors.white)),
+                trailing:
+                    const Icon(Icons.chevron_right, color: Colors.white70),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ExerciseListScreen extends StatefulWidget {
+  final String category;
+  final Color themeColor;
+  const ExerciseListScreen(
+      {super.key, required this.category, required this.themeColor});
+  @override
+  State<ExerciseListScreen> createState() => _ExerciseListScreenState();
+}
+
+class _ExerciseListScreenState extends State<ExerciseListScreen> {
+  List<String> _exercises = [];
+  Map<String, String> _recs = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final list = prefs.getStringList('ex_${widget.category}') ?? [];
+    Map<String, String> lastRecs = {};
+
+    for (var ex in list) {
+      final logs = prefs.getStringList('history_$ex') ?? [];
+      if (logs.isNotEmpty) {
+        final last =
+            ExerciseLog.fromJson(jsonDecode(logs.last), defaultExercise: ex);
+        lastRecs[ex] = "${last.weight} kg x ${last.reps}";
+      }
+    }
+    if (mounted) {
+      setState(() {
+        _exercises = list;
+        _recs = lastRecs;
+      });
+    }
+  }
+
+  void _showEditDeleteMenu(String currentName) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF10131A),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Column(mainAxisSize: MainAxisSize.min, children: [
+        const SizedBox(height: 10),
+        ListTile(
+            leading: const Icon(Icons.edit, color: Colors.blue),
+            title: const Text("Rename Exercise"),
+            onTap: () {
+              Navigator.pop(ctx);
+              _renameExercise(currentName);
+            }),
+        ListTile(
+            leading: const Icon(Icons.delete, color: Colors.red),
+            title: const Text("Delete Exercise"),
+            onTap: () {
+              Navigator.pop(ctx);
+              _confirmDelete(currentName);
+            }),
+        const SizedBox(height: 10),
+      ]),
+    );
+  }
+
+  void _renameExercise(String oldName) {
+    final controller = TextEditingController(text: oldName);
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              backgroundColor: const Color(0xFF0E1117),
+              title: const Text("Rename Exercise"),
+              content: TextField(controller: controller, autofocus: true),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text("Cancel")),
+                ElevatedButton(
+                    onPressed: () async {
+                      String newName = controller.text.trim();
+                      if (newName.isEmpty) {
+                        return;
+                      }
+                      if (newName == oldName) {
+                        if (ctx.mounted) {
+                          Navigator.pop(ctx);
+                        }
+                        return;
+                      }
+                      if (_exercises.contains(newName)) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      "Exercise with that name already exists")));
+                        }
+                        return;
+                      }
+                      final prefs = await SharedPreferences.getInstance();
+                      int index = _exercises.indexOf(oldName);
+                      if (index != -1) {
+                        _exercises[index] = newName;
+                        await prefs.setStringList(
+                            'ex_${widget.category}', _exercises);
+
+                        final historyOld =
+                            prefs.getStringList('history_$oldName') ?? [];
+                        final List<String> historyNew = [];
+                        for (var raw in historyOld) {
+                          try {
+                            final Map<String, dynamic> map = jsonDecode(raw);
+                            map['exercise'] = newName;
+                            historyNew.add(jsonEncode(map));
+                          } catch (e) {
+                            historyNew.add(raw);
+                          }
+                        }
+                        if (historyNew.isNotEmpty) {
+                          await prefs.setStringList(
+                              'history_$newName', historyNew);
+                        } else {
+                          await prefs.remove('history_$newName');
+                        }
+                        await prefs.remove('history_$oldName');
+                      }
+                      if (ctx.mounted) {
+                        Navigator.pop(ctx);
+                        _load();
+                      }
+                    },
+                    child: const Text("Save")),
+              ],
+            ));
+  }
+
+  void _confirmDelete(String name) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              backgroundColor: const Color(0xFF0E1117),
+              title: const Text("Delete?"),
+              content: Text("Delete '$name' and all its history?"),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text("Cancel")),
+                ElevatedButton(
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      _exercises.remove(name);
+                      await prefs.setStringList(
+                          'ex_${widget.category}', _exercises);
+                      await prefs.remove('history_$name');
+                      if (ctx.mounted) {
+                        Navigator.pop(ctx);
+                        _load();
+                      }
+                    },
+                    child: const Text("Delete",
+                        style: TextStyle(color: Colors.white))),
+              ],
+            ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = widget.themeColor;
+    return Scaffold(
+      appBar: buildCustomAppBar(context, accentColor: accent),
+      body: Column(children: [
+        const Divider(height: 1, color: Colors.white10),
+        Expanded(
+            child: _exercises.isEmpty
+                ? const Center(
+                    child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Text(
+                            "No exercises yet. Tap + to add your first exercise.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white70))))
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _exercises.length,
+                    itemBuilder: (ctx, i) {
+                      final name = _exercises[i];
+                      return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          child: Card(
+                            color: Theme.of(context).cardColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              onTap: () {
+                                Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ExerciseDetailScreen(
+                                                    exerciseName: name,
+                                                    themeColor: accent)))
+                                    .then((_) => _load());
+                              },
+                              onLongPress: () {
+                                _showEditDeleteMenu(name);
+                              },
+                              leading: CircleAvatar(
+                                  radius: 22,
+                                  backgroundColor: accent,
+                                  child: Text(
+                                      name.isNotEmpty
+                                          ? name[0].toUpperCase()
+                                          : '?',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold))),
+                              title: Text(name,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                              subtitle: Text(
+                                  "Latest: ${_recs[name] ?? 'No data'}",
+                                  style: TextStyle(
+                                      color: accent.withValues(alpha: 0.7))),
+                              trailing: IconButton(
+                                  onPressed: () {
+                                    _showEditDeleteMenu(name);
+                                  },
+                                  icon: const Icon(Icons.more_vert)),
+                            ),
+                          ));
+                    },
+                  )),
+      ]),
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: accent,
+          onPressed: () {
+            final controller = TextEditingController();
+            showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                      backgroundColor: const Color(0xFF0E1117),
+                      title: const Text("Add Exercise"),
+                      content: TextField(
+                          controller: controller,
+                          autofocus: true,
+                          decoration:
+                              const InputDecoration(hintText: "Exercise name")),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                            },
+                            child: const Text("Cancel")),
+                        ElevatedButton(
+                            onPressed: () async {
+                              if (controller.text.trim().isEmpty) return;
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              _exercises.add(controller.text.trim());
+                              await prefs.setStringList(
+                                  'ex_${widget.category}', _exercises);
+                              if (ctx.mounted) {
+                                Navigator.pop(ctx);
+                                _load();
+                              }
+                            },
+                            child: const Text("Add")),
+                      ],
+                    ));
+          },
+          child: const Icon(Icons.add, color: Colors.black)),
+    );
+  }
+}
+
+class ExerciseDetailScreen extends StatefulWidget {
+  final String exerciseName;
+  final Color themeColor;
+  const ExerciseDetailScreen(
+      {super.key, required this.exerciseName, required this.themeColor});
+  @override
+  State<ExerciseDetailScreen> createState() => _ExerciseDetailScreenState();
+}
+
+class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
+    with TickerProviderStateMixin {
+  final List<ExerciseLog> _history = [];
+  final _wController = TextEditingController();
+  final _rController = TextEditingController();
+  final _sController = TextEditingController();
+
+  late final AudioPlayer _audioPlayer;
+  Timer? _timer;
+  DateTime? _endTime;
+  int _secondsRemaining = 0;
+  int _totalRestSeconds = 60;
+  bool _isTimerRunning = false;
+  late final AnimationController _animController;
+
+  bool _autoStart = true;
+  static const String _autoStartKey = 'auto_start_timer';
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayerInit();
+    _animControllerInit();
+    _loadHistory();
+    _loadAutoStart();
+  }
+
+  void _audioPlayerInit() {
+    _audioPlayer = AudioPlayer();
+  }
+
+  void _animControllerInit() {
+    _animController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    try {
+      _audioPlayer.dispose();
+    } catch (_) {}
+    _wController.dispose();
+    _rController.dispose();
+    _sController.dispose();
+    try {
+      _animController.dispose();
+    } catch (_) {}
+    super.dispose();
+  }
+
+  Future<void> _loadAutoStart() async {
+    final prefs = await SharedPreferences.getInstance();
+    final val = prefs.getBool(_autoStartKey);
+    if (mounted) {
+      setState(() {
+        _autoStart = val ?? true;
+      });
+    }
+  }
+
+  Future<void> _setAutoStart(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_autoStartKey, v);
+    if (mounted) {
+      setState(() {
+        _autoStart = v;
+      });
+    }
+  }
+
+  void _startRestTimer({bool resume = false}) {
+    _timer?.cancel();
+    setState(() {
+      if (!resume || _secondsRemaining == 0) {
+        _secondsRemaining = _totalRestSeconds;
+      }
+      _isTimerRunning = true;
+      _endTime = DateTime.now().add(Duration(seconds: _secondsRemaining));
+      try {
+        _animController.forward(from: 0);
+      } catch (_) {}
+    });
+
+    _timer = Timer.periodic(const Duration(milliseconds: 200), (t) {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
+      final now = DateTime.now();
+      final remainingMs = _endTime!.difference(now).inMilliseconds;
+      final sec = remainingMs <= 0 ? 0 : (remainingMs / 1000).ceil();
+      if (sec != _secondsRemaining) {
+        setState(() {
+          _secondsRemaining = sec;
+        });
+      }
+      if (remainingMs <= 0) {
+        t.cancel();
+        setState(() {
+          _isTimerRunning = false;
+          _secondsRemaining = 0;
+          _endTime = null;
+        });
+        _notifyEnd();
+      }
+    });
+  }
+
+  void _pauseTimer() {
+    _timer?.cancel();
+    setState(() {
+      _isTimerRunning = false;
+      _endTime = null;
+      try {
+        _animController.stop();
+      } catch (_) {}
+    });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    setState(() {
+      _isTimerRunning = false;
+      _secondsRemaining = 0;
+      _endTime = null;
+      try {
+        _animController.reset();
+      } catch (_) {}
+    });
+  }
+
+  void _resetTimer() {
+    _timer?.cancel();
+    setState(() {
+      _secondsRemaining = _totalRestSeconds;
+      _isTimerRunning = true;
+      _endTime = DateTime.now().add(Duration(seconds: _secondsRemaining));
+      try {
+        _animController.forward(from: 0);
+      } catch (_) {}
+    });
+    _timer = Timer.periodic(const Duration(milliseconds: 200), (t) {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
+      final now = DateTime.now();
+      final remainingMs = _endTime!.difference(now).inMilliseconds;
+      final sec = remainingMs <= 0 ? 0 : (remainingMs / 1000).ceil();
+      if (sec != _secondsRemaining) {
+        setState(() {
+          _secondsRemaining = sec;
+        });
+      }
+      if (remainingMs <= 0) {
+        t.cancel();
+        setState(() {
+          _isTimerRunning = false;
+          _secondsRemaining = 0;
+          _endTime = null;
+        });
+        _notifyEnd();
+      }
+    });
+  }
+
+  Future<void> _notifyEnd() async {
+    try {
+      if (await Vibration.hasVibrator() == true) {
+        if (await Vibration.hasCustomVibrationsSupport() == true) {
+          Vibration.vibrate(pattern: [0, 300, 120, 300]);
+        } else {
+          await Vibration.vibrate(duration: 500);
+        }
+      }
+    } catch (_) {}
+    try {
+      await _audioPlayer.play(AssetSource('sounds/alert.mp3'));
+    } catch (_) {}
+    try {
+      HapticFeedback.heavyImpact();
+    } catch (_) {}
+    try {
+      await NotificationService.instance.showNotification(
+          title: 'Rest finished',
+          body: 'Timer finished for ${widget.exerciseName}');
+    } catch (_) {}
+  }
+
+  Future<void> _loadHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getStringList('history_${widget.exerciseName}') ?? [];
+    if (mounted) {
+      setState(() {
+        _history.clear();
+        _history.addAll(data.map((e) => ExerciseLog.fromJson(jsonDecode(e),
+            defaultExercise: widget.exerciseName)));
+        if (_history.isNotEmpty) {
+          _wController.text = _history.last.weight;
+          int lastNum = int.tryParse(_history.last.sets) ?? _history.length;
+          _sController.text = (lastNum + 1).toString();
+        } else {
+          _sController.text = "1";
+        }
+      });
+    }
+  }
+
+  Future<void> _saveLog() async {
+    if (_wController.text.isEmpty ||
+        _rController.text.isEmpty ||
+        _sController.text.isEmpty) {
+      return;
+    }
+    final log = ExerciseLog(
+      date: DateTime.now().toString().substring(5, 16),
+      sets: _sController.text,
+      weight: _wController.text,
+      reps: _rController.text,
+      exercise: widget.exerciseName,
+    );
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getStringList('history_${widget.exerciseName}') ?? [];
+    data.add(jsonEncode(log.toJson()));
+    await prefs.setStringList('history_${widget.exerciseName}', data);
+
+    try {
+      if (await Vibration.hasVibrator() == true) {
+        await Vibration.vibrate(duration: 40);
+      }
+    } catch (_) {}
+
+    _rController.clear();
+    _loadHistory();
+
+    if (_autoStart) {
+      _startRestTimer(resume: false);
+    } else {
+      setState(() {
+        _secondsRemaining = _totalRestSeconds;
+      });
+    }
+  }
+
+  String _formatTime(int seconds) {
+    final int mins = seconds ~/ 60;
+    final int secs = seconds % 60;
+    return "$mins:${secs.toString().padLeft(2, '0')}";
+  }
+
+  double _progressValue() {
+    if (_totalRestSeconds == 0) return 0.0;
+    final int used =
+        (_totalRestSeconds - _secondsRemaining).clamp(0, _totalRestSeconds);
+    final double p = (used / _totalRestSeconds).clamp(0.0, 1.0);
+    return p;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = widget.themeColor;
+    return Scaffold(
+      appBar: buildCustomAppBar(context, accentColor: accent),
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 140),
+        child: Column(
+          children: [
+            ProgressChart(
+                history: _history,
+                accentColor: accent,
+                title: widget.exerciseName),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+              child: Column(
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Rest Time:", style: TextStyle(color: accent)),
+                        Text("${_totalRestSeconds ~/ 60} min",
+                            style: const TextStyle(fontWeight: FontWeight.bold))
+                      ]),
+                  SliderTheme(
+                    data: SliderTheme.of(context)
+                        .copyWith(thumbColor: accent, activeTrackColor: accent),
+                    child: Slider(
+                        value: _totalRestSeconds.toDouble(),
+                        min: 10,
+                        max: 600,
+                        divisions: 59,
+                        onChanged: _isTimerRunning
+                            ? null
+                            : (val) {
+                                setState(() {
+                                  _totalRestSeconds = val.toInt();
+                                });
+                              }),
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Auto-start after save',
+                            style: TextStyle(color: Colors.white70)),
+                        Switch(
+                            value: _autoStart,
+                            onChanged: (v) {
+                              _setAutoStart(v);
+                            },
+                            activeThumbColor: accent)
+                      ]),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  SizedBox(
+                      width: 68,
+                      child: TextField(
+                          controller: _sController,
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                              labelText: "SET",
+                              border: const OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: accent))),
+                          keyboardType: TextInputType.number)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                      child: TextField(
+                          controller: _wController,
+                          decoration: InputDecoration(
+                              labelText: "KG",
+                              border: const OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: accent))),
+                          keyboardType: TextInputType.number)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                      child: TextField(
+                          controller: _rController,
+                          decoration: InputDecoration(
+                              labelText: "REPS",
+                              border: const OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: accent))),
+                          keyboardType: TextInputType.number)),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                      onPressed: _saveLog,
+                      child: const Icon(Icons.check, color: Colors.black)),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                itemCount: _history.length,
+                itemBuilder: (ctx, i) {
+                  final log = _history.reversed.toList()[i];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: Card(
+                      color: Theme.of(context).cardColor,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                            backgroundColor: accent,
+                            child: Text(log.sets,
+                                style: const TextStyle(color: Colors.white))),
+                        title: Text("${log.weight} kg x ${log.reps}",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(log.date),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        height: 120,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withValues(alpha: 0.35), blurRadius: 8)
+          ],
+          border: const Border(top: BorderSide(color: Colors.white10)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _SmallIconButton(
+                    tooltip: _isTimerRunning ? 'Pause' : 'Resume',
+                    icon: _isTimerRunning ? Icons.pause : Icons.play_arrow,
+                    color: accent,
+                    onPressed: () {
+                      if (_isTimerRunning) {
+                        _pauseTimer();
+                      } else {
+                        if (_secondsRemaining > 0) {
+                          _startRestTimer(resume: true);
+                        } else {
+                          _startRestTimer(resume: false);
+                        }
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  _SmallIconButton(
+                    tooltip: 'Reset',
+                    icon: Icons.refresh,
+                    color: accent,
+                    onPressed: _resetTimer,
+                  ),
+                  const SizedBox(width: 8),
+                  _SmallIconButton(
+                    tooltip: 'Stop',
+                    icon: Icons.stop,
+                    color: Colors.redAccent,
+                    onPressed: _stopTimer,
+                  ),
+                  const SizedBox(width: 14),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          _isTimerRunning
+                              ? 'Running'
+                              : (_secondsRemaining > 0 ? 'Paused' : 'Stopped'),
+                          style: const TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 4),
+                      const Text('Rest: ',
+                          style:
+                              TextStyle(color: Colors.white54, fontSize: 12)),
+                      Text('${_totalRestSeconds}s',
+                          style: const TextStyle(
+                              color: Colors.white54, fontSize: 12)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 86,
+              height: 86,
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: accent.withValues(alpha: 0.9)),
+                boxShadow: [
+                  BoxShadow(
+                      color: accent.withValues(alpha: 0.18),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6))
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                        value: _progressValue(),
+                        strokeWidth: 6,
+                        color: accent,
+                        backgroundColor: Colors.white12),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                            _isTimerRunning
+                                ? Icons.pause_circle
+                                : Icons.play_circle,
+                            color: accent,
+                            size: 26),
+                        const SizedBox(height: 6),
+                        Text(
+                          _secondsRemaining > 0
+                              ? _formatTime(_secondsRemaining)
+                              : _formatTime(_totalRestSeconds),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SmallIconButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final Color color;
+  final String tooltip;
+  const _SmallIconButton(
+      {required this.onPressed,
+      required this.icon,
+      required this.color,
+      required this.tooltip});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black.withValues(alpha: 0.6),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: color.withValues(alpha: 0.9))),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: onPressed,
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Icon(icon, size: 18, color: color)),
+      ),
+    );
+  }
+}

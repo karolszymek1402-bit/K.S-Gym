@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img" aria-label="K.S-Gym - Emblem Pro 1">
+  <title>K.S-Gym — Emblem Pro 1 (Classic medallion with curved wordmark)</title>
+  <defs>
+    <style><![CDATA[
+      .bg { fill:#0b0b0b; }
+      .gold { fill:#CFAA4B; }
+      .gold-stroke { stroke:#CFAA4B; stroke-width:10; fill:none; stroke-linejoin:round;}
+      .cream { fill:#F6EFE2; opacity:0.03; }
+      .word { font-family: 'Montserrat', 'Bebas Neue', Arial, sans-serif; font-weight:700; fill:#CFAA4B; letter-spacing:2px;}
+      .word-white { font-family: 'Montserrat', Arial, sans-serif; font-weight:700; fill:#F6EFE2; letter-spacing:2px;}
+      .small { font-family: 'Montserrat', Arial, sans-serif; font-weight:600; fill:#CFAA4B; font-size:36px; }
+    ]]></style>
+
+    <!-- arcs for curved text -->
+    <path id="arcTop" d="M200,520 A400,400 0 0 1 1000,520" />
+    <path id="arcBottom" d="M1000,680 A400,400 0 0 1 200,680" />
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="1200" class="bg"/>
+
+  <!-- outer rings -->
+  <circle cx="600" cy="600" r="520" class="gold"/>
+  <circle cx="600" cy="600" r="460" class="bg"/>
+  <circle cx="600" cy="600" r="420" class="gold-stroke"/>
+
+  <!-- subtle radial texture -->
+  <g opacity="0.06" transform="translate(600,600)">
+    <g fill="#FFFFFF">
+      <circle r="380" class="cream"/>
+    </g>
+  </g>
+
+  <!-- laurel wreath halfs -->
+  <g transform="translate(600,600)" stroke="#CFAA4B" stroke-width="6" fill="#CFAA4B" stroke-linecap="round">
+    <g transform="rotate(-18)">
+      <ellipse cx="-260" cy="-40" rx="22" ry="10"/>
+      <ellipse cx="-220" cy="-80" rx="20" ry="9"/>
+      <ellipse cx="-180" cy="-120" rx="18" ry="8"/>
+      <ellipse cx="-140" cy="-150" rx="16" ry="7"/>
+      <ellipse cx="-100" cy="-170" rx="14" ry="6"/>
+    </g>
+    <g transform="scale(-1,1) rotate(-18)">
+      <ellipse cx="-260" cy="-40" rx="22" ry="10"/>
+      <ellipse cx="-220" cy="-80" rx="20" ry="9"/>
+      <ellipse cx="-180" cy="-120" rx="18" ry="8"/>
+      <ellipse cx="-140" cy="-150" rx="16" ry="7"/>
+      <ellipse cx="-100" cy="-170" rx="14" ry="6"/>
+    </g>
+  </g>
+
+  <!-- professional barbell (center) -->
+  <g transform="translate(600,600)">
+    <!-- plates left -->
+    <g transform="translate(-300,0)">
+      <circle cx="0" cy="0" r="86" fill="#CFAA4B"/>
+      <circle cx="0" cy="0" r="58" fill="#0b0b0b"/>
+      <circle cx="0" cy="0" r="18" fill="#CFAA4B"/>
+    </g>
+    <!-- plates right (mirrored) -->
+    <g transform="translate(300,0)">
+      <circle cx="0" cy="0" r="86" fill="#CFAA4B"/>
+      <circle cx="0" cy="0" r="58" fill="#0b0b0b"/>
+      <circle cx="0" cy="0" r="18" fill="#CFAA4B"/>
+    </g>
+
+    <!-- bar -->
+    <rect x="-330" y="-18" width="660" height="36" rx="18" fill="#CFAA4B"/>
+    <rect x="-320" y="-12" width="640" height="24" rx="12" fill="#0b0b0b"/>
+
+    <!-- collars -->
+    <rect x="-210" y="-34" width="40" height="68" rx="8" fill="#CFAA4B"/>
+    <rect x="170" y="-34" width="40" height="68" rx="8" fill="#CFAA4B"/>
+
+    <!-- subtle highlight -->
+    <rect x="-260" y="-8" width="520" height="16" rx="8" fill="#F6EFE2" opacity="0.06"/>
+  </g>
+
+  <!-- central banner with full name -->
+  <g transform="translate(600,760)">
+    <rect x="-420" y="-64" width="840" height="128" rx="64" fill="#CFAA4B"/>
+    <rect x="-400" y="-52" width="800" height="104" rx="52" fill="#0b0b0b" />
+    <text x="0" y="20" text-anchor="middle" font-size="72" class="word-white">K.S-Gym</text>
+  </g>
+
+  <!-- curved top and bottom text -->
+  <text textLength="800" font-size="48" class="small">
+    <textPath xlink:href="#arcTop" startOffset="50%">K.S-Gym</textPath>
+  </text>
+  <text textLength="800" font-size="40" class="small">
+    <textPath xlink:href="#arcBottom" startOffset="50%">PROFESSIONAL TRAINING</textPath>
+  </text>
+</svg>

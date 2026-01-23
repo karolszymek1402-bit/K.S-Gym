@@ -13,6 +13,7 @@ import 'package:vibration/vibration.dart';
 
 import 'firebase_options.dart';
 import 'plan_access.dart';
+import 'client_list_screen.dart';
 
 String globalLanguage = 'EN';
 final ValueNotifier<String> globalLanguageNotifier =
@@ -213,6 +214,41 @@ class Translations {
     },
     'email': {'EN': 'Email', 'PL': 'Email', 'NO': 'E-post'},
     'password': {'EN': 'Password', 'PL': 'Haslo', 'NO': 'Passord'},
+    'change_password': {
+      'EN': 'Change password',
+      'PL': 'Zmien haslo',
+      'NO': 'Endre passord'
+    },
+    'current_password': {
+      'EN': 'Current password',
+      'PL': 'Aktualne haslo',
+      'NO': 'Nåværende passord'
+    },
+    'new_password': {
+      'EN': 'New password',
+      'PL': 'Nowe haslo',
+      'NO': 'Nytt passord'
+    },
+    'confirm_password': {
+      'EN': 'Confirm password',
+      'PL': 'Potwierdz haslo',
+      'NO': 'Bekreft passord'
+    },
+    'passwords_dont_match': {
+      'EN': 'Passwords do not match',
+      'PL': 'Hasla nie pasuja',
+      'NO': 'Passordene samsvarer ikke'
+    },
+    'password_changed': {
+      'EN': 'Password changed successfully',
+      'PL': 'Haslo zmienione pomyslnie',
+      'NO': 'Passord endret vellykket'
+    },
+    'password_too_short': {
+      'EN': 'Password must be at least 4 characters',
+      'PL': 'Haslo musi miec co najmniej 4 znaki',
+      'NO': 'Passordet må være minst 4 tegn'
+    },
     'logging_in': {
       'EN': 'Signing in...',
       'PL': 'Logowanie...',
@@ -226,21 +262,21 @@ class Translations {
     },
     'coach_mode_title': {
       'EN': 'Coach mode: full access',
-      'PL': 'Tryb trenera: pelny dostep',
+      'PL': 'Tryb trenera: pełny dostęp',
       'NO': 'Trenermodus: full tilgang'
     },
     'coach_mode_hint': {
       'EN':
           'You have access to all categories and exercise database. Open the base to browse and edit exercises.',
       'PL':
-          'Masz dostep do wszystkich kategorii i bazy cwiczen. Otw�rz baze, aby przegladac i edytowac cwiczenia.',
+          'Masz dostęp do wszystkich kategorii i bazy ćwiczeń. Otwórz bazę, aby przeglądać i edytować ćwiczenia.',
       'NO':
-          'Du har tilgang til alle kategorier og �velsesbasen. �pne basen for � bla og redigere �velser.'
+          'Du har tilgang til alle kategorier og øvelsesbasen. Åpne basen for å bla og redigere øvelser.'
     },
     'exercise_database_btn': {
       'EN': 'Exercise database',
-      'PL': 'Baza cwiczen',
-      'NO': '�velsesbase'
+      'PL': 'Baza ćwiczeń',
+      'NO': 'Øvelsesbase'
     },
     'all_categories_btn': {
       'EN': 'All categories',
@@ -362,7 +398,8 @@ String localizedExerciseName(String rawName, String language) {
   if (translation != null) {
     return translation[language] ?? translation['EN'] ?? trimmed;
   }
-  final separators = [' � ', ' - '];
+  // Try with different separators - both old (�) and new (◆)
+  final separators = [' ◆ ', ' � ', ' - '];
   for (final sep in separators) {
     if (trimmed.contains(sep)) {
       final parts = trimmed.split(sep);
@@ -397,1012 +434,238 @@ String localizedCategoryName(String key, String language) {
 // Seed exercises to restore the user-provided base if a category is empty.
 const Map<String, List<String>> kDefaultExercises = {
   'CHEST': [
-    'Wyciskanie sztangi na lawce poziomej � Barbell Bench Press',
-    'Wyciskanie sztangi na skosie dodatnim � Incline Barbell Bench Press',
-    'Wyciskanie sztangi na skosie ujemnym � Decline Barbell Bench Press',
-    'Wyciskanie sztangi waskim chwytem � Close-Grip Bench Press',
-    'Wyciskanie sztangi typu Gilotyna � Guillotine Press',
-    'Wyciskanie z podlogi (sztanga) � Barbell Floor Press',
-    'Wyciskanie sztangi z lancuchami � Chain Bench Press',
-    'Wyciskanie ze Slingshotem � Slingshot Bench Press',
-    'Wyciskanie z deska (klockiem) � Board Press',
-    'Wyciskanie hantli na lawce poziomej � Dumbbell Bench Press',
-    'Wyciskanie hantli na skosie dodatnim � Incline Dumbbell Press',
-    'Wyciskanie hantli na skosie ujemnym � Decline Dumbbell Press',
-    'Wyciskanie hantli z rotacja (korkociagowe) � Twisting Dumbbell Press',
-    'Wyciskanie hantli chwytem neutralnym (mlotkowym) � Neutral Grip Dumbbell Press',
-    'Wyciskanie hantli z podlogi � Dumbbell Floor Press',
-    'Wyciskanie na maszynie Smitha � Smith Machine Bench Press',
-    'Wyciskanie na maszynie typu Hammer (siedzac) � Hammer Strength Chest Press',
-    'Wyciskanie na maszynie stosowej � Seated Chest Press Machine',
-    'Rozpietki z hantlami na lawce poziomej � Flat Dumbbell Flys',
-    'Rozpietki z hantlami na skosie dodatnim � Incline Dumbbell Flys',
-    'Rozpietki na maszynie Butterfly � Pec Deck Fly / Machine Fly',
-    'Krzyzowanie linek wyciagu g�rnego (Brama) � Cable Crossover / High Cable Fly',
-    'Rozpietki z linkami wyciagu dolnego � Low Cable Crossover',
-    'Rozpietki jednoracz na wyciagu � Single Arm Cable Fly',
-    'Przenoszenie hantla za glowe � Dumbbell Pullover',
-    'Landmine Press (wyciskanie p�lsztangi) � Landmine Press',
-    'Pompki klasyczne � Push-ups',
-    'Pompki szerokie � Wide Grip Push-ups',
-    'Pompki diamentowe (waskie) � Diamond Push-ups',
-    'Pompki na podwyzszeniu (glowa wyzej) � Incline Push-ups',
-    'Pompki z nogami na podwyzszeniu (glowa nizej) � Decline Push-ups',
-    'Pompki lucznicze � Archer Push-ups',
-    'Pompki plyometryczne (z klasnieciem) � Plyometric / Clap Push-ups',
-    'Pompki na k�lkach gimnastycznych � Ring Push-ups',
-    'Dipy (Pompki na poreczach, tul�w pochylony) � Chest Dips',
+    'Wyciskanie sztangi na ławce poziomej ◆ Barbell Bench Press',
+    'Wyciskanie sztangi na skosie dodatnim ◆ Incline Barbell Bench Press',
+    'Wyciskanie sztangi na skosie ujemnym ◆ Decline Barbell Bench Press',
+    'Wyciskanie sztangi wąskim chwytem ◆ Close-Grip Bench Press',
+    'Wyciskanie sztangi typu Gilotyna ◆ Guillotine Press',
+    'Wyciskanie z podłogi (sztanga) ◆ Barbell Floor Press',
+    'Wyciskanie sztangi z łańcuchami ◆ Chain Bench Press',
+    'Wyciskanie ze Slingshotem ◆ Slingshot Bench Press',
+    'Wyciskanie z deską (klockiem) ◆ Board Press',
+    'Wyciskanie hantli na ławce poziomej ◆ Dumbbell Bench Press',
+    'Wyciskanie hantli na skosie dodatnim ◆ Incline Dumbbell Press',
+    'Wyciskanie hantli na skosie ujemnym ◆ Decline Dumbbell Press',
+    'Wyciskanie hantli z rotacją (korkociągowe) ◆ Twisting Dumbbell Press',
+    'Wyciskanie hantli obchwytem neutralnym (młotkowym) ◆ Neutral Grip Dumbbell Press',
+    'Wyciskanie hantli z podłogi ◆ Dumbbell Floor Press',
+    'Wyciskanie na maszynie Smitha ◆ Smith Machine Bench Press',
+    'Wyciskanie na maszynie typu Hammer (siedząc) ◆ Hammer Strength Chest Press',
+    'Wyciskanie na maszynie stosowej ◆ Seated Chest Press Machine',
+    'Rozpiętki z hantlami na ławce poziomej ◆ Flat Dumbbell Flys',
+    'Rozpiętki z hantlami na skosie dodatnim ◆ Incline Dumbbell Flys',
+    'Rozpiętki na maszynie Butterfly ◆ Pec Deck Fly / Machine Fly',
+    'Krzyżowanie linek wyciągu górnego (Brama) ◆ Cable Crossover / High Cable Fly',
+    'Rozpiętki z linkami wyciągu dolnego ◆ Low Cable Crossover',
+    'Rozpiętki jednoręcz na wyciągu ◆ Single Arm Cable Fly',
+    'Przenoszenie hantla za głowę ◆ Dumbbell Pullover',
+    'Landmine Press (wyciskanie półsztangi) ◆ Landmine Press',
+    'Pompki klasyczne ◆ Push-ups',
+    'Pompki szerokie ◆ Wide Grip Push-ups',
+    'Pompki diamentowe (wąskie) ◆ Diamond Push-ups',
+    'Pompki na podwyższeniu (głowa wyżej) ◆ Incline Push-ups',
+    'Pompki z nogami na podwyższeniu (głowa niżej) ◆ Decline Push-ups',
+    'Pompki łucznicze ◆ Archer Push-ups',
+    'Pompki plyometryczne (z klaśnięciem) ◆ Plyometric / Clap Push-ups',
+    'Pompki na kółkach gimnastycznych ◆ Ring Push-ups',
+    'Dipy (Pompki na poręczach, tułów pochylony) ◆ Chest Dips',
   ],
   'BACK': [
-    'Podciaganie na drazku nachwytem � Pull-ups',
-    'Podciaganie na drazku podchwytem � Chin-ups',
-    'Sciaganie drazka wyciagu g�rnego do klatki � Lat Pulldown',
-    'Sciaganie drazka wyciagu g�rnego chwytem waskim � Close-Grip Lat Pulldown',
-    'Sciaganie drazka wyciagu g�rnego chwytem neutralnym � Neutral Grip Lat Pulldown',
-    'Sciaganie jednoracz na wyciagu � Single Arm Lat Pulldown',
-    'Sciaganie drazka za glowe � Behind the Neck Pulldown',
-    'Sciaganie na maszynie Hammer (g�ra-d�l) � Hammer Strength High Row / Pulldown',
-    'Wioslowanie sztanga w opadzie � Bent Over Barbell Row',
-    'Wioslowanie sztanga chwytem neutralnym � Neutral Grip Barbell Row',
-    'Wioslowanie p�lsztanga (T-sztanga) � T-Bar Row',
-    'Wioslowanie Pendlay (z martwego punktu) � Pendlay Row',
-    'Wioslowanie hantlem jednoracz � One Arm Dumbbell Row',
-    'Wioslowanie na wyciagu dolnym siedzac � Seated Cable Row',
-    'Wioslowanie na maszynie siedzac � Seated Machine Row',
-    'Wioslowanie na lawce skosnej (przodem do oparcia) � Chest Supported Row / Incline Bench Row',
-    'Wioslowanie sznurem wyciagu � Cable Rope Row',
-    'Martwy ciag klasyczny � Conventional Deadlift',
-    'Martwy ciag Sumo � Sumo Deadlift',
-    'Martwy ciag Rumunski � Romanian Deadlift (RDL)',
-    'Martwy ciag z deficytu � Deficit Deadlift',
-    'Martwy ciag ze stopu (Rack Pull) � Rack Pull',
-    'Martwy ciag z Trap Bar (sztanga heksagonalna) � Trap Bar Deadlift',
-    'Martwy ciag na maszynie Smitha � Smith Machine Deadlift',
-    'Power Clean (Zarzut) � Power Clean',
-    'Wyprosty tulowia na lawce rzymskiej � Back Extension / Hyperextension',
-    'Odwrotne wyprosty (nogi w g�re) � Reverse Hyperextension',
-    'Face Pull (przyciaganie liny do twarzy) � Face Pull',
-    'Szrugsy ze sztanga � Barbell Shrugs',
-    'Szrugsy z hantlami � Dumbbell Shrugs',
-    'Szrugsy na maszynie Smitha � Smith Machine Shrugs',
-    'Szrugsy na maszynie typu Trap Bar � Trap Bar Shrugs',
-    'Szrugsy na wyciagu dolnym � Cable Shrugs',
-    'Szrugsy jednoracz z hantlem � Single Arm Dumbbell Shrug',
-    'Szrugsy z Kettlebell � Kettlebell Shrugs',
+    'Podciąganie na drążku nachwytem ◆ Pull-ups',
+    'Podciąganie na drążku podchwytem ◆ Chin-ups',
+    'Ściąganie drążka wyciągu górnego do klatki ◆ Lat Pulldown',
+    'Ściąganie drążka wyciągu górnego obchwytem wąskim ◆ Close-Grip Lat Pulldown',
+    'Ściąganie drążka wyciągu górnego obchwytem neutralnym ◆ Neutral Grip Lat Pulldown',
+    'Ściąganie jednoręcz na wyciągu ◆ Single Arm Lat Pulldown',
+    'Ściąganie drążka za głowę ◆ Behind the Neck Pulldown',
+    'Ściąganie na maszynie Hammer (góra-dół) ◆ Hammer Strength High Row / Pulldown',
+    'Wiosłowanie sztangą w opadzie ◆ Bent Over Barbell Row',
+    'Wiosłowanie sztangą obchwytem neutralnym ◆ Neutral Grip Barbell Row',
+    'Wiosłowanie półsztangą (T-sztanga) ◆ T-Bar Row',
+    'Wiosłowanie Pendlay (z martwego punktu) ◆ Pendlay Row',
+    'Wiosłowanie hantlem jednoręcz ◆ One Arm Dumbbell Row',
+    'Wiosłowanie na wyciągu dolnym siedząc ◆ Seated Cable Row',
+    'Wiosłowanie na maszynie siedząc ◆ Seated Machine Row',
+    'Wiosłowanie na ławce skośnej (przodem do oparcia) ◆ Chest Supported Row / Incline Bench Row',
+    'Wiosłowanie sznurem wyciągu ◆ Cable Rope Row',
+    'Martwy ciąg klasyczny ◆ Conventional Deadlift',
+    'Martwy ciąg Sumo ◆ Sumo Deadlift',
+    'Martwy ciąg Rumuński ◆ Romanian Deadlift (RDL)',
+    'Martwy ciąg z deficytu ◆ Deficit Deadlift',
+    'Martwy ciąg ze stopu (Rack Pull) ◆ Rack Pull',
+    'Martwy ciąg z Trap Bar (sztanga heksagonalna) ◆ Trap Bar Deadlift',
+    'Martwy ciąg na maszynie Smitha ◆ Smith Machine Deadlift',
+    'Power Clean (Zarzut) ◆ Power Clean',
+    'Wyprosty tułowia na ławce rzymskiej ◆ Back Extension / Hyperextension',
+    'Odwrotne wyprosty (nogi w górę) ◆ Reverse Hyperextension',
+    'Face Pull (przyciąganie liny do twarzy) ◆ Face Pull',
+    'Szrugsy ze sztangą ◆ Barbell Shrugs',
+    'Szrugsy z hantlami ◆ Dumbbell Shrugs',
+    'Szrugsy na maszynie Smitha ◆ Smith Machine Shrugs',
+    'Szrugsy na maszynie typu Trap Bar ◆ Trap Bar Shrugs',
+    'Szrugsy na wyciągu dolnym ◆ Cable Shrugs',
+    'Szrugsy jednoręcz z hantlem ◆ Single Arm Dumbbell Shrug',
+    'Szrugsy z Kettlebell ◆ Kettlebell Shrugs',
   ],
   'BICEPS': [
-    'Uginanie sztangi stojac (klasyczne) � Barbell Curl',
-    'Uginanie sztangi EZ-bar � EZ Bar Curl',
-    'Uginanie sztangi EZ-bar nachwytem � Reverse EZ Bar Curl',
-    'Uginanie sztangi podchwytem (nachwytem) � Reverse Barbell Curl',
-    'Uginanie sztangi w opadzie (21s) � Barbell Curl 21s',
-    'Uginanie hantli stojac � Dumbbell Curl',
-    'Uginanie hantli naprzemiennie � Alternating Dumbbell Curl',
-    'Uginanie hantli chwytem mlotkowym � Hammer Curl',
-    'Uginanie hantli na lawce skosnej � Incline Dumbbell Curl',
-    'Uginanie hantli na lawce Scotta � Preacher Curl (Dumbbell)',
-    'Uginanie sztangi na lawce Scotta � Preacher Curl (Barbell)',
-    'Uginanie skoncentrowane � Concentration Curl',
-    'Uginanie Zottman Curl � Zottman Curl',
-    'Uginanie Spider Curl � Spider Curl',
-    'Uginanie na wyciagu dolnym � Cable Curl',
-    'Podciaganie podchwytem (wasko) � Chin-ups',
+    'Uginanie sztangi stojąc (klasyczne) ◆ Barbell Curl',
+    'Uginanie sztangi EZ-bar ◆ EZ Bar Curl',
+    'Uginanie sztangi EZ-bar nachwytem ◆ Reverse EZ Bar Curl',
+    'Uginanie sztangi podchwytem (nachwytem) ◆ Reverse Barbell Curl',
+    'Uginanie sztangi w opadzie (21s) ◆ Barbell Curl 21s',
+    'Uginanie hantli stojąc ◆ Dumbbell Curl',
+    'Uginanie hantli naprzemiennie ◆ Alternating Dumbbell Curl',
+    'Uginanie hantli obchwytem młotkowym ◆ Hammer Curl',
+    'Uginanie hantli na ławce skośnej ◆ Incline Dumbbell Curl',
+    'Uginanie hantli na ławce Scotta ◆ Preacher Curl (Dumbbell)',
+    'Uginanie sztangi na ławce Scotta ◆ Preacher Curl (Barbell)',
+    'Uginanie skoncentrowane ◆ Concentration Curl',
+    'Uginanie Zottman Curl ◆ Zottman Curl',
+    'Uginanie Spider Curl ◆ Spider Curl',
+    'Uginanie na wyciągu dolnym ◆ Cable Curl',
+    'Podciąganie podchwytem (wąsko) ◆ Chin-ups',
   ],
   'TRICEPS': [
-    'Wyciskanie sztangi waskim chwytem � Close-Grip Bench Press',
-    'Pompki na poreczach (pionowo) � Triceps Dips',
-    'Pompki w podporze tylem � Bench Dips',
-    'Wyciskanie francuskie sztangi do czola � Skullcrushers / Lying Triceps Extension',
-    'Wyciskanie francuskie hantla oburacz (siedzac) � Overhead Dumbbell Triceps Extension',
-    'Prostowanie ramion na wyciagu (sznur) � Rope Pushdown',
-    'Prostowanie ramion na wyciagu (drazek) � Bar Pushdown / Triceps Pressdown',
-    'Kickbacks (wyprost ramienia w tyl w opadzie) � Triceps Kickback',
-    'JM Press � JM Press',
-    'Tate Press � Tate Press',
+    'Wyciskanie sztangi wąskim chwytem ◆ Close-Grip Bench Press',
+    'Pompki na poręczach (pionowo) ◆ Triceps Dips',
+    'Pompki w podporze tyłem ◆ Bench Dips',
+    'Wyciskanie francuskie sztangi do czoła ◆ Skullcrushers / Lying Triceps Extension',
+    'Wyciskanie francuskie hantla obu rąk (siedząc) ◆ Overhead Dumbbell Triceps Extension',
+    'Prostowanie ramion na wyciągu (sznur) ◆ Rope Pushdown',
+    'Prostowanie ramion na wyciągu (drążek) ◆ Bar Pushdown / Triceps Pressdown',
+    'Kickbacks (wyprost ramienia w tył w opadzie) ◆ Triceps Kickback',
+    'JM Press ◆ JM Press',
+    'Tate Press ◆ Tate Press',
   ],
   'SHOULDERS': [
-    'Wyciskanie sztangi stojac (OHP) � Overhead Press / Military Press',
-    'Wyciskanie sztangi siedzac � Seated Barbell Press',
-    'Wyciskanie hantli stojac � Standing Dumbbell Press',
-    'Wyciskanie hantli siedzac � Seated Dumbbell Press',
-    'Wyciskanie Arnolda � Arnold Press',
-    'Wyciskanie jednoracz hantla � Single Arm Dumbbell Press',
-    'Wznosy hantli bokiem � Lateral Raise',
-    'Wznosy hantli bokiem z odchyleniem � Leaning Lateral Raise',
-    'Wznosy talerza przodem � Front Plate Raise',
-    'Wznosy hantli przodem � Front Dumbbell Raise',
-    'Wznosy hantli przodem naprzemiennie � Alternating Front Raise',
-    'Wznosy sztangi przodem � Barbell Front Raise',
-    'Wznosy na tylna czesc barku w opadzie � Bent Over Rear Delt Raise',
-    'Wznosy na tylna czesc barku na lawce skosnej � Incline Rear Delt Raise',
-    'Rozpietki odwrotne na maszynie Pec Deck � Reverse Pec Deck',
-    'Krzyzowanie linek wyciagu (odwrotne) � Reverse Cable Crossover',
-    'Szrugsy z hantlami � Dumbbell Shrugs',
-    'Szrugsy ze sztanga � Barbell Shrugs',
+    'Wyciskanie sztangi stojąc (OHP) ◆ Overhead Press / Military Press',
+    'Wyciskanie sztangi siedząc ◆ Seated Barbell Press',
+    'Wyciskanie hantli stojąc ◆ Standing Dumbbell Press',
+    'Wyciskanie hantli siedząc ◆ Seated Dumbbell Press',
+    'Wyciskanie Arnolda ◆ Arnold Press',
+    'Wyciskanie jednoręcz hantla ◆ Single Arm Dumbbell Press',
+    'Wznosy hantli bokiem ◆ Lateral Raise',
+    'Wznosy hantli bokiem z odchyleniem ◆ Leaning Lateral Raise',
+    'Wznosy talerza przodem ◆ Front Plate Raise',
+    'Wznosy hantli przodem ◆ Front Dumbbell Raise',
+    'Wznosy hantli przodem naprzemiennie ◆ Alternating Front Raise',
+    'Wznosy sztangi przodem ◆ Barbell Front Raise',
+    'Wznosy na tylną część barku w opadzie ◆ Bent Over Rear Delt Raise',
+    'Wznosy na tylną część barku na ławce skośnej ◆ Incline Rear Delt Raise',
+    'Rozpiętki odwrotne na maszynie Pec Deck ◆ Reverse Pec Deck',
+    'Krzyżowanie linek wyciągu (odwrotne) ◆ Reverse Cable Crossover',
+    'Szrugsy z hantlami ◆ Dumbbell Shrugs',
+    'Szrugsy ze sztangą ◆ Barbell Shrugs',
   ],
   'ABS': [
-    'Plank (Deska) � Plank',
-    'Plank boczny � Side Plank',
-    'Allahy (Spiecia na wyciagu kleczac) � Cable Crunch',
-    'Spiecia brzucha (lezac) � Crunches',
-    'Brzuszki (pelne) � Sit-ups',
-    'Unoszenie n�g w zwisie � Hanging Leg Raise',
-    'Unoszenie kolan w zwisie � Hanging Knee Raise',
-    'Unoszenie n�g lezac � Lying Leg Raise',
-    'Rowerek (Bicycle Crunches) � Bicycle Crunches',
-    'Russian Twist � Russian Twist',
-    'Nozyce (Flutter Kicks) � Flutter Kicks',
-    'Mountain Climbers � Mountain Climbers',
-    'L-sit � L-Sit',
-    'Ab Wheel Rollout � Ab Wheel Rollout',
-    'Pallof Press � Pallof Press',
+    'Plank (Deska) ◆ Plank',
+    'Plank boczny ◆ Side Plank',
+    'Allahy (Ścięcia na wyciągu klęcząc) ◆ Cable Crunch',
+    'Ścięcia brzucha (leżąc) ◆ Crunches',
+    'Brzuszki (pełne) ◆ Sit-ups',
+    'Unoszenie nóg w zwisie ◆ Hanging Leg Raise',
+    'Unoszenie kolan w zwisie ◆ Hanging Knee Raise',
+    'Unoszenie nóg leżąc ◆ Lying Leg Raise',
+    'Rowerek (Bicycle Crunches) ◆ Bicycle Crunches',
+    'Russian Twist ◆ Russian Twist',
+    'Nożyce (Flutter Kicks) ◆ Flutter Kicks',
+    'Mountain Climbers ◆ Mountain Climbers',
+    'L-sit ◆ L-Sit',
+    'Ab Wheel Rollout ◆ Ab Wheel Rollout',
+    'Pallof Press ◆ Pallof Press',
   ],
   'LEGS': [
-    'Przysiad ze sztanga na karku (High Bar) � High Bar Squat',
-    'Przysiad ze sztanga (Low Bar) � Low Bar Squat',
-    'Przysiad przedni � Front Squat',
-    'Przysiad typu Goblet � Goblet Squat',
-    'Wypychanie n�g (leg press) � Leg Press',
-    'Martwy ciag klasyczny � Conventional Deadlift',
-    'Martwy ciag Sumo � Sumo Deadlift',
-    'Martwy ciag Rumunski � Romanian Deadlift (RDL)',
-    'Wykroki z hantlami � Dumbbell Lunges',
-    'Wykroki ze sztanga � Barbell Lunges',
-    'Wykroki bulgarskie � Bulgarian Split Squat',
-    'Przysiady bulgarskie na jednej nodze � Single Leg Bulgarian Squat',
-    'Prostowanie n�g na maszynie � Leg Extension',
-    'Uginanie n�g na maszynie (lezac) � Lying Leg Curl',
-    'Uginanie n�g na maszynie (siedzac) � Seated Leg Curl',
-    'Wspiecia na palce stojac � Standing Calf Raise',
-    'Wspiecia na palce siedzac � Seated Calf Raise',
-    'Hip Thrust (mostek biodrowy ze sztanga) � Barbell Hip Thrust',
-    'Glute Bridge (Mostek) � Glute Bridge',
-    'Step-ups (wchodzenie na podest) � Step-ups',
-    'Odwodzenie nogi na wyciagu � Cable Leg Abduction',
-    'Przywodzenie nogi na wyciagu � Cable Leg Adduction',
-    'Kopniecie osla (Donkey Kick) � Donkey Kick',
-    'Wykopy w tyl na wyciagu � Cable Kickback',
-    'Nordic Hamstring Curl � Nordic Hamstring Curl',
+    'Przysiad ze sztangą na karku (High Bar) ◆ High Bar Squat',
+    'Przysiad ze sztangą (Low Bar) ◆ Low Bar Squat',
+    'Przysiad przedni ◆ Front Squat',
+    'Przysiad typu Goblet ◆ Goblet Squat',
+    'Wypychanie nóg (leg press) ◆ Leg Press',
+    'Martwy ciąg klasyczny ◆ Conventional Deadlift',
+    'Martwy ciąg Sumo ◆ Sumo Deadlift',
+    'Martwy ciąg Rumuński ◆ Romanian Deadlift (RDL)',
+    'Wykroki z hantlami ◆ Dumbbell Lunges',
+    'Wykroki ze sztangą ◆ Barbell Lunges',
+    'Wykroki bulgarskie ◆ Bulgarian Split Squat',
+    'Przysiady bulgarskie na jednej nodze ◆ Single Leg Bulgarian Squat',
+    'Prostowanie nóg na maszynie ◆ Leg Extension',
+    'Uginanie nóg na maszynie (leżąc) ◆ Lying Leg Curl',
+    'Uginanie nóg na maszynie (siedząc) ◆ Seated Leg Curl',
+    'Wspięcia na palce stojąc ◆ Standing Calf Raise',
+    'Wspięcia na palce siedząc ◆ Seated Calf Raise',
+    'Hip Thrust (mostek biodrowy ze sztangą) ◆ Barbell Hip Thrust',
+    'Glute Bridge (Mostek) ◆ Glute Bridge',
+    'Step-ups (wchodzenie na podest) ◆ Step-ups',
+    'Odwodzenie nogi na wyciągu ◆ Cable Leg Abduction',
+    'Przywodzenie nogi na wyciągu ◆ Cable Leg Adduction',
+    'Kopnięcie osła (Donkey Kick) ◆ Donkey Kick',
+    'Wykopy w tył na wyciągu ◆ Cable Kickback',
+    'Nordic Hamstring Curl ◆ Nordic Hamstring Curl',
   ],
   'FOREARMS': [
-    'Uginanie nadgarstk�w podchwytem � Wrist Curl',
-    'Prostowanie nadgarstk�w nachwytem � Reverse Wrist Curl',
-    'Uginanie ramion nachwytem � Reverse Curl',
-    "Spacer Farmera � Farmer's Carry / Farmer's Walk",
-    'Zwis na drazku � Dead Hang',
+    'Uginanie nadgarstkow podchwytem ◆ Wrist Curl',
+    'Prostowanie nadgarstkow nachwytem ◆ Reverse Wrist Curl',
+    'Uginanie ramion nachwytem ◆ Reverse Curl',
+    "Spacer Farmera ◆ Farmer's Carry / Farmer's Walk",
+    'Zwis na drążku ◆ Dead Hang',
   ],
 };
 
 // Exercises that are performed for time; auto-tag as time-based.
+// Use Polish names only (without separator)
 const Set<String> kTimeBasedExercises = {
-  'Plank (Deska) � Plank',
-  'Plank boczny � Side Plank',
-  'L-sit � L-Sit',
-  'Zwis na drazku � Dead Hang',
-  "Spacer Farmera � Farmer's Carry / Farmer's Walk",
-  'Spacer z hantlem jednoracz � Suitcase Carry',
-  'Spacer z guma (Monster Walk) � Monster Walk / Banded Side Steps',
-  'Mountain Climbers � Mountain Climbers',
-  'Nozyce � Flutter Kicks',
-  'Kettlebell Swing � Kettlebell Swing',
-  'Russian Twist � Russian Twist',
-  'Pallof Press � Pallof Press',
-  'Glute Bridge (Mostek) � Glute Bridge',
+  'Plank (Deska)',
+  'Plank boczny',
+  'L-sit',
+  'Zwis na drążku',
+  'Spacer Farmera',
+  'Spacer z hantlem jednoręcz',
+  'Spacer z gumą (Monster Walk)',
+  'Mountain Climbers',
+  'Nożyce',
+  'Kettlebell Swing',
+  'Russian Twist',
+  'Pallof Press',
+  'Glute Bridge (Mostek)',
 };
 
 // Translations for seeded exercises across languages.
-const Map<String, Map<String, String>> kExerciseTranslations = {
-  // CHEST
-  'Wyciskanie sztangi na lawce poziomej � Barbell Bench Press': {
-    'PL': 'Wyciskanie sztangi na lawce poziomej',
-    'EN': 'Barbell Bench Press',
-    'NO': 'Barbell Bench Press',
-  },
-  'Wyciskanie sztangi na skosie dodatnim � Incline Barbell Bench Press': {
-    'PL': 'Wyciskanie sztangi na skosie dodatnim',
-    'EN': 'Incline Barbell Bench Press',
-    'NO': 'Incline Barbell Bench Press',
-  },
-  'Wyciskanie sztangi na skosie ujemnym � Decline Barbell Bench Press': {
-    'PL': 'Wyciskanie sztangi na skosie ujemnym',
-    'EN': 'Decline Barbell Bench Press',
-    'NO': 'Decline Barbell Bench Press',
-  },
-  'Wyciskanie sztangi typu Gilotyna � Guillotine Press': {
-    'PL': 'Wyciskanie sztangi typu Gilotyna',
-    'EN': 'Guillotine Press',
-    'NO': 'Guillotine Press',
-  },
-  'Wyciskanie z podlogi (sztanga) � Barbell Floor Press': {
-    'PL': 'Wyciskanie z podlogi (sztanga)',
-    'EN': 'Barbell Floor Press',
-    'NO': 'Barbell Floor Press',
-  },
-  'Wyciskanie sztangi z lancuchami � Chain Bench Press': {
-    'PL': 'Wyciskanie sztangi z lancuchami',
-    'EN': 'Chain Bench Press',
-    'NO': 'Chain Bench Press',
-  },
-  'Wyciskanie ze Slingshotem � Slingshot Bench Press': {
-    'PL': 'Wyciskanie ze Slingshotem',
-    'EN': 'Slingshot Bench Press',
-    'NO': 'Slingshot Bench Press',
-  },
-  'Wyciskanie z deska (klockiem) � Board Press': {
-    'PL': 'Wyciskanie z deska (klockiem)',
-    'EN': 'Board Press',
-    'NO': 'Board Press',
-  },
-  'Wyciskanie hantli na lawce poziomej � Dumbbell Bench Press': {
-    'PL': 'Wyciskanie hantli na lawce poziomej',
-    'EN': 'Dumbbell Bench Press',
-    'NO': 'Dumbbell Bench Press',
-  },
-  'Wyciskanie hantli na skosie dodatnim � Incline Dumbbell Press': {
-    'PL': 'Wyciskanie hantli na skosie dodatnim',
-    'EN': 'Incline Dumbbell Press',
-    'NO': 'Incline Dumbbell Press',
-  },
-  'Wyciskanie hantli na skosie ujemnym � Decline Dumbbell Press': {
-    'PL': 'Wyciskanie hantli na skosie ujemnym',
-    'EN': 'Decline Dumbbell Press',
-    'NO': 'Decline Dumbbell Press',
-  },
-  'Wyciskanie hantli z rotacja (korkociagowe) � Twisting Dumbbell Press': {
-    'PL': 'Wyciskanie hantli z rotacja (korkociagowe)',
-    'EN': 'Twisting Dumbbell Press',
-    'NO': 'Twisting Dumbbell Press',
-  },
-  'Wyciskanie hantli chwytem neutralnym (mlotkowym) � Neutral Grip Dumbbell Press':
-      {
-    'PL': 'Wyciskanie hantli chwytem neutralnym (mlotkowym)',
-    'EN': 'Neutral Grip Dumbbell Press',
-    'NO': 'Neutral Grip Dumbbell Press',
-  },
-  'Wyciskanie hantli z podlogi � Dumbbell Floor Press': {
-    'PL': 'Wyciskanie hantli z podlogi',
-    'EN': 'Dumbbell Floor Press',
-    'NO': 'Dumbbell Floor Press',
-  },
-  'Wyciskanie na maszynie Smitha � Smith Machine Bench Press': {
-    'PL': 'Wyciskanie na maszynie Smitha',
-    'EN': 'Smith Machine Bench Press',
-    'NO': 'Smith Machine Bench Press',
-  },
-  'Wyciskanie na maszynie typu Hammer (siedzac) � Hammer Strength Chest Press':
-      {
-    'PL': 'Wyciskanie na maszynie typu Hammer (siedzac)',
-    'EN': 'Hammer Strength Chest Press',
-    'NO': 'Hammer Strength Chest Press',
-  },
-  'Wyciskanie na maszynie stosowej � Seated Chest Press Machine': {
-    'PL': 'Wyciskanie na maszynie stosowej',
-    'EN': 'Seated Chest Press Machine',
-    'NO': 'Seated Chest Press Machine',
-  },
-  'Rozpietki z hantlami na lawce poziomej � Flat Dumbbell Flys': {
-    'PL': 'Rozpietki z hantlami na lawce poziomej',
-    'EN': 'Flat Dumbbell Flys',
-    'NO': 'Flat Dumbbell Flys',
-  },
-  'Rozpietki z hantlami na skosie dodatnim � Incline Dumbbell Flys': {
-    'PL': 'Rozpietki z hantlami na skosie dodatnim',
-    'EN': 'Incline Dumbbell Flys',
-    'NO': 'Incline Dumbbell Flys',
-  },
-  'Rozpietki na maszynie Butterfly � Pec Deck Fly / Machine Fly': {
-    'PL': 'Rozpietki na maszynie Butterfly',
-    'EN': 'Pec Deck Fly / Machine Fly',
-    'NO': 'Pec Deck Fly / Machine Fly',
-  },
-  'Krzyzowanie linek wyciagu g�rnego (Brama) � Cable Crossover / High Cable Fly':
-      {
-    'PL': 'Krzyzowanie linek wyciagu g�rnego (Brama)',
-    'EN': 'Cable Crossover / High Cable Fly',
-    'NO': 'Cable Crossover / High Cable Fly',
-  },
-  'Rozpietki z linkami wyciagu dolnego � Low Cable Crossover': {
-    'PL': 'Rozpietki z linkami wyciagu dolnego',
-    'EN': 'Low Cable Crossover',
-    'NO': 'Low Cable Crossover',
-  },
-  'Rozpietki jednoracz na wyciagu � Single Arm Cable Fly': {
-    'PL': 'Rozpietki jednoracz na wyciagu',
-    'EN': 'Single Arm Cable Fly',
-    'NO': 'Single Arm Cable Fly',
-  },
-  'Przenoszenie hantla za glowe � Dumbbell Pullover': {
-    'PL': 'Przenoszenie hantla za glowe',
-    'EN': 'Dumbbell Pullover',
-    'NO': 'Dumbbell Pullover',
-  },
-  'Landmine Press (wyciskanie p�lsztangi) � Landmine Press': {
-    'PL': 'Landmine Press (wyciskanie p�lsztangi)',
-    'EN': 'Landmine Press',
-    'NO': 'Landmine Press',
-  },
-  'Pompki klasyczne � Push-ups': {
-    'PL': 'Pompki klasyczne',
-    'EN': 'Push-ups',
-    'NO': 'Push-ups',
-  },
-  'Pompki szerokie � Wide Grip Push-ups': {
-    'PL': 'Pompki szerokie',
-    'EN': 'Wide Grip Push-ups',
-    'NO': 'Wide Grip Push-ups',
-  },
-  'Pompki diamentowe (waskie) � Diamond Push-ups': {
-    'PL': 'Pompki diamentowe (waskie)',
-    'EN': 'Diamond Push-ups',
-    'NO': 'Diamond Push-ups',
-  },
-  'Pompki na podwyzszeniu (glowa wyzej) � Incline Push-ups': {
-    'PL': 'Pompki na podwyzszeniu (glowa wyzej)',
-    'EN': 'Incline Push-ups',
-    'NO': 'Incline Push-ups',
-  },
-  'Pompki z nogami na podwyzszeniu (glowa nizej) � Decline Push-ups': {
-    'PL': 'Pompki z nogami na podwyzszeniu (glowa nizej)',
-    'EN': 'Decline Push-ups',
-    'NO': 'Decline Push-ups',
-  },
-  'Pompki lucznicze � Archer Push-ups': {
-    'PL': 'Pompki lucznicze',
-    'EN': 'Archer Push-ups',
-    'NO': 'Archer Push-ups',
-  },
-  'Pompki plyometryczne (z klasnieciem) � Plyometric / Clap Push-ups': {
-    'PL': 'Pompki plyometryczne (z klasnieciem)',
-    'EN': 'Plyometric / Clap Push-ups',
-    'NO': 'Plyometric / Clap Push-ups',
-  },
-  'Pompki na k�lkach gimnastycznych � Ring Push-ups': {
-    'PL': 'Pompki na k�lkach gimnastycznych',
-    'EN': 'Ring Push-ups',
-    'NO': 'Ring Push-ups',
-  },
-  'Dipy (Pompki na poreczach, tul�w pochylony) � Chest Dips': {
-    'PL': 'Dipy (Pompki na poreczach, tul�w pochylony)',
-    'EN': 'Chest Dips',
-    'NO': 'Chest Dips',
-  },
+// Keys are Polish exercise names (without separator)
+// Automatically built from kDefaultExercises
+final Map<String, Map<String, String>> kExerciseTranslations =
+    _buildExerciseTranslations();
 
-  // BACK
-  'Podciaganie na drazku nachwytem � Pull-ups': {
-    'PL': 'Podciaganie na drazku nachwytem',
-    'EN': 'Pull-ups',
-    'NO': 'Pull-ups',
-  },
-  'Podciaganie na drazku podchwytem � Chin-ups': {
-    'PL': 'Podciaganie na drazku podchwytem',
-    'EN': 'Chin-ups',
-    'NO': 'Chin-ups',
-  },
-  'Sciaganie drazka wyciagu g�rnego do klatki � Lat Pulldown': {
-    'PL': 'Sciaganie drazka wyciagu g�rnego do klatki',
-    'EN': 'Lat Pulldown',
-    'NO': 'Lat Pulldown',
-  },
-  'Sciaganie drazka wyciagu g�rnego chwytem waskim � Close-Grip Lat Pulldown': {
-    'PL': 'Sciaganie drazka wyciagu g�rnego chwytem waskim',
-    'EN': 'Close-Grip Lat Pulldown',
-    'NO': 'Close-Grip Lat Pulldown',
-  },
-  'Sciaganie drazka wyciagu g�rnego chwytem neutralnym � Neutral Grip Lat Pulldown':
-      {
-    'PL': 'Sciaganie drazka wyciagu g�rnego chwytem neutralnym',
-    'EN': 'Neutral Grip Lat Pulldown',
-    'NO': 'Neutral Grip Lat Pulldown',
-  },
-  'Sciaganie jednoracz na wyciagu � Single Arm Lat Pulldown': {
-    'PL': 'Sciaganie jednoracz na wyciagu',
-    'EN': 'Single Arm Lat Pulldown',
-    'NO': 'Single Arm Lat Pulldown',
-  },
-  'Sciaganie drazka za glowe � Behind the Neck Pulldown': {
-    'PL': 'Sciaganie drazka za glowe',
-    'EN': 'Behind the Neck Pulldown',
-    'NO': 'Behind the Neck Pulldown',
-  },
-  'Sciaganie na maszynie Hammer (g�ra-d�l) � Hammer Strength High Row / Pulldown':
-      {
-    'PL': 'Sciaganie na maszynie Hammer (g�ra-d�l)',
-    'EN': 'Hammer Strength High Row / Pulldown',
-    'NO': 'Hammer Strength High Row / Pulldown',
-  },
-  'Wioslowanie sztanga w opadzie � Bent Over Barbell Row': {
-    'PL': 'Wioslowanie sztanga w opadzie',
-    'EN': 'Bent Over Barbell Row',
-    'NO': 'Bent Over Barbell Row',
-  },
-  'Wioslowanie sztanga chwytem neutralnym � Neutral Grip Barbell Row': {
-    'PL': 'Wioslowanie sztanga chwytem neutralnym',
-    'EN': 'Neutral Grip Barbell Row',
-    'NO': 'Neutral Grip Barbell Row',
-  },
-  'Wioslowanie p�lsztanga (T-sztanga) � T-Bar Row': {
-    'PL': 'Wioslowanie p�lsztanga (T-sztanga)',
-    'EN': 'T-Bar Row',
-    'NO': 'T-Bar Row',
-  },
-  'Wioslowanie Pendlay (z martwego punktu) � Pendlay Row': {
-    'PL': 'Wioslowanie Pendlay (z martwego punktu)',
-    'EN': 'Pendlay Row',
-    'NO': 'Pendlay Row',
-  },
-  'Wioslowanie hantlem jednoracz � One Arm Dumbbell Row': {
-    'PL': 'Wioslowanie hantlem jednoracz',
-    'EN': 'One Arm Dumbbell Row',
-    'NO': 'One Arm Dumbbell Row',
-  },
-  'Wioslowanie na wyciagu dolnym siedzac � Seated Cable Row': {
-    'PL': 'Wioslowanie na wyciagu dolnym siedzac',
-    'EN': 'Seated Cable Row',
-    'NO': 'Seated Cable Row',
-  },
-  'Wioslowanie na maszynie siedzac � Seated Machine Row': {
-    'PL': 'Wioslowanie na maszynie siedzac',
-    'EN': 'Seated Machine Row',
-    'NO': 'Seated Machine Row',
-  },
-  'Wioslowanie na lawce skosnej (przodem do oparcia) � Chest Supported Row / Incline Bench Row':
-      {
-    'PL': 'Wioslowanie na lawce skosnej (przodem do oparcia)',
-    'EN': 'Chest Supported Row / Incline Bench Row',
-    'NO': 'Chest Supported Row / Incline Bench Row',
-  },
-  'Wioslowanie sznurem wyciagu � Cable Rope Row': {
-    'PL': 'Wioslowanie sznurem wyciagu',
-    'EN': 'Cable Rope Row',
-    'NO': 'Cable Rope Row',
-  },
-  'Martwy ciag klasyczny � Conventional Deadlift': {
-    'PL': 'Martwy ciag klasyczny',
-    'EN': 'Conventional Deadlift',
-    'NO': 'Conventional Deadlift',
-  },
-  'Martwy ciag Sumo � Sumo Deadlift': {
-    'PL': 'Martwy ciag Sumo',
-    'EN': 'Sumo Deadlift',
-    'NO': 'Sumo Deadlift',
-  },
-  'Martwy ciag Rumunski � Romanian Deadlift (RDL)': {
-    'PL': 'Martwy ciag Rumunski',
-    'EN': 'Romanian Deadlift (RDL)',
-    'NO': 'Romanian Deadlift (RDL)',
-  },
-  'Martwy ciag z deficytu � Deficit Deadlift': {
-    'PL': 'Martwy ciag z deficytu',
-    'EN': 'Deficit Deadlift',
-    'NO': 'Deficit Deadlift',
-  },
-  'Martwy ciag ze stopu (Rack Pull) � Rack Pull': {
-    'PL': 'Martwy ciag ze stopu (Rack Pull)',
-    'EN': 'Rack Pull',
-    'NO': 'Rack Pull',
-  },
-  'Martwy ciag z Trap Bar (sztanga heksagonalna) � Trap Bar Deadlift': {
-    'PL': 'Martwy ciag z Trap Bar (sztanga heksagonalna)',
-    'EN': 'Trap Bar Deadlift',
-    'NO': 'Trap Bar Deadlift',
-  },
-  'Martwy ciag na maszynie Smitha � Smith Machine Deadlift': {
-    'PL': 'Martwy ciag na maszynie Smitha',
-    'EN': 'Smith Machine Deadlift',
-    'NO': 'Smith Machine Deadlift',
-  },
-  'Power Clean (Zarzut) � Power Clean': {
-    'PL': 'Power Clean (Zarzut)',
-    'EN': 'Power Clean',
-    'NO': 'Power Clean',
-  },
-  'Wyprosty tulowia na lawce rzymskiej � Back Extension / Hyperextension': {
-    'PL': 'Wyprosty tulowia na lawce rzymskiej',
-    'EN': 'Back Extension / Hyperextension',
-    'NO': 'Back Extension / Hyperextension',
-  },
-  'Odwrotne wyprosty (nogi w g�re) � Reverse Hyperextension': {
-    'PL': 'Odwrotne wyprosty (nogi w g�re)',
-    'EN': 'Reverse Hyperextension',
-    'NO': 'Reverse Hyperextension',
-  },
-  'Face Pull (przyciaganie liny do twarzy) � Face Pull': {
-    'PL': 'Face Pull (przyciaganie liny do twarzy)',
-    'EN': 'Face Pull',
-    'NO': 'Face Pull',
-  },
+Map<String, Map<String, String>> _buildExerciseTranslations() {
+  final result = <String, Map<String, String>>{};
 
-  // LEGS
-  'Przysiad ze sztanga na karku (High Bar) � High Bar Squat': {
-    'PL': 'Przysiad ze sztanga na karku (High Bar)',
-    'EN': 'High Bar Squat',
-    'NO': 'High Bar Squat',
-  },
-  'Przysiad ze sztanga (Low Bar) � Low Bar Squat': {
-    'PL': 'Przysiad ze sztanga (Low Bar)',
-    'EN': 'Low Bar Squat',
-    'NO': 'Low Bar Squat',
-  },
-  'Przysiad przedni � Front Squat': {
-    'PL': 'Przysiad przedni',
-    'EN': 'Front Squat',
-    'NO': 'Front Squat',
-  },
-  'Przysiad ze sztanga trzymana skrzyznie (stary styl) � Cross Grip Front Squat':
-      {
-    'PL': 'Przysiad ze sztanga trzymana skrzyznie (stary styl)',
-    'EN': 'Cross Grip Front Squat',
-    'NO': 'Cross Grip Front Squat',
-  },
-  'Przysiad typu Goblet � Goblet Squat': {
-    'PL': 'Przysiad typu Goblet',
-    'EN': 'Goblet Squat',
-    'NO': 'Goblet Squat',
-  },
-  'Przysiad na maszynie Smitha � Smith Machine Squat': {
-    'PL': 'Przysiad na maszynie Smitha',
-    'EN': 'Smith Machine Squat',
-    'NO': 'Smith Machine Squat',
-  },
-  'Przysiad Hack � Hack Squat': {
-    'PL': 'Przysiad Hack',
-    'EN': 'Hack Squat',
-    'NO': 'Hack Squat',
-  },
-  'Przysiad wahadlowy (maszyna) � Pendulum Squat': {
-    'PL': 'Przysiad wahadlowy (maszyna)',
-    'EN': 'Pendulum Squat',
-    'NO': 'Pendulum Squat',
-  },
-  'Przysiad Bulgarski � Bulgarian Split Squat': {
-    'PL': 'Przysiad Bulgarski',
-    'EN': 'Bulgarian Split Squat',
-    'NO': 'Bulgarian Split Squat',
-  },
-  'Wypychanie ciezaru na suwnicy � Leg Press': {
-    'PL': 'Wypychanie ciezaru na suwnicy',
-    'EN': 'Leg Press',
-    'NO': 'Leg Press',
-  },
-  'Wypychanie jednon�z na suwnicy � Single Leg Press': {
-    'PL': 'Wypychanie jednon�z na suwnicy',
-    'EN': 'Single Leg Press',
-    'NO': 'Single Leg Press',
-  },
-  'Wyprost n�g siedzac na maszynie � Leg Extension': {
-    'PL': 'Wyprost n�g siedzac na maszynie',
-    'EN': 'Leg Extension',
-    'NO': 'Leg Extension',
-  },
-  'Przysiad Sissy � Sissy Squat': {
-    'PL': 'Przysiad Sissy',
-    'EN': 'Sissy Squat',
-    'NO': 'Sissy Squat',
-  },
-  'Wykroki � Lunges': {
-    'PL': 'Wykroki',
-    'EN': 'Lunges',
-    'NO': 'Lunges',
-  },
-  'Zakroki � Reverse Lunges': {
-    'PL': 'Zakroki',
-    'EN': 'Reverse Lunges',
-    'NO': 'Reverse Lunges',
-  },
-  'Wejscia na podwyzszenie � Step-ups': {
-    'PL': 'Wejscia na podwyzszenie',
-    'EN': 'Step-ups',
-    'NO': 'Step-ups',
-  },
-  'Martwy ciag na prostych nogach � Stiff Leg Deadlift': {
-    'PL': 'Martwy ciag na prostych nogach',
-    'EN': 'Stiff Leg Deadlift',
-    'NO': 'Stiff Leg Deadlift',
-  },
-  'Uginanie n�g lezac � Lying Leg Curl': {
-    'PL': 'Uginanie n�g lezac',
-    'EN': 'Lying Leg Curl',
-    'NO': 'Lying Leg Curl',
-  },
-  'Uginanie n�g siedzac � Seated Leg Curl': {
-    'PL': 'Uginanie n�g siedzac',
-    'EN': 'Seated Leg Curl',
-    'NO': 'Seated Leg Curl',
-  },
-  'Uginanie n�g stojac (jednon�z) � Standing Leg Curl': {
-    'PL': 'Uginanie n�g stojac (jednon�z)',
-    'EN': 'Standing Leg Curl',
-    'NO': 'Standing Leg Curl',
-  },
-  'Zuraw � Nordic Hamstring Curl': {
-    'PL': 'Zuraw',
-    'EN': 'Nordic Hamstring Curl',
-    'NO': 'Nordic Hamstring Curl',
-  },
-  'Hip Thrust (Wznosy bioder ze sztanga) � Hip Thrust': {
-    'PL': 'Hip Thrust (Wznosy bioder ze sztanga)',
-    'EN': 'Hip Thrust',
-    'NO': 'Hip Thrust',
-  },
-  'Glute Bridge (Mostek) � Glute Bridge': {
-    'PL': 'Glute Bridge (Mostek)',
-    'EN': 'Glute Bridge',
-    'NO': 'Glute Bridge',
-  },
-  'Glute Ham Raise � Glute Ham Raise (GHR)': {
-    'PL': 'Glute Ham Raise',
-    'EN': 'Glute Ham Raise (GHR)',
-    'NO': 'Glute Ham Raise (GHR)',
-  },
-  'Kettlebell Swing � Kettlebell Swing': {
-    'PL': 'Kettlebell Swing',
-    'EN': 'Kettlebell Swing',
-    'NO': 'Kettlebell Swing',
-  },
-  'Przyciaganie linki wyciagu miedzy nogami � Cable Pull-Through': {
-    'PL': 'Przyciaganie linki wyciagu miedzy nogami',
-    'EN': 'Cable Pull-Through',
-    'NO': 'Cable Pull-Through',
-  },
-  'Przywodzenie n�g na maszynie � Hip Adduction Machine': {
-    'PL': 'Przywodzenie n�g na maszynie',
-    'EN': 'Hip Adduction Machine',
-    'NO': 'Hip Adduction Machine',
-  },
-  'Odwodzenie n�g na maszynie � Hip Abduction Machine': {
-    'PL': 'Odwodzenie n�g na maszynie',
-    'EN': 'Hip Abduction Machine',
-    'NO': 'Hip Abduction Machine',
-  },
-  'Spacer z guma (Monster Walk) � Monster Walk / Banded Side Steps': {
-    'PL': 'Spacer z guma (Monster Walk)',
-    'EN': 'Monster Walk / Banded Side Steps',
-    'NO': 'Monster Walk / Banded Side Steps',
-  },
-  'Wspiecia na palce stojac � Standing Calf Raise': {
-    'PL': 'Wspiecia na palce stojac',
-    'EN': 'Standing Calf Raise',
-    'NO': 'Standing Calf Raise',
-  },
-  'Wspiecia na palce siedzac � Seated Calf Raise': {
-    'PL': 'Wspiecia na palce siedzac',
-    'EN': 'Seated Calf Raise',
-    'NO': 'Seated Calf Raise',
-  },
-  'Wspiecia na suwnicy (osle wspiecia) � Donkey Calf Raise / Leg Press Calf Raise':
-      {
-    'PL': 'Wspiecia na suwnicy (osle wspiecia)',
-    'EN': 'Donkey Calf Raise / Leg Press Calf Raise',
-    'NO': 'Donkey Calf Raise / Leg Press Calf Raise',
-  },
+  // Process all exercises from kDefaultExercises
+  kDefaultExercises.forEach((category, exercises) {
+    for (final ex in exercises) {
+      final trimmed = ex.trim();
 
-  // SHOULDERS
-  'Wyciskanie zolnierskie (stojac) � Overhead Press (OHP) / Military Press': {
-    'PL': 'Wyciskanie zolnierskie (stojac)',
-    'EN': 'Overhead Press (OHP) / Military Press',
-    'NO': 'Overhead Press (OHP) / Military Press',
-  },
-  'Wyciskanie sztangi siedzac � Seated Barbell Overhead Press': {
-    'PL': 'Wyciskanie sztangi siedzac',
-    'EN': 'Seated Barbell Overhead Press',
-    'NO': 'Seated Barbell Overhead Press',
-  },
-  'Wyciskanie hantli siedzac � Seated Dumbbell Press': {
-    'PL': 'Wyciskanie hantli siedzac',
-    'EN': 'Seated Dumbbell Press',
-    'NO': 'Seated Dumbbell Press',
-  },
-  'Wyciskanie Arnolda � Arnold Press': {
-    'PL': 'Wyciskanie Arnolda',
-    'EN': 'Arnold Press',
-    'NO': 'Arnold Press',
-  },
-  'Landmine Press jednoracz � Single Arm Landmine Press': {
-    'PL': 'Landmine Press jednoracz',
-    'EN': 'Single Arm Landmine Press',
-    'NO': 'Single Arm Landmine Press',
-  },
-  'Wyciskanie na maszynie barkowej � Shoulder Press Machine': {
-    'PL': 'Wyciskanie na maszynie barkowej',
-    'EN': 'Shoulder Press Machine',
-    'NO': 'Shoulder Press Machine',
-  },
-  'Wznosy hantli bokiem � Dumbbell Lateral Raises': {
-    'PL': 'Wznosy hantli bokiem',
-    'EN': 'Dumbbell Lateral Raises',
-    'NO': 'Dumbbell Lateral Raises',
-  },
-  'Wznosy bokiem na wyciagu � Cable Lateral Raises': {
-    'PL': 'Wznosy bokiem na wyciagu',
-    'EN': 'Cable Lateral Raises',
-    'NO': 'Cable Lateral Raises',
-  },
-  'Podciaganie sztangi wzdluz tulowia � Barbell Upright Row': {
-    'PL': 'Podciaganie sztangi wzdluz tulowia',
-    'EN': 'Barbell Upright Row',
-    'NO': 'Barbell Upright Row',
-  },
-  'Wznosy hantli przed siebie � Dumbbell Front Raises': {
-    'PL': 'Wznosy hantli przed siebie',
-    'EN': 'Dumbbell Front Raises',
-    'NO': 'Dumbbell Front Raises',
-  },
-  'Wznosy talerza przed siebie � Plate Front Raise': {
-    'PL': 'Wznosy talerza przed siebie',
-    'EN': 'Plate Front Raise',
-    'NO': 'Plate Front Raise',
-  },
-  'Odwrotne rozpietki w opadzie tulowia � Bent Over Dumbbell Reverse Fly': {
-    'PL': 'Odwrotne rozpietki w opadzie tulowia',
-    'EN': 'Bent Over Dumbbell Reverse Fly',
-    'NO': 'Bent Over Dumbbell Reverse Fly',
-  },
-  'Odwrotne rozpietki na maszynie � Reverse Pec Deck': {
-    'PL': 'Odwrotne rozpietki na maszynie',
-    'EN': 'Reverse Pec Deck',
-    'NO': 'Reverse Pec Deck',
-  },
-  'Krzyzowanie linek wyciagu (odwrotne) � Reverse Cable Crossover': {
-    'PL': 'Krzyzowanie linek wyciagu (odwrotne)',
-    'EN': 'Reverse Cable Crossover',
-    'NO': 'Reverse Cable Crossover',
-  },
-  'Szrugsy z hantlami � Dumbbell Shrugs': {
-    'PL': 'Szrugsy z hantlami',
-    'EN': 'Dumbbell Shrugs',
-    'NO': 'Dumbbell Shrugs',
-  },
-  'Szrugsy ze sztanga � Barbell Shrugs': {
-    'PL': 'Szrugsy ze sztanga',
-    'EN': 'Barbell Shrugs',
-    'NO': 'Barbell Shrugs',
-  },
-  'Szrugsy na maszynie Smitha � Smith Machine Shrugs': {
-    'PL': 'Szrugsy na maszynie Smitha',
-    'EN': 'Smith Machine Shrugs',
-    'NO': 'Smith Machine Shrugs',
-  },
-  'Szrugsy na maszynie typu Trap Bar � Trap Bar Shrugs': {
-    'PL': 'Szrugsy na maszynie typu Trap Bar',
-    'EN': 'Trap Bar Shrugs',
-    'NO': 'Trap Bar Shrugs',
-  },
-  'Szrugsy na wyciagu dolnym � Cable Shrugs': {
-    'PL': 'Szrugsy na wyciagu dolnym',
-    'EN': 'Cable Shrugs',
-    'NO': 'Cable Shrugs',
-  },
-  'Szrugsy jednoracz z hantlem � Single Arm Dumbbell Shrug': {
-    'PL': 'Szrugsy jednoracz z hantlem',
-    'EN': 'Single Arm Dumbbell Shrug',
-    'NO': 'Single Arm Dumbbell Shrug',
-  },
-  'Szrugsy z Kettlebell � Kettlebell Shrugs': {
-    'PL': 'Szrugsy z Kettlebell',
-    'EN': 'Kettlebell Shrugs',
-    'NO': 'Kettlebell Shrugs',
-  },
+      // Try different separators
+      final separators = [' ◆ ', ' � '];
+      for (final sep in separators) {
+        if (trimmed.contains(sep)) {
+          final parts = trimmed.split(sep);
+          if (parts.length >= 2) {
+            final polish = parts[0].trim();
+            final english = parts[1].trim();
 
-  // ABS
-  'Plank (Deska) � Plank': {
-    'PL': 'Plank (Deska)',
-    'EN': 'Plank',
-    'NO': 'Plank',
-  },
-  'Plank boczny � Side Plank': {
-    'PL': 'Plank boczny',
-    'EN': 'Side Plank',
-    'NO': 'Side Plank',
-  },
-  'Allahy (Spiecia na wyciagu kleczac) � Cable Crunch': {
-    'PL': 'Allahy (Spiecia na wyciagu kleczac)',
-    'EN': 'Cable Crunch',
-    'NO': 'Cable Crunch',
-  },
-  'Spiecia brzucha (lezac) � Crunches': {
-    'PL': 'Spiecia brzucha (lezac)',
-    'EN': 'Crunches',
-    'NO': 'Crunches',
-  },
-  'Brzuszki (pelne) � Sit-ups': {
-    'PL': 'Brzuszki (pelne)',
-    'EN': 'Sit-ups',
-    'NO': 'Sit-ups',
-  },
-  'Unoszenie n�g w zwisie na drazku � Hanging Leg Raise': {
-    'PL': 'Unoszenie n�g w zwisie na drazku',
-    'EN': 'Hanging Leg Raise',
-    'NO': 'Hanging Leg Raise',
-  },
-  'Unoszenie kolan w zwisie � Hanging Knee Raise': {
-    'PL': 'Unoszenie kolan w zwisie',
-    'EN': 'Hanging Knee Raise',
-    'NO': 'Hanging Knee Raise',
-  },
-  'Scyzoryki � V-ups': {
-    'PL': 'Scyzoryki',
-    'EN': 'V-ups',
-    'NO': 'V-ups',
-  },
-  'Nozyce � Flutter Kicks': {
-    'PL': 'Nozyce',
-    'EN': 'Flutter Kicks',
-    'NO': 'Flutter Kicks',
-  },
-  'L-sit � L-Sit': {
-    'PL': 'L-sit',
-    'EN': 'L-Sit',
-    'NO': 'L-Sit',
-  },
-  'Russian Twist � Russian Twist': {
-    'PL': 'Russian Twist',
-    'EN': 'Russian Twist',
-    'NO': 'Russian Twist',
-  },
-  'Mountain Climbers � Mountain Climbers': {
-    'PL': 'Mountain Climbers',
-    'EN': 'Mountain Climbers',
-    'NO': 'Mountain Climbers',
-  },
-  'Spacer z hantlem jednoracz � Suitcase Carry': {
-    'PL': 'Spacer z hantlem jednoracz',
-    'EN': 'Suitcase Carry',
-    'NO': 'Suitcase Carry',
-  },
-  'K�lko ab wheel � Ab Wheel Rollout': {
-    'PL': 'K�lko ab wheel',
-    'EN': 'Ab Wheel Rollout',
-    'NO': 'Ab Wheel Rollout',
-  },
-  'Dead Bug � Dead Bug': {
-    'PL': 'Dead Bug',
-    'EN': 'Dead Bug',
-    'NO': 'Dead Bug',
-  },
-  'Woodchopper (Drwal) � Cable Woodchopper': {
-    'PL': 'Woodchopper (Drwal)',
-    'EN': 'Cable Woodchopper',
-    'NO': 'Cable Woodchopper',
-  },
-  'Pallof Press � Pallof Press': {
-    'PL': 'Pallof Press',
-    'EN': 'Pallof Press',
-    'NO': 'Pallof Press',
-  },
+            // Add translation entry with Polish key
+            result[polish] = {
+              'PL': polish,
+              'EN': english,
+              'NO': english, // Use English for Norwegian by default
+            };
+          }
+          break;
+        }
+      }
+    }
+  });
 
-  // BICEPS
-  'Uginanie ramion ze sztanga stojac � Barbell Curl': {
-    'PL': 'Uginanie ramion ze sztanga stojac',
-    'EN': 'Barbell Curl',
-    'NO': 'Barbell Curl',
-  },
-  'Uginanie ramion ze sztanga lamana � EZ-Bar Curl': {
-    'PL': 'Uginanie ramion ze sztanga lamana',
-    'EN': 'EZ-Bar Curl',
-    'NO': 'EZ-Bar Curl',
-  },
-  'Uginanie ramion z hantlami (z supinacja) � Dumbbell Curl': {
-    'PL': 'Uginanie ramion z hantlami (z supinacja)',
-    'EN': 'Dumbbell Curl',
-    'NO': 'Dumbbell Curl',
-  },
-  'Uginanie ramion chwytem mlotkowym � Hammer Curl': {
-    'PL': 'Uginanie ramion chwytem mlotkowym',
-    'EN': 'Hammer Curl',
-    'NO': 'Hammer Curl',
-  },
-  'Uginanie ramion na modlitewniku � Preacher Curl': {
-    'PL': 'Uginanie ramion na modlitewniku',
-    'EN': 'Preacher Curl',
-    'NO': 'Preacher Curl',
-  },
-  'Uginanie skoncentrowane � Concentration Curl': {
-    'PL': 'Uginanie skoncentrowane',
-    'EN': 'Concentration Curl',
-    'NO': 'Concentration Curl',
-  },
-  'Uginanie Zottman Curl � Zottman Curl': {
-    'PL': 'Uginanie Zottman Curl',
-    'EN': 'Zottman Curl',
-    'NO': 'Zottman Curl',
-  },
-  'Uginanie Spider Curl � Spider Curl': {
-    'PL': 'Uginanie Spider Curl',
-    'EN': 'Spider Curl',
-    'NO': 'Spider Curl',
-  },
-  'Uginanie na wyciagu dolnym � Cable Curl': {
-    'PL': 'Uginanie na wyciagu dolnym',
-    'EN': 'Cable Curl',
-    'NO': 'Cable Curl',
-  },
-  'Podciaganie podchwytem (wasko) � Chin-ups': {
-    'PL': 'Podciaganie podchwytem (wasko)',
-    'EN': 'Chin-ups',
-    'NO': 'Chin-ups',
-  },
-
-  // TRICEPS
-  'Wyciskanie sztangi waskim chwytem � Close-Grip Bench Press': {
-    'PL': 'Wyciskanie sztangi waskim chwytem',
-    'EN': 'Close-Grip Bench Press',
-    'NO': 'Close-Grip Bench Press',
-  },
-  'Pompki na poreczach (pionowo) � Triceps Dips': {
-    'PL': 'Pompki na poreczach (pionowo)',
-    'EN': 'Triceps Dips',
-    'NO': 'Triceps Dips',
-  },
-  'Pompki w podporze tylem � Bench Dips': {
-    'PL': 'Pompki w podporze tylem',
-    'EN': 'Bench Dips',
-    'NO': 'Bench Dips',
-  },
-  'Wyciskanie francuskie sztangi do czola � Skullcrushers / Lying Triceps Extension':
-      {
-    'PL': 'Wyciskanie francuskie sztangi do czola',
-    'EN': 'Skullcrushers / Lying Triceps Extension',
-    'NO': 'Skullcrushers / Lying Triceps Extension',
-  },
-  'Wyciskanie francuskie hantla oburacz (siedzac) � Overhead Dumbbell Triceps Extension':
-      {
-    'PL': 'Wyciskanie francuskie hantla oburacz (siedzac)',
-    'EN': 'Overhead Dumbbell Triceps Extension',
-    'NO': 'Overhead Dumbbell Triceps Extension',
-  },
-  'Prostowanie ramion na wyciagu (sznur) � Rope Pushdown': {
-    'PL': 'Prostowanie ramion na wyciagu (sznur)',
-    'EN': 'Rope Pushdown',
-    'NO': 'Rope Pushdown',
-  },
-  'Prostowanie ramion na wyciagu (drazek) � Bar Pushdown / Triceps Pressdown': {
-    'PL': 'Prostowanie ramion na wyciagu (drazek)',
-    'EN': 'Bar Pushdown / Triceps Pressdown',
-    'NO': 'Bar Pushdown / Triceps Pressdown',
-  },
-  'Kickbacks (wyprost ramienia w tyl w opadzie) � Triceps Kickback': {
-    'PL': 'Kickbacks (wyprost ramienia w tyl w opadzie)',
-    'EN': 'Triceps Kickback',
-    'NO': 'Triceps Kickback',
-  },
-  'JM Press � JM Press': {
-    'PL': 'JM Press',
-    'EN': 'JM Press',
-    'NO': 'JM Press',
-  },
-  'Tate Press � Tate Press': {
-    'PL': 'Tate Press',
-    'EN': 'Tate Press',
-    'NO': 'Tate Press',
-  },
-
-  // FOREARMS
-  'Uginanie nadgarstk�w podchwytem � Wrist Curl': {
-    'PL': 'Uginanie nadgarstk�w podchwytem',
-    'EN': 'Wrist Curl',
-    'NO': 'Wrist Curl',
-  },
-  'Prostowanie nadgarstk�w nachwytem � Reverse Wrist Curl': {
-    'PL': 'Prostowanie nadgarstk�w nachwytem',
-    'EN': 'Reverse Wrist Curl',
-    'NO': 'Reverse Wrist Curl',
-  },
-  'Uginanie ramion nachwytem � Reverse Curl': {
-    'PL': 'Uginanie ramion nachwytem',
-    'EN': 'Reverse Curl',
-    'NO': 'Reverse Curl',
-  },
-  "Spacer Farmera � Farmer's Carry / Farmer's Walk": {
-    'PL': 'Spacer Farmera',
-    'EN': "Farmer's Carry / Farmer's Walk",
-    'NO': "Farmer's Carry / Farmer's Walk",
-  },
-  'Zwis na drazku � Dead Hang': {
-    'PL': 'Zwis na drazku',
-    'EN': 'Dead Hang',
-    'NO': 'Dead Hang',
-  },
-};
+  return result;
+}
 
 final Map<String, Map<String, String>> kExerciseNamesByLanguage =
     _buildExerciseNamesByLanguage();
@@ -1635,7 +898,7 @@ PreferredSizeWidget buildCustomAppBar(BuildContext context,
     centerTitle: true,
     iconTheme: const IconThemeData(color: Color(0xFFFFD700)),
     title: Row(mainAxisSize: MainAxisSize.min, children: [
-      buildLogo(context, accentColor),
+      buildLogo(context, accentColor, size: 42),
       const SizedBox(width: 10),
       const Text('K.S-GYM',
           style: TextStyle(
@@ -1644,6 +907,294 @@ PreferredSizeWidget buildCustomAppBar(BuildContext context,
               color: Color(0xFFFFD700),
               letterSpacing: 1.2)),
     ]),
+    actions: [
+      PopupMenuButton<String>(
+        icon: const Icon(Icons.settings, color: Color(0xFFFFD700)),
+        color: const Color(0xFF0B2E5A),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: Color(0xFFFFD700), width: 2),
+        ),
+        onSelected: (value) {
+          if (value == 'language') {
+            _showLanguageDialog(context);
+          } else if (value == 'logout') {
+            _handleLogout(context);
+          } else if (value == 'login') {
+            _handleLogin(context);
+          } else if (value == 'contact') {
+            _showContactDialog(context);
+          }
+        },
+        itemBuilder: (context) {
+          final lang = globalLanguage;
+          final isLoggedIn =
+              PlanAccessController.instance.notifier.value.isAuthenticated;
+
+          return [
+            PopupMenuItem(
+              value: 'language',
+              child: Row(
+                children: [
+                  const Icon(Icons.language, color: Color(0xFFFFD700)),
+                  const SizedBox(width: 12),
+                  Text(
+                    lang == 'PL'
+                        ? 'Zmień język'
+                        : lang == 'NO'
+                            ? 'Endre språk'
+                            : 'Change language',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            if (isLoggedIn)
+              PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    const Icon(Icons.logout, color: Color(0xFFFFD700)),
+                    const SizedBox(width: 12),
+                    Text(
+                      lang == 'PL'
+                          ? 'Wyloguj'
+                          : lang == 'NO'
+                              ? 'Logg ut'
+                              : 'Log out',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            if (!isLoggedIn)
+              PopupMenuItem(
+                value: 'login',
+                child: Row(
+                  children: [
+                    const Icon(Icons.login, color: Color(0xFFFFD700)),
+                    const SizedBox(width: 12),
+                    Text(
+                      lang == 'PL'
+                          ? 'Zaloguj'
+                          : lang == 'NO'
+                              ? 'Logg inn'
+                              : 'Log in',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            PopupMenuItem(
+              value: 'contact',
+              child: Row(
+                children: [
+                  const Icon(Icons.contact_mail, color: Color(0xFFFFD700)),
+                  const SizedBox(width: 12),
+                  Text(
+                    lang == 'PL'
+                        ? 'Kontakt'
+                        : lang == 'NO'
+                            ? 'Kontakt'
+                            : 'Contact',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ];
+        },
+      ),
+    ],
+  );
+}
+
+void _showLanguageDialog(BuildContext context) {
+  final lang = globalLanguage;
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: const Color(0xFF0B2E5A),
+      title: Text(
+        lang == 'PL'
+            ? 'Wybierz język'
+            : lang == 'NO'
+                ? 'Velg språk'
+                : 'Select language',
+        style: const TextStyle(
+          color: Color(0xFFFFD700),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildLanguageOption(context, 'PL', 'Polski', '🇵🇱'),
+          _buildLanguageOption(context, 'EN', 'English', '🇬🇧'),
+          _buildLanguageOption(context, 'NO', 'Norsk', '🇳🇴'),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(
+            lang == 'PL'
+                ? 'Anuluj'
+                : lang == 'NO'
+                    ? 'Avbryt'
+                    : 'Cancel',
+            style: const TextStyle(color: Colors.white70),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildLanguageOption(
+    BuildContext context, String code, String name, String flag) {
+  final isSelected = globalLanguage == code;
+  return Card(
+    color: isSelected
+        ? const Color(0xFFFFD700).withOpacity(0.2)
+        : const Color(0xFF0B2E5A).withOpacity(0.8),
+    margin: const EdgeInsets.only(bottom: 8),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+      side: BorderSide(
+        color: isSelected ? const Color(0xFFFFD700) : Colors.transparent,
+        width: 2,
+      ),
+    ),
+    child: ListTile(
+      leading: Text(flag, style: const TextStyle(fontSize: 24)),
+      title: Text(
+        name,
+        style: TextStyle(
+          color: isSelected ? const Color(0xFFFFD700) : Colors.white,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      trailing: isSelected
+          ? const Icon(Icons.check_circle, color: Color(0xFFFFD700))
+          : null,
+      onTap: () {
+        updateGlobalLanguage(code);
+        Navigator.pop(context);
+      },
+    ),
+  );
+}
+
+void _handleLogout(BuildContext context) async {
+  final lang = globalLanguage;
+  await PlanAccessController.instance.signOut();
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          lang == 'PL'
+              ? 'Wylogowano pomyślnie'
+              : lang == 'NO'
+                  ? 'Logget ut'
+                  : 'Logged out successfully',
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+}
+
+void _handleLogin(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const LoginScreen(themeColor: Color(0xFFFFD700)),
+    ),
+  );
+}
+
+void _showContactDialog(BuildContext context) {
+  final lang = globalLanguage;
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: const Color(0xFF0B2E5A),
+      title: Text(
+        lang == 'PL'
+            ? 'Kontakt'
+            : lang == 'NO'
+                ? 'Kontakt'
+                : 'Contact',
+        style: const TextStyle(
+          color: Color(0xFFFFD700),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.person, color: Color(0xFFFFD700)),
+              const SizedBox(width: 12),
+              Text(
+                'Karol Szymek',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              const Icon(Icons.email, color: Color(0xFFFFD700)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'karolszymek1402@gmail.com',
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              const Icon(Icons.fitness_center, color: Color(0xFFFFD700)),
+              const SizedBox(width: 12),
+              Text(
+                'K.S-GYM',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(
+            lang == 'PL'
+                ? 'Zamknij'
+                : lang == 'NO'
+                    ? 'Lukk'
+                    : 'Close',
+            style: const TextStyle(color: Color(0xFFFFD700)),
+          ),
+        ),
+      ],
+    ),
   );
 }
 
@@ -1926,7 +1477,7 @@ class StartChoiceScreen extends StatelessWidget {
       builder: (context, lang, _) {
         return Scaffold(
           body: GymBackgroundWithFitness(
-            goldDumbbells: true,
+            goldDumbbells: false,
             backgroundImage: 'assets/tlo.png',
             backgroundImageOpacity: 0.32,
             gradientColors: [
@@ -2091,8 +1642,11 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
   bool _saving = false;
   String? _statusKey;
   bool _statusSuccess = false;
+  List<Map<String, String>> _planHistory = [];
+  int _currentPlanIndex = -1;
 
   static const _prefsKey = 'saved_plan_text';
+  static const _historyKey = 'plan_history';
 
   @override
   void initState() {
@@ -2109,9 +1663,32 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
   Future<void> _loadPlan() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final cached = prefs.getString(_prefsKey) ?? '';
-      if (cached.isNotEmpty) {
-        _planController.text = cached;
+      final historyJson = prefs.getStringList(_historyKey) ?? [];
+
+      if (historyJson.isNotEmpty) {
+        _planHistory = historyJson.map((e) {
+          final decoded = jsonDecode(e) as Map<String, dynamic>;
+          return {
+            'date': decoded['date'] as String,
+            'content': decoded['content'] as String,
+          };
+        }).toList();
+
+        // Load most recent plan
+        if (mounted) {
+          setState(() {
+            _currentPlanIndex = _planHistory.length - 1;
+            _planController.text = _planHistory[_currentPlanIndex]['content']!;
+          });
+        }
+      } else {
+        // Fallback to old single plan format
+        final cached = prefs.getString(_prefsKey) ?? '';
+        if (cached.isNotEmpty && mounted) {
+          setState(() {
+            _planController.text = cached;
+          });
+        }
       }
     } catch (_) {}
   }
@@ -2123,9 +1700,25 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
     });
     try {
       final prefs = await SharedPreferences.getInstance();
+
+      // Add to history
+      final newPlan = {
+        'date': DateTime.now().toString().substring(0, 19),
+        'content': _planController.text.trim(),
+      };
+
+      _planHistory.add(newPlan);
+
+      // Save history
+      final historyJson = _planHistory.map((plan) => jsonEncode(plan)).toList();
+      await prefs.setStringList(_historyKey, historyJson);
+
+      // Also save to old key for compatibility
       await prefs.setString(_prefsKey, _planController.text.trim());
+
       if (mounted) {
         setState(() {
+          _currentPlanIndex = _planHistory.length - 1;
           _statusKey = 'plan_saved_local';
           _statusSuccess = true;
         });
@@ -2144,6 +1737,88 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
         });
       }
     }
+  }
+
+  void _showPlanHistory() {
+    if (_planHistory.isEmpty) return;
+
+    final lang = globalLanguage;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF0E1528),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            Text(
+              lang == 'PL'
+                  ? 'Historia planów'
+                  : lang == 'NO'
+                      ? 'Planhistorikk'
+                      : 'Plan History',
+              style: const TextStyle(
+                color: Color(0xFFFFD700),
+                fontWeight: FontWeight.w800,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _planHistory.length,
+                itemBuilder: (context, index) {
+                  final plan = _planHistory[index];
+                  final isCurrentPlan = index == _currentPlanIndex;
+
+                  return ListTile(
+                    leading: Icon(
+                      isCurrentPlan ? Icons.check_circle : Icons.history,
+                      color: isCurrentPlan
+                          ? const Color(0xFFFFD700)
+                          : Colors.white54,
+                    ),
+                    title: Text(
+                      plan['date']!.substring(0, 16),
+                      style: TextStyle(
+                        color: isCurrentPlan
+                            ? const Color(0xFFFFD700)
+                            : Colors.white70,
+                        fontWeight:
+                            isCurrentPlan ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                    subtitle: Text(
+                      plan['content']!.split('\n').first.substring(
+                                0,
+                                plan['content']!.split('\n').first.length > 30
+                                    ? 30
+                                    : plan['content']!.split('\n').first.length,
+                              ) +
+                          '...',
+                      style: const TextStyle(color: Colors.white54),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onTap: () {
+                      setState(() {
+                        _currentPlanIndex = index;
+                        _planController.text = plan['content']!;
+                      });
+                      Navigator.pop(ctx);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _pasteFromClipboard() async {
@@ -2178,7 +1853,7 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
           return Scaffold(
             appBar: buildCustomAppBar(context, accentColor: accent),
             body: GymBackgroundWithFitness(
-              goldDumbbells: true,
+              goldDumbbells: false,
               backgroundImage: 'assets/tlo.png',
               backgroundImageOpacity: 0.32,
               gradientColors: [
@@ -2268,32 +1943,61 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            _planController.clear();
-                            _statusKey = null;
-                          });
-                        },
-                        icon: const Icon(Icons.add, color: Color(0xFFFFD700)),
-                        label: Text(
-                          lang == 'PL'
-                              ? 'Dodaj nowy plan'
-                              : lang == 'NO'
-                                  ? 'Legg til ny plan'
-                                  : 'Add new plan',
-                          style: const TextStyle(color: Color(0xFFFFD700)),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                            color: Color(0xFFFFD700),
-                            width: 2,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                _planController.clear();
+                                _statusKey = null;
+                                _currentPlanIndex = -1;
+                              });
+                            },
+                            icon:
+                                const Icon(Icons.add, color: Color(0xFFFFD700)),
+                            label: Text(
+                              lang == 'PL'
+                                  ? 'Dodaj nowy plan'
+                                  : lang == 'NO'
+                                      ? 'Legg til ny plan'
+                                      : 'Add new plan',
+                              style: const TextStyle(color: Color(0xFFFFD700)),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Color(0xFFFFD700),
+                                width: 2,
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                      ),
+                        if (_planHistory.isNotEmpty) ...[
+                          const SizedBox(width: 12),
+                          OutlinedButton.icon(
+                            onPressed: _showPlanHistory,
+                            icon: const Icon(Icons.history,
+                                color: Color(0xFFFFD700)),
+                            label: Text(
+                              lang == 'PL'
+                                  ? 'Historia'
+                                  : lang == 'NO'
+                                      ? 'Historikk'
+                                      : 'History',
+                              style: const TextStyle(color: Color(0xFFFFD700)),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Color(0xFFFFD700),
+                                width: 2,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     const SizedBox(height: 80),
                   ],
@@ -2302,6 +2006,195 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
             ),
           );
         });
+  }
+}
+
+class ChangePasswordDialog extends StatefulWidget {
+  final Color themeColor;
+  const ChangePasswordDialog(
+      {super.key, this.themeColor = const Color(0xFFFFD700)});
+
+  @override
+  State<ChangePasswordDialog> createState() => _ChangePasswordDialogState();
+}
+
+class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
+  final _currentPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _loading = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _changePassword() async {
+    final lang = globalLanguage;
+    final current = _currentPasswordController.text.trim();
+    final newPass = _newPasswordController.text.trim();
+    final confirm = _confirmPasswordController.text.trim();
+
+    if (current.isEmpty || newPass.isEmpty || confirm.isEmpty) {
+      setState(() {
+        _error = 'All fields are required';
+      });
+      return;
+    }
+
+    if (newPass != confirm) {
+      setState(() {
+        _error = Translations.get('passwords_dont_match', language: lang);
+      });
+      return;
+    }
+
+    if (newPass.length < 4) {
+      setState(() {
+        _error = Translations.get('password_too_short', language: lang);
+      });
+      return;
+    }
+
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      await PlanAccessController.instance.changePassword(current, newPass);
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              Translations.get('password_changed', language: lang),
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String>(
+      valueListenable: globalLanguageNotifier,
+      builder: (context, lang, _) {
+        final accent = widget.themeColor;
+        return AlertDialog(
+          backgroundColor: const Color(0xFF0B2E5A),
+          title: Text(
+            Translations.get('change_password', language: lang),
+            style: TextStyle(color: accent, fontWeight: FontWeight.bold),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _currentPasswordController,
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText:
+                        Translations.get('current_password', language: lang),
+                    labelStyle: TextStyle(color: accent.withOpacity(0.7)),
+                    prefixIcon: Icon(Icons.lock_outline, color: accent),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: accent.withOpacity(0.5)),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: accent),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _newPasswordController,
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: Translations.get('new_password', language: lang),
+                    labelStyle: TextStyle(color: accent.withOpacity(0.7)),
+                    prefixIcon: Icon(Icons.lock, color: accent),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: accent.withOpacity(0.5)),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: accent),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText:
+                        Translations.get('confirm_password', language: lang),
+                    labelStyle: TextStyle(color: accent.withOpacity(0.7)),
+                    prefixIcon: Icon(Icons.lock_clock, color: accent),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: accent.withOpacity(0.5)),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: accent),
+                    ),
+                  ),
+                ),
+                if (_error != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    _error!,
+                    style:
+                        const TextStyle(color: Colors.redAccent, fontSize: 13),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: _loading ? null : () => Navigator.of(context).pop(),
+              child: Text(
+                Translations.get('cancel', language: lang),
+                style: TextStyle(color: accent.withOpacity(0.7)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: _loading ? null : _changePassword,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: accent,
+                foregroundColor: const Color(0xFF0B2E5A),
+              ),
+              child: _loading
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Color(0xFF0B2E5A),
+                      ),
+                    )
+                  : Text(Translations.get('save', language: lang)),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -2323,6 +2216,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     PlanAccessController.instance.initialize();
+    // Pre-fill trainer credentials
+    _emailController.text = 'karolszymek1402@gmail.com';
+    _passwordController.text = 'katarynka09';
   }
 
   @override
@@ -2366,6 +2262,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return Scaffold(
           appBar: buildCustomAppBar(context, accentColor: accent),
           body: GymBackgroundWithFitness(
+            goldDumbbells: false,
             accentColor: accent,
             child: Center(
               child: SingleChildScrollView(
@@ -2429,6 +2326,29 @@ class _LoginScreenState extends State<LoginScreen> {
                                           const Size(double.infinity, 48)),
                                 ),
                                 const SizedBox(height: 10),
+                                // Change password button (only for clients, not coaches)
+                                if (state.role == PlanUserRole.client)
+                                  OutlinedButton.icon(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => ChangePasswordDialog(
+                                          themeColor: accent,
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.lock_reset, color: accent),
+                                    label: Text(Translations.get(
+                                        'change_password',
+                                        language: lang)),
+                                    style: OutlinedButton.styleFrom(
+                                        side: BorderSide(color: accent),
+                                        minimumSize:
+                                            const Size(double.infinity, 46),
+                                        foregroundColor: accent),
+                                  ),
+                                if (state.role == PlanUserRole.client)
+                                  const SizedBox(height: 10),
                                 OutlinedButton.icon(
                                   onPressed: _signOut,
                                   icon: const Icon(Icons.logout,
@@ -2461,22 +2381,41 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextField(
                                 controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
+                                style: const TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
                                     labelText: Translations.get('email',
                                         language: lang),
-                                    prefixIcon: const Icon(
-                                        Icons.alternate_email,
-                                        size: 20)),
+                                    labelStyle: TextStyle(
+                                        color: accent.withOpacity(0.7)),
+                                    prefixIcon: Icon(Icons.alternate_email,
+                                        size: 20, color: accent),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: accent.withOpacity(0.5)),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: accent),
+                                    )),
                               ),
                               const SizedBox(height: 12),
                               TextField(
                                 controller: _passwordController,
                                 obscureText: true,
+                                style: const TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
                                     labelText: Translations.get('password',
                                         language: lang),
-                                    prefixIcon:
-                                        const Icon(Icons.lock, size: 20)),
+                                    labelStyle: TextStyle(
+                                        color: accent.withOpacity(0.7)),
+                                    prefixIcon: Icon(Icons.lock,
+                                        size: 20, color: accent),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: accent.withOpacity(0.5)),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: accent),
+                                    )),
                               ),
                               const SizedBox(height: 14),
                               if (_error != null)
@@ -2597,6 +2536,7 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
         return Scaffold(
           appBar: buildCustomAppBar(context, accentColor: accent),
           body: GymBackgroundWithFitness(
+            goldDumbbells: false,
             accentColor: accent,
             child: ValueListenableBuilder<PlanAccessState>(
               valueListenable: PlanAccessController.instance.notifier,
@@ -2628,6 +2568,30 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 18),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        ClientListScreen(themeColor: accent)));
+                          },
+                          icon: const Icon(Icons.people,
+                              color: Color(0xFF0B2E5A)),
+                          label: Text(
+                            lang == 'PL'
+                                ? 'Lista klientów'
+                                : lang == 'NO'
+                                    ? 'Klientliste'
+                                    : 'Client List',
+                            style: const TextStyle(color: Color(0xFF0B2E5A)),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFFD700),
+                              foregroundColor: const Color(0xFF0B2E5A),
+                              minimumSize: const Size(double.infinity, 50)),
+                        ),
+                        const SizedBox(height: 10),
                         ElevatedButton.icon(
                           onPressed: () {
                             Navigator.push(
@@ -2806,14 +2770,24 @@ class _ProgressChartState extends State<ProgressChart> {
         return h.durationSeconds.toDouble();
       } else {
         // For weight-based exercises, use weight * reps
-        final w = double.tryParse(h.weight) ?? 0.0;
-        final r = double.tryParse(h.reps) ?? 0.0;
+        final w = double.tryParse(h.weight.trim()) ?? 0.0;
+        final r = double.tryParse(h.reps.trim()) ?? 0.0;
         final raw = w * r;
-        return raw.clamp(0.0, double.infinity).toDouble();
+        return raw > 0 ? raw : 0.0;
       }
     }).toList();
 
     final maxVal = values.fold<double>(0.0, (prev, v) => v > prev ? v : prev);
+
+    // If all values are 0, don't show the chart
+    if (maxVal == 0.0) {
+      return Container(
+          height: 160,
+          alignment: Alignment.center,
+          child: Text(Translations.get('no_data', language: widget.language),
+              style:
+                  TextStyle(color: widget.accentColor.withValues(alpha: 0.6))));
+    }
 
     return Container(
       height: 220,
@@ -2845,30 +2819,30 @@ class _ProgressChartState extends State<ProgressChart> {
                   final double h = constraints.maxHeight - 12;
                   final double w = constraints.maxWidth;
                   final int n = values.length;
-                  final double dx = n == 1 ? 0 : w / (n - 1);
 
-                  // Find closest point
-                  int closestIndex = 0;
-                  double closestDistance = double.infinity;
+                  // Bar chart spacing and width
+                  final double spacing = 8.0;
+                  final double totalSpacing = spacing * (n + 1);
+                  final double barWidth = (w - totalSpacing) / n;
 
+                  // Find which bar was tapped
                   for (int i = 0; i < n; i++) {
-                    final double x = dx * i;
-                    final double y =
-                        h - (values[i] / (maxVal == 0 ? 1 : maxVal)) * h;
-                    final distance = (localPosition.dx - x).abs() +
-                        (localPosition.dy - y).abs();
+                    final double x = spacing + (barWidth + spacing) * i;
+                    final double barHeight =
+                        (values[i] / (maxVal == 0 ? 1 : maxVal)) * h;
+                    final double y = h - barHeight;
 
-                    if (distance < closestDistance && distance < 50) {
-                      closestDistance = distance;
-                      closestIndex = i;
+                    // Check if tap is within bar bounds
+                    if (localPosition.dx >= x &&
+                        localPosition.dx <= x + barWidth &&
+                        localPosition.dy >= y &&
+                        localPosition.dy <= h) {
+                      setState(() {
+                        _selectedIndex = i;
+                        _tapPosition = Offset(x + barWidth / 2, y);
+                      });
+                      break;
                     }
-                  }
-
-                  if (closestDistance < 50) {
-                    setState(() {
-                      _selectedIndex = closestIndex;
-                      _tapPosition = localPosition;
-                    });
                   }
                 },
                 onTapUp: (_) {
@@ -2980,10 +2954,14 @@ class _LineChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (values.isEmpty) return;
     final double maxValue = maxVal == 0.0 ? 1.0 : maxVal;
-    final double h = size.height - 12; // padding top/bottom
+    final double h = size.height - 12;
     final double w = size.width;
     final int n = values.length;
-    final double dx = n == 1 ? 0 : w / (n - 1);
+
+    // Calculate bar width with spacing
+    final double spacing = 8.0;
+    final double totalSpacing = spacing * (n + 1);
+    final double barWidth = (w - totalSpacing) / n;
 
     // Draw grid lines for better readability
     final gridPaint = Paint()
@@ -2995,51 +2973,56 @@ class _LineChartPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y), Offset(w, y), gridPaint);
     }
 
-    final path = Path();
-    final dotPaint = Paint()
-      ..color = const Color(0xFFFFD700)
-      ..style = PaintingStyle.fill;
-    final selectedDotPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-    final linePaint = Paint()
-      ..color = const Color(0xFFFFD700)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0
-      ..strokeCap = StrokeCap.round;
-
-    for (int i = 0; i < n; i++) {
-      final double x = dx * i;
-      final double y = h - (values[i] / maxValue) * h;
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-
+    // Draw baseline
     final basePaint = Paint()
       ..color = const Color(0xFFFFD700).withValues(alpha: 0.3)
       ..strokeWidth = 1.5;
     canvas.drawLine(Offset(0, h), Offset(w, h), basePaint);
 
-    canvas.drawPath(path, linePaint);
-
-    // Draw all dots with larger size and highlight selected
+    // Draw bars
     for (int i = 0; i < n; i++) {
-      final double x = dx * i;
-      final double y = h - (values[i] / maxValue) * h;
+      final double x = spacing + (barWidth + spacing) * i;
+      final double barHeight = (values[i] / maxValue) * h;
+      final double y = h - barHeight;
+
       final bool isSelected = selectedIndex == i;
 
+      // Draw bar with gradient
+      final rect = Rect.fromLTWH(x, y, barWidth, barHeight);
+
+      final gradient = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: isSelected
+            ? [
+                const Color(0xFFFFD700),
+                const Color(0xFFFFD700).withValues(alpha: 0.7),
+              ]
+            : [
+                const Color(0xFFFFD700).withValues(alpha: 0.8),
+                const Color(0xFFFFD700).withValues(alpha: 0.4),
+              ],
+      );
+
+      final barPaint = Paint()
+        ..shader = gradient.createShader(rect)
+        ..style = PaintingStyle.fill;
+
+      // Draw bar with rounded top corners
+      final rrect = RRect.fromRectAndCorners(
+        rect,
+        topLeft: const Radius.circular(4),
+        topRight: const Radius.circular(4),
+      );
+      canvas.drawRRect(rrect, barPaint);
+
+      // Draw border for selected bar
       if (isSelected) {
-        // Draw outer glow for selected dot
-        final glowPaint = Paint()
-          ..color = const Color(0xFFFFD700).withValues(alpha: 0.4)
-          ..style = PaintingStyle.fill;
-        canvas.drawCircle(Offset(x, y), 10, glowPaint);
-        canvas.drawCircle(Offset(x, y), 7, selectedDotPaint);
-      } else {
-        canvas.drawCircle(Offset(x, y), 6, dotPaint);
+        final borderPaint = Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.0;
+        canvas.drawRRect(rrect, borderPaint);
       }
     }
   }
@@ -3342,7 +3325,9 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         final last =
             ExerciseLog.fromJson(jsonDecode(logs.last), defaultExercise: ex);
         if (last.durationSeconds > 0) {
-          lastRecs[ex] = "${last.durationSeconds}s";
+          final restTime =
+              last.reps.isNotEmpty ? ' | Przerwa: ${last.reps}s' : '';
+          lastRecs[ex] = "${last.durationSeconds}s$restTime";
         } else {
           lastRecs[ex] = "${last.weight} kg x ${last.reps}";
         }
@@ -3503,13 +3488,22 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
   Future<void> _addExercise(String name, {bool isTimeBased = false}) async {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return;
-    if (_exercises.any((e) => e.toLowerCase() == trimmed.toLowerCase())) {
+
+    // Extract Polish name only (first part before ◆ separator)
+    String cleanName = trimmed;
+    if (trimmed.contains(' ◆ ')) {
+      cleanName = trimmed.split(' ◆ ')[0].trim();
+    } else if (trimmed.contains(' � ')) {
+      cleanName = trimmed.split(' � ')[0].trim();
+    }
+
+    if (_exercises.any((e) => e.toLowerCase() == cleanName.toLowerCase())) {
       return;
     }
     final prefs = await SharedPreferences.getInstance();
-    _exercises.add(trimmed);
+    _exercises.add(cleanName);
     await prefs.setStringList(_prefsKey, _exercises);
-    await prefs.setBool('ex_type_time_$trimmed', isTimeBased);
+    await prefs.setBool('ex_type_time_$cleanName', isTimeBased);
     if (mounted) {
       _load();
     }
@@ -3793,26 +3787,6 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                 ),
               ),
               child: Column(children: [
-                const Divider(height: 1, color: Colors.white10),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: accent,
-                          foregroundColor: const Color(0xFF0B2E5A),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12))),
-                      onPressed: () => _showAddExerciseSheet(accent, lang),
-                      icon: const Icon(Icons.add),
-                      label: Text(Translations.get('add_exercise_button',
-                          language: lang)),
-                    ),
-                  ),
-                ),
                 Expanded(
                     child: _exercises.isEmpty
                         ? Center(
@@ -3928,6 +3902,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   final _rController = TextEditingController();
   final _sController = TextEditingController();
   final _tController = TextEditingController();
+  final _restController = TextEditingController();
 
   bool _isTimeBased = false;
   Timer? _setTimer;
@@ -3973,6 +3948,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _rController.dispose();
     _sController.dispose();
     _tController.dispose();
+    _restController.dispose();
     try {
       _animController.dispose();
     } catch (_) {}
@@ -4284,7 +4260,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       date: DateTime.now().toString().substring(5, 16),
       sets: _sController.text,
       weight: _isTimeBased ? '' : _wController.text,
-      reps: _isTimeBased ? '' : _rController.text,
+      reps: _isTimeBased ? _restController.text : _rController.text,
       durationSeconds:
           _isTimeBased ? (int.tryParse(_tController.text) ?? 0) : 0,
       plannedTime: _isTimeBased ? _wController.text : null,
@@ -4355,7 +4331,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             lastText = Translations.get('no_history', language: lang);
           } else {
             final value = last.durationSeconds > 0
-                ? "${last.durationSeconds}s"
+                ? (last.reps.isNotEmpty
+                    ? "${last.durationSeconds}s | ${lang == 'PL' ? 'Przerwa' : lang == 'NO' ? 'Pause' : 'Rest'}: ${last.reps}s"
+                    : "${last.durationSeconds}s")
                 : "${last.weight} kg x ${last.reps}";
             lastText = Translations.withParams('last_entry',
                 language: lang, params: {'value': value});
@@ -4508,7 +4486,12 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                                 const Color(0xFFFFD700),
                                             activeTrackColor:
                                                 const Color(0xFFFFD700)
-                                                    .withValues(alpha: 0.5)),
+                                                    .withValues(alpha: 0.5),
+                                            inactiveThumbColor:
+                                                const Color(0xFFFFD700),
+                                            inactiveTrackColor:
+                                                const Color(0xFFFFD700)
+                                                    .withValues(alpha: 0.3)),
                                       ],
                                     ),
                                   ],
@@ -4569,24 +4552,70 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                               controller: _wController,
                                               style: const TextStyle(
                                                   color: Color(0xFFFFD700)),
-                                              decoration: const InputDecoration(
-                                                  labelText: 'TIME (s)',
-                                                  labelStyle: TextStyle(
+                                              decoration: InputDecoration(
+                                                  labelText: lang == 'PL'
+                                                      ? 'CZAS (s)'
+                                                      : lang == 'NO'
+                                                          ? 'TID (s)'
+                                                          : 'TIME (s)',
+                                                  labelStyle: const TextStyle(
                                                       color: Color(0xFFFFD700)),
-                                                  hintText: 'np. 30',
+                                                  hintText: lang == 'PL'
+                                                      ? 'np. 30'
+                                                      : lang == 'NO'
+                                                          ? 'f.eks. 30'
+                                                          : 'e.g. 30',
                                                   enabledBorder:
-                                                      OutlineInputBorder(
+                                                      const OutlineInputBorder(
                                                           borderSide: BorderSide(
                                                               color: Color(
                                                                   0xFFFFD700),
                                                               width: 2)),
                                                   focusedBorder:
-                                                      OutlineInputBorder(
+                                                      const OutlineInputBorder(
                                                           borderSide: BorderSide(
                                                               color: Color(
                                                                   0xFFFFD700),
                                                               width: 2)),
-                                                  border: OutlineInputBorder()),
+                                                  border:
+                                                      const OutlineInputBorder()),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: TextField(
+                                              controller: _restController,
+                                              style: const TextStyle(
+                                                  color: Color(0xFFFFD700)),
+                                              decoration: InputDecoration(
+                                                  labelText: lang == 'PL'
+                                                      ? 'PRZERWA (s)'
+                                                      : lang == 'NO'
+                                                          ? 'PAUSE (s)'
+                                                          : 'REST (s)',
+                                                  labelStyle: const TextStyle(
+                                                      color: Color(0xFFFFD700)),
+                                                  hintText: lang == 'PL'
+                                                      ? 'np. 60'
+                                                      : lang == 'NO'
+                                                          ? 'f.eks. 60'
+                                                          : 'e.g. 60',
+                                                  enabledBorder:
+                                                      const OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFFFD700),
+                                                              width: 2)),
+                                                  focusedBorder:
+                                                      const OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFFFD700),
+                                                              width: 2)),
+                                                  border:
+                                                      const OutlineInputBorder()),
                                               keyboardType:
                                                   TextInputType.number,
                                             ),

@@ -244,17 +244,12 @@ class PlanAccessController {
         ? trimmedPassword.padRight(6, '0')
         : trimmedPassword;
 
-    print(
-        'DEBUG signIn: email=$trimmedEmail, passwordLength=${normalizedPassword.length}');
-
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: trimmedEmail,
       password: normalizedPassword,
     );
 
-    print('DEBUG signIn: success, checking role...');
     final role = await _resolveRole(trimmedEmail);
-    print('DEBUG signIn: role=$role');
   }
 
   Future<void> signInAsCoach(String email, String password) async {

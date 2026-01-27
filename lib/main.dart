@@ -5,7 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
-    show rootBundle, HapticFeedback, Clipboard, ClipboardData;
+    show HapticFeedback, Clipboard, ClipboardData;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +14,7 @@ import 'package:vibration/vibration.dart';
 import 'firebase_options.dart';
 import 'plan_access.dart';
 import 'client_list_screen.dart';
+import 'start_choice_screen.dart';
 
 String globalLanguage = 'EN';
 final ValueNotifier<String> globalLanguageNotifier =
@@ -31,7 +32,7 @@ class Translations {
     'app_title': {'EN': 'K.S-GYM', 'PL': 'K.S-GYM', 'NO': 'K.S-GYM'},
     'login_for_online_plan': {
       'EN': 'Log in for online plan',
-      'PL': 'Zaloguj sie po plan online',
+      'PL': 'Zaloguj się po plan online',
       'NO': 'Logg inn for onlineplan'
     },
     'continue_without_login': {
@@ -41,6 +42,12 @@ class Translations {
     },
     'contact': {'EN': 'Contact', 'PL': 'Kontakt', 'NO': 'Kontakt'},
     'plan': {'EN': 'Plan', 'PL': 'Plan', 'NO': 'Plan'},
+    'training_plan': {
+      'EN': 'Training Plan',
+      'PL': 'Plan treningowy',
+      'NO': 'Treningsplan'
+    },
+    'no_notes': {'EN': 'No notes', 'PL': 'Brak notatek', 'NO': 'Ingen notater'},
     'plan_paste_hint': {
       'EN': 'Paste or write your plan here',
       'PL': 'Wklej lub wpisz plan tutaj',
@@ -59,7 +66,7 @@ class Translations {
     'set_label': {'EN': 'Set', 'PL': 'Seria', 'NO': 'Sett'},
     'kg_label': {'EN': 'KG', 'PL': 'KG', 'NO': 'KG'},
     'reps_label': {'EN': 'Reps', 'PL': 'Powtórzenia', 'NO': 'Reps'},
-    'save_set': {'EN': 'Save set', 'PL': 'Zapisz serie', 'NO': 'Lagre sett'},
+    'save_set': {'EN': 'Save set', 'PL': 'Zapisz serię', 'NO': 'Lagre sett'},
     'history': {'EN': 'History', 'PL': 'Historia', 'NO': 'Historikk'},
     'no_history': {
       'EN': 'No logs yet. Add your first set.',
@@ -118,7 +125,7 @@ class Translations {
     },
     'search_filter_current': {
       'EN': 'Current category',
-      'PL': 'Biezaca kategoria',
+      'PL': 'Bieżąca kategoria',
       'NO': 'Gjeldende kategori'
     },
     'search_filter_all': {'EN': 'All', 'PL': 'Wszystkie', 'NO': 'Alle'},
@@ -132,13 +139,13 @@ class Translations {
       'PL': 'Usuń ćwiczenie',
       'NO': 'Slett øvelse'
     },
-    'delete_question': {'EN': 'Delete?', 'PL': 'Usunac?', 'NO': 'Slette?'},
+    'delete_question': {'EN': 'Delete?', 'PL': 'Usunąć?', 'NO': 'Slette?'},
     'delete_exercise_and_history': {
       'EN': "Delete '{name}' and all its history?",
-      'PL': "Usunac '{name}' i cala historie?",
+      'PL': "Usunąć '{name}' i całą historię?",
       'NO': "Slett '{name}' og all historikk?"
     },
-    'delete': {'EN': 'Delete', 'PL': 'Usun', 'NO': 'Slett'},
+    'delete': {'EN': 'Delete', 'PL': 'Usuń', 'NO': 'Slett'},
     'cancel': {'EN': 'Cancel', 'PL': 'Anuluj', 'NO': 'Avbryt'},
     'save': {'EN': 'Save', 'PL': 'Zapisz', 'NO': 'Lagre'},
     'exercise_exists': {
@@ -158,7 +165,7 @@ class Translations {
     },
     'auto_start': {
       'EN': 'Auto-start next set',
-      'PL': 'Automatycznie rozpocznij serie',
+      'PL': 'Automatycznie rozpocznij serię',
       'NO': 'Auto-start neste sett'
     },
     'prompt_next_set': {
@@ -173,7 +180,7 @@ class Translations {
     },
     'rest_finished_title': {
       'EN': 'Rest finished',
-      'PL': 'Przerwa zakonczona',
+      'PL': 'Przerwa zakończona',
       'NO': 'Pause ferdig'
     },
     'rest_finished_body': {
@@ -189,7 +196,7 @@ class Translations {
     'measured_time': {
       'EN': 'Measured time',
       'PL': 'Zmierzony czas',
-      'NO': 'M�lt tid'
+      'NO': 'Målt tid'
     },
     'logged_in_as': {
       'EN': 'Signed in as',
@@ -213,42 +220,7 @@ class Translations {
       'NO': 'Planinnlogging'
     },
     'email': {'EN': 'Email', 'PL': 'Email', 'NO': 'E-post'},
-    'password': {'EN': 'Password', 'PL': 'Haslo', 'NO': 'Passord'},
-    'change_password': {
-      'EN': 'Change password',
-      'PL': 'Zmien haslo',
-      'NO': 'Endre passord'
-    },
-    'current_password': {
-      'EN': 'Current password',
-      'PL': 'Aktualne haslo',
-      'NO': 'Nåværende passord'
-    },
-    'new_password': {
-      'EN': 'New password',
-      'PL': 'Nowe haslo',
-      'NO': 'Nytt passord'
-    },
-    'confirm_password': {
-      'EN': 'Confirm password',
-      'PL': 'Potwierdz haslo',
-      'NO': 'Bekreft passord'
-    },
-    'passwords_dont_match': {
-      'EN': 'Passwords do not match',
-      'PL': 'Hasla nie pasuja',
-      'NO': 'Passordene samsvarer ikke'
-    },
-    'password_changed': {
-      'EN': 'Password changed successfully',
-      'PL': 'Haslo zmienione pomyslnie',
-      'NO': 'Passord endret vellykket'
-    },
-    'password_too_short': {
-      'EN': 'Password must be at least 4 characters',
-      'PL': 'Haslo musi miec co najmniej 4 znaki',
-      'NO': 'Passordet må være minst 4 tegn'
-    },
+    'password': {'EN': 'Password', 'PL': 'Hasło', 'NO': 'Passord'},
     'logging_in': {
       'EN': 'Signing in...',
       'PL': 'Logowanie...',
@@ -257,8 +229,8 @@ class Translations {
     'login_action': {'EN': 'Sign in', 'PL': 'Zaloguj', 'NO': 'Logg inn'},
     'login_required': {
       'EN': 'Log in to see the plan',
-      'PL': 'Zaloguj sie, aby zobaczyc plan',
-      'NO': 'Logg inn for � se planen'
+      'PL': 'Zaloguj się, aby zobaczyć plan',
+      'NO': 'Logg inn for å se planen'
     },
     'coach_mode_title': {
       'EN': 'Coach mode: full access',
@@ -288,15 +260,15 @@ class Translations {
       'PL': 'Brak planu online',
       'NO': 'Ingen nettplan'
     },
-    'refresh': {'EN': 'Refresh', 'PL': 'Odswiez', 'NO': 'Oppdater'},
+    'refresh': {'EN': 'Refresh', 'PL': 'Odśwież', 'NO': 'Oppdater'},
     'no_active_user': {
       'EN': 'No active user',
-      'PL': 'Brak aktywnego uzytkownika',
+      'PL': 'Brak aktywnego użytkownika',
       'NO': 'Ingen aktiv bruker'
     },
     'plan_fetch_failed': {
       'EN': 'Could not fetch plan',
-      'PL': 'Nie udalo sie pobrac planu',
+      'PL': 'Nie udało się pobrać planu',
       'NO': 'Kunne ikke hente planen'
     },
     'plan_updated_at': {
@@ -305,14 +277,14 @@ class Translations {
       'NO': 'Oppdatert: {date}'
     },
     'plan_entry_core': {
-      'EN': '{sets} sets � rest {rest}s',
-      'PL': '{sets} serii � przerwa {rest}s',
-      'NO': '{sets} sett � pause {rest}s'
+      'EN': '{sets} sets • rest {rest}s',
+      'PL': '{sets} serii • przerwa {rest}s',
+      'NO': '{sets} sett • pause {rest}s'
     },
     'plan_entry_time': {
-      'EN': ' � time {time}s',
-      'PL': ' � czas {time}s',
-      'NO': ' � tid {time}s'
+      'EN': ' • time {time}s',
+      'PL': ' • czas {time}s',
+      'NO': ' • tid {time}s'
     },
     'test_version_hint': {
       'EN':
@@ -337,21 +309,16 @@ class Translations {
     },
     'exercise_name_hint': {
       'EN': 'Exercise name',
-      'PL': 'Nazwa cwiczenia',
-      'NO': '�velsesnavn'
+      'PL': 'Nazwa ćwiczenia',
+      'NO': 'Øvelsesnavn'
     },
     'kind_label': {'EN': 'Type', 'PL': 'Rodzaj', 'NO': 'Typ'},
-    'select_exercise_type': {
-      'EN': 'Select exercise type',
-      'PL': 'Wybierz typ cwiczenia',
-      'NO': 'Velg �velsestype'
-    },
-    'weight_based': {'EN': 'With weight', 'PL': 'Z ciezarem', 'NO': 'Med vekt'},
-    'time_based': {'EN': 'For time', 'PL': 'Na czas', 'NO': 'P� tid'},
+    'weight_based': {'EN': 'With weight', 'PL': 'Z ciężarem', 'NO': 'Med vekt'},
+    'time_based': {'EN': 'For time', 'PL': 'Na czas', 'NO': 'På tid'},
     'plan_local_desc': {
       'EN': 'Paste or write your plan. It stays on this device.',
-      'PL': 'Wklej lub wpisz plan. Zostaje na tym urzadzeniu.',
-      'NO': 'Lim inn eller skriv planen. Det blir p� denne enheten.'
+      'PL': 'Wklej lub wpisz plan. Zostaje na tym urządzeniu.',
+      'NO': 'Lim inn eller skriv planen. Det blir på denne enheten.'
     },
     'plan_saved_local': {
       'EN': 'Plan saved locally',
@@ -360,7 +327,7 @@ class Translations {
     },
     'plan_save_failed': {
       'EN': 'Could not save plan',
-      'PL': 'Nie udalo sie zapisac planu',
+      'PL': 'Nie udało się zapisać planu',
       'NO': 'Kunne ikke lagre planen'
     },
     'plan_save': {'EN': 'Save plan', 'PL': 'Zapisz plan', 'NO': 'Lagre plan'},
@@ -373,6 +340,51 @@ class Translations {
       'EN': 'Copied to clipboard',
       'PL': 'Skopiowano do schowka',
       'NO': 'Kopiert til utklippstavle'
+    },
+    'change_password': {
+      'EN': 'Change Password',
+      'PL': 'Zmień hasło',
+      'NO': 'Endre passord'
+    },
+    'current_password': {
+      'EN': 'Current password',
+      'PL': 'Obecne hasło',
+      'NO': 'Nåværende passord'
+    },
+    'new_password': {
+      'EN': 'New password',
+      'PL': 'Nowe hasło',
+      'NO': 'Nytt passord'
+    },
+    'confirm_password': {
+      'EN': 'Confirm password',
+      'PL': 'Potwierdź hasło',
+      'NO': 'Bekreft passord'
+    },
+    'passwords_dont_match': {
+      'EN': 'Passwords do not match',
+      'PL': 'Hasła nie są identyczne',
+      'NO': 'Passordene samsvarer ikke'
+    },
+    'password_changed': {
+      'EN': 'Password changed successfully',
+      'PL': 'Hasło zmienione pomyślnie',
+      'NO': 'Passord endret lykkes'
+    },
+    'current_password_incorrect': {
+      'EN': 'Current password is incorrect',
+      'PL': 'Obecne hasło jest nieprawidłowe',
+      'NO': 'Nåværende passord er feil'
+    },
+    'password_too_short': {
+      'EN': 'Password must be at least 6 characters',
+      'PL': 'Hasło musi mieć co najmniej 6 znaków',
+      'NO': 'Passordet må være minst 6 tegn'
+    },
+    'all_fields_required': {
+      'EN': 'All fields are required',
+      'PL': 'Wszystkie pola są wymagane',
+      'NO': 'Alle felt er påkrevd'
     },
   };
 
@@ -394,21 +406,41 @@ class Translations {
 
 String localizedExerciseName(String rawName, String language) {
   final trimmed = rawName.trim();
+
+  // Najpierw spróbuj znaleźć dokładne dopasowanie w słowniku tłumaczeń
+  // (dla nazw polskich bez separatora)
   final translation = kExerciseTranslations[trimmed];
   if (translation != null) {
     return translation[language] ?? translation['EN'] ?? trimmed;
   }
-  // Try with different separators - both old (�) and new (◆)
+
+  // Jeśli nazwa zawiera separator, wyciągnij odpowiednią część
   final separators = [' ◆ ', ' � ', ' - '];
   for (final sep in separators) {
     if (trimmed.contains(sep)) {
       final parts = trimmed.split(sep);
       if (parts.length >= 2) {
-        if (language == 'PL') return parts[0].trim();
-        return parts[1].trim();
+        final polish = parts[0].trim();
+        final english = parts[1].trim();
+
+        // Sprawdź czy istnieje tłumaczenie dla polskiej nazwy
+        final polishTranslation = kExerciseTranslations[polish];
+        if (polishTranslation != null) {
+          return polishTranslation[language] ??
+              polishTranslation['EN'] ??
+              polish;
+        }
+
+        // Zwróć odpowiednią wersję w zależności od języka
+        if (language == 'PL') return polish;
+        if (language == 'EN') return english;
+        // Dla norweskiego zwróć angielski jako fallback
+        return english;
       }
     }
   }
+
+  // Jeśli to jest tylko polska nazwa bez separatora, zwróć ją
   return trimmed;
 }
 
@@ -610,22 +642,68 @@ const Map<String, List<String>> kDefaultExercises = {
   ],
 };
 
+final Map<String, String> kExerciseCategoryByName = _buildExerciseCategoryMap();
+
+Map<String, String> _buildExerciseCategoryMap() {
+  final result = <String, String>{};
+  kDefaultExercises.forEach((category, exercises) {
+    for (final ex in exercises) {
+      final trimmed = ex.trim();
+      if (trimmed.isEmpty) continue;
+      final separators = [' ◆ ', ' � '];
+      String polish = trimmed;
+      String? english;
+      for (final sep in separators) {
+        if (trimmed.contains(sep)) {
+          final parts = trimmed.split(sep);
+          polish = parts.first.trim();
+          if (parts.length > 1) {
+            english = parts[1].trim();
+          }
+          break;
+        }
+      }
+      if (polish.isNotEmpty) {
+        result[polish.toLowerCase()] = category;
+      }
+      if (english != null && english.isNotEmpty) {
+        result[english.toLowerCase()] = category;
+      }
+    }
+  });
+  return result;
+}
+
 // Exercises that are performed for time; auto-tag as time-based.
-// Use Polish names only (without separator)
+// Use Polish names only (as they appear before ◆ separator in kDefaultExercises)
 const Set<String> kTimeBasedExercises = {
   'Plank (Deska)',
+  'Plank',
+  'Plank boczny (Side Plank)',
   'Plank boczny',
+  'Side Plank',
   'L-sit',
   'Zwis na drążku',
-  'Spacer Farmera',
-  'Spacer z hantlem jednoręcz',
+  'Dead Hang',
   'Spacer z gumą (Monster Walk)',
+  'Monster Walk',
+  'Spacer Farmera',
+  'Farmer\'s Carry',
+  'Spacer z hantlem jednorącz (Suitcase Carry)',
+  'Suitcase Carry',
   'Mountain Climbers',
-  'Nożyce',
+  'Wspinaczka w podporze (Mountain Climbers)',
+  'Wspinaczka w podporze',
+  'Nożyce (Flutter Kicks)',
+  'Flutter Kicks',
+  'Rowerek (Bicycle Crunches)',
+  'Rowerek',
+  'Bicycle Crunches',
   'Kettlebell Swing',
   'Russian Twist',
   'Pallof Press',
   'Glute Bridge (Mostek)',
+  'Glute Bridge',
 };
 
 // Translations for seeded exercises across languages.
@@ -751,12 +829,265 @@ class NotificationService {
   }
 }
 
+abstract class VibrationClient {
+  Future<bool> hasVibrator();
+  Future<bool> hasCustomVibrationsSupport();
+  Future<void> vibratePattern(List<int> pattern);
+  Future<void> vibrateDuration(int durationMs);
+}
+
+class DefaultVibrationClient implements VibrationClient {
+  @override
+  Future<bool> hasVibrator() => Vibration.hasVibrator() ?? Future.value(false);
+
+  @override
+  Future<bool> hasCustomVibrationsSupport() =>
+      Vibration.hasCustomVibrationsSupport() ?? Future.value(false);
+
+  @override
+  Future<void> vibratePattern(List<int> pattern) async {
+    await Vibration.vibrate(pattern: pattern);
+  }
+
+  @override
+  Future<void> vibrateDuration(int durationMs) async {
+    await Vibration.vibrate(duration: durationMs);
+  }
+}
+
+abstract class SoundClient {
+  Future<void> playAlert(AudioPlayer? player);
+}
+
+class DefaultSoundClient implements SoundClient {
+  @override
+  Future<void> playAlert(AudioPlayer? player) async {
+    if (player == null) return;
+    await player.play(AssetSource('sounds/alert.mp3'));
+  }
+}
+
+abstract class HapticsClient {
+  Future<void> heavyImpact();
+}
+
+class DefaultHapticsClient implements HapticsClient {
+  @override
+  Future<void> heavyImpact() async {
+    await HapticFeedback.heavyImpact();
+  }
+}
+
+abstract class LocalNotificationClient {
+  Future<void> showRestFinished({
+    required String exerciseName,
+    required String language,
+  });
+}
+
+class DefaultLocalNotificationClient implements LocalNotificationClient {
+  @override
+  Future<void> showRestFinished({
+    required String exerciseName,
+    required String language,
+  }) async {
+    await NotificationService.instance.showNotification(
+      title: Translations.get('rest_finished_title', language: language),
+      body: Translations.withParams('rest_finished_body',
+          language: language, params: {'exercise': exerciseName}),
+    );
+  }
+}
+
+class RestEndActions {
+  RestEndActions({
+    VibrationClient? vibrationClient,
+    SoundClient? soundClient,
+    HapticsClient? hapticsClient,
+    LocalNotificationClient? notificationClient,
+  })  : _vibrationClient = vibrationClient ?? DefaultVibrationClient(),
+        _soundClient = soundClient ?? DefaultSoundClient(),
+        _hapticsClient = hapticsClient ?? DefaultHapticsClient(),
+        _notificationClient =
+            notificationClient ?? DefaultLocalNotificationClient();
+
+  final VibrationClient _vibrationClient;
+  final SoundClient _soundClient;
+  final HapticsClient _hapticsClient;
+  final LocalNotificationClient _notificationClient;
+
+  Future<void> notifyRestFinished({
+    required String exerciseName,
+    required String language,
+    required AudioPlayer? audioPlayer,
+  }) async {
+    try {
+      if (await _vibrationClient.hasVibrator()) {
+        if (await _vibrationClient.hasCustomVibrationsSupport()) {
+          await _vibrationClient.vibratePattern([0, 300, 120, 300]);
+        } else {
+          await _vibrationClient.vibrateDuration(500);
+        }
+      }
+    } catch (_) {}
+
+    try {
+      await _soundClient.playAlert(audioPlayer);
+    } catch (_) {}
+
+    try {
+      await _hapticsClient.heavyImpact();
+    } catch (_) {}
+
+    try {
+      await _notificationClient.showRestFinished(
+          exerciseName: exerciseName, language: language);
+    } catch (_) {}
+  }
+}
+
+RestEndActions restEndActions = RestEndActions();
+
+/// Shimmer loading animation widget
+class ShimmerLoading extends StatefulWidget {
+  final double width;
+  final double height;
+  final double borderRadius;
+
+  const ShimmerLoading({
+    super.key,
+    required this.width,
+    required this.height,
+    this.borderRadius = 12,
+  });
+
+  @override
+  State<ShimmerLoading> createState() => _ShimmerLoadingState();
+}
+
+class _ShimmerLoadingState extends State<ShimmerLoading>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+    _animation = Tween<double>(begin: -1.0, end: 2.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                const Color(0xFF0B2E5A).withValues(alpha: 0.3),
+                const Color(0xFFFFD700).withValues(alpha: 0.2),
+                const Color(0xFF0B2E5A).withValues(alpha: 0.3),
+              ],
+              stops: [
+                _animation.value - 0.3,
+                _animation.value,
+                _animation.value + 0.3,
+              ].map((e) => e.clamp(0.0, 1.0)).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Shimmer card for list items
+Widget buildShimmerCard() {
+  return Container(
+    margin: const EdgeInsets.only(bottom: 12),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(14),
+      color: const Color(0xFF0B2E5A).withValues(alpha: 0.3),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          const ShimmerLoading(width: 44, height: 44, borderRadius: 22),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ShimmerLoading(
+                  width: double.infinity,
+                  height: 16,
+                  borderRadius: 8,
+                ),
+                const SizedBox(height: 8),
+                ShimmerLoading(
+                  width: 120,
+                  height: 12,
+                  borderRadius: 6,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+/// Custom page transition with fade and slide
+PageRouteBuilder<T> createFadeSlideRoute<T>(Widget page) {
+  return PageRouteBuilder<T>(
+    pageBuilder: (context, animation, secondaryAnimation) => page,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.05, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.easeInOutCubic;
+
+      final slideTween = Tween(begin: begin, end: end).chain(
+        CurveTween(curve: curve),
+      );
+      final fadeTween = Tween<double>(begin: 0.0, end: 1.0).chain(
+        CurveTween(curve: curve),
+      );
+
+      return SlideTransition(
+        position: animation.drive(slideTween),
+        child: FadeTransition(
+          opacity: animation.drive(fadeTween),
+          child: child,
+        ),
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 400),
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-  } catch (_) {}
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService.instance.init();
   try {
     final prefs = await SharedPreferences.getInstance();
@@ -835,58 +1166,22 @@ class KsGymApp extends StatelessWidget {
           fontFamilyFallback: ['Roboto', 'Arial', 'sans-serif'],
         ),
       ),
+      // Firebase is now configured - show login/language selection screen
       home: const StartChoiceScreen(),
     );
   }
 }
 
 /// Logo helpers
-Widget _logoPlaceholder(Color accentColor, double size) {
-  return SizedBox(width: size, height: size);
-}
-
-Future<bool> _assetExists(String path) async {
-  try {
-    await rootBundle.load(path);
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-
-Future<String?> _findExistingAsset(List<String> paths) async {
-  for (final p in paths) {
-    if (await _assetExists(p) == true) {
-      return p;
-    }
-  }
-  return null;
-}
-
 Widget buildLogo(BuildContext context, Color accentColor, {double size = 34}) {
-  // Use mojelogo.svg which exists in assets/
-  return FutureBuilder<String?>(
-    future: _findExistingAsset([
-      'mojelogo.svg',
-    ]),
-    builder: (ctx, snap) {
-      if (snap.connectionState != ConnectionState.done) {
-        return _logoPlaceholder(accentColor, size);
-      }
-      final path = snap.data;
-      if (path == null) {
-        return _logoPlaceholder(accentColor, size);
-      }
-      if (path.toLowerCase().endsWith('.svg')) {
-        try {
-          return SizedBox(
-              height: size, child: SvgPicture.asset(path, fit: BoxFit.contain));
-        } catch (_) {
-          return _logoPlaceholder(accentColor, size);
-        }
-      }
-      return Image.asset(path, height: size, fit: BoxFit.contain);
-    },
+  // Use mojelogo.svg with Hero animation
+  return Hero(
+    tag: 'app_logo',
+    child: SvgPicture.asset(
+      'assets/mojelogo.svg',
+      height: size,
+      fit: BoxFit.contain,
+    ),
   );
 }
 
@@ -901,7 +1196,7 @@ PreferredSizeWidget buildCustomAppBar(BuildContext context,
       buildLogo(context, accentColor, size: 42),
       const SizedBox(width: 10),
       const Text('K.S-GYM',
-          style: TextStyle(
+          style: const TextStyle(
               fontWeight: FontWeight.w800,
               fontSize: 20,
               color: Color(0xFFFFD700),
@@ -922,14 +1217,20 @@ PreferredSizeWidget buildCustomAppBar(BuildContext context,
             _handleLogout(context);
           } else if (value == 'login') {
             _handleLogin(context);
+          } else if (value == 'change_password') {
+            showDialog(
+              context: context,
+              builder: (_) => const ChangePasswordDialog(),
+            );
           } else if (value == 'contact') {
             _showContactDialog(context);
           }
         },
         itemBuilder: (context) {
           final lang = globalLanguage;
-          final isLoggedIn =
-              PlanAccessController.instance.notifier.value.isAuthenticated;
+          final state = PlanAccessController.instance.notifier.value;
+          final isLoggedIn = state.isAuthenticated;
+          final isClient = state.role == PlanUserRole.client;
 
           return [
             PopupMenuItem(
@@ -962,6 +1263,20 @@ PreferredSizeWidget buildCustomAppBar(BuildContext context,
                           : lang == 'NO'
                               ? 'Logg ut'
                               : 'Log out',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            if (isLoggedIn && isClient)
+              PopupMenuItem(
+                value: 'change_password',
+                child: Row(
+                  children: [
+                    const Icon(Icons.lock_reset, color: Color(0xFFFFD700)),
+                    const SizedBox(width: 12),
+                    Text(
+                      Translations.get('change_password', language: lang),
                       style: const TextStyle(color: Colors.white),
                     ),
                   ],
@@ -1088,9 +1403,10 @@ Widget _buildLanguageOption(
 
 void _handleLogout(BuildContext context) async {
   final lang = globalLanguage;
+  final messenger = ScaffoldMessenger.of(context);
   await PlanAccessController.instance.signOut();
   if (context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Text(
           lang == 'PL'
@@ -1102,15 +1418,18 @@ void _handleLogout(BuildContext context) async {
         backgroundColor: Colors.green,
       ),
     );
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const StartChoiceScreen()),
+      (route) => false,
+    );
   }
 }
 
 void _handleLogin(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const LoginScreen(themeColor: Color(0xFFFFD700)),
-    ),
+  Navigator.of(context).pushAndRemoveUntil(
+    MaterialPageRoute(builder: (_) => const StartChoiceScreen()),
+    (route) => false,
   );
 }
 
@@ -1172,6 +1491,20 @@ void _showContactDialog(BuildContext context) {
               const SizedBox(width: 12),
               Text(
                 'K.S-GYM',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              const Icon(Icons.phone, color: Color(0xFFFFD700)),
+              const SizedBox(width: 12),
+              Text(
+                '+47 925 45 267',
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
@@ -1368,257 +1701,106 @@ class _DumbbellPatternPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class StartChoiceScreen extends StatelessWidget {
-  const StartChoiceScreen({super.key});
-
-  void _showContact(BuildContext context, String lang) {
-    const phone = '92545267';
-    const email = 'karolszymek1402@gmail.com';
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color(0xFF0E1528),
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(18))),
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 12),
-            Text(Translations.get('contact_sheet_title', language: lang),
-                style: const TextStyle(
-                    color: Color(0xFFFFD700),
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16)),
-            const SizedBox(height: 8),
-            ListTile(
-              leading: const Icon(Icons.call, color: Color(0xFFFFD700)),
-              title: Text(
-                  Translations.get('contact_phone_label', language: lang),
-                  style: const TextStyle(color: Color(0xFFFFD700))),
-              subtitle:
-                  const Text(phone, style: TextStyle(color: Color(0xFFFFD700))),
-              onTap: () async {
-                await Clipboard.setData(const ClipboardData(text: phone));
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            Translations.get('copied_phone', language: lang))),
-                  );
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.email, color: Color(0xFFFFD700)),
-              title: Text(
-                  Translations.get('contact_email_label', language: lang),
-                  style: const TextStyle(color: Color(0xFFFFD700))),
-              subtitle:
-                  const Text(email, style: TextStyle(color: Color(0xFFFFD700))),
-              onTap: () async {
-                await Clipboard.setData(const ClipboardData(text: email));
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            Translations.get('copied_email', language: lang))),
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 12),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _setLanguage(BuildContext context, String lang) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('app_language', lang);
-    updateGlobalLanguage(lang);
-  }
-
-  Future<void> _continueOffline(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final lang = prefs.getString('app_language') ?? globalLanguage;
-    await prefs.setString('app_language', lang);
-    updateGlobalLanguage(lang);
-    if (context.mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const CategoryScreen()),
-      );
-    }
-  }
-
-  Future<void> _goToOnlinePlan(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    final lang = prefs.getString('app_language') ?? globalLanguage;
-    await prefs.setString('app_language', lang);
-    updateGlobalLanguage(lang);
-    if (context.mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const LoginScreen(
-            themeColor: Color(0xFF0B2E5A),
-          ),
-        ),
-      );
-    }
-  }
+class TrainerOptionsScreen extends StatelessWidget {
+  final Color themeColor;
+  const TrainerOptionsScreen(
+      {super.key, this.themeColor = const Color(0xFFFFD700)});
 
   @override
   Widget build(BuildContext context) {
-    const gold = Color(0xFFFFD700);
-    const seed = Color(0xFF0B2E5A);
+    final accent = themeColor;
     return ValueListenableBuilder<String>(
       valueListenable: globalLanguageNotifier,
       builder: (context, lang, _) {
         return Scaffold(
+          appBar: buildCustomAppBar(context, accentColor: accent),
           body: GymBackgroundWithFitness(
-            goldDumbbells: false,
+            goldDumbbells: true,
             backgroundImage: 'assets/tlo.png',
             backgroundImageOpacity: 0.32,
-            gradientColors: [
-              const Color(0xFF0B2E5A),
-              const Color(0xFF0A2652),
-              const Color(0xFF0E3D8C),
+            gradientColors: const [
+              Color(0xFF0B2E5A),
+              Color(0xFF0A2652),
+              Color(0xFF0E3D8C),
             ],
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 24),
-                    Container(
-                      width: 180,
-                      height: 180,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: seed.withValues(alpha: 0.45),
-                            blurRadius: 48,
-                            spreadRadius: 10,
-                          ),
-                          BoxShadow(
-                            color: gold.withValues(alpha: 0.35),
-                            blurRadius: 26,
-                            spreadRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: buildLogo(context, gold, size: 135),
+            accentColor: accent,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    Translations.get('coach_mode_title', language: lang),
+                    style: TextStyle(
+                      color: accent,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 20,
                     ),
-                    const SizedBox(height: 32),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 8,
-                      alignment: WrapAlignment.center,
-                      children: ['EN', 'PL', 'NO'].map((code) {
-                        final bool isActive = lang == code;
-                        return ChoiceChip(
-                          label: Text(code,
-                              style: TextStyle(
-                                  color:
-                                      isActive ? const Color(0xFF0B2E5A) : gold,
-                                  fontWeight: FontWeight.w700)),
-                          selected: isActive,
-                          onSelected: (_) => _setLanguage(context, code),
-                          selectedColor: gold,
-                          backgroundColor:
-                              const Color(0xFF0B2E5A).withValues(alpha: 0.5),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: BorderSide(
-                                  color: gold.withValues(alpha: 0.6))),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    Translations.get('coach_mode_hint', language: lang),
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 18),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          createFadeSlideRoute(
+                            ClientListScreen(themeColor: accent),
+                          ),
                         );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      Translations.get('app_title', language: lang),
-                      style: const TextStyle(
-                        color: gold,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        decoration: TextDecoration.none,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    OutlinedButton.icon(
-                      onPressed: () => _goToOnlinePlan(context),
-                      icon: const Icon(Icons.login, color: gold),
-                      label: Text(
-                        Translations.get('login_for_online_plan',
-                            language: lang),
-                        style: const TextStyle(
-                          color: gold,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          decoration: TextDecoration.none,
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              const Color(0xFFFFD700),
+                              const Color(0xFFFFC107),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFFFD700)
+                                  .withValues(alpha: 0.5),
+                              blurRadius: 16,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
                         ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: gold.withValues(alpha: 0.7)),
-                        minimumSize: const Size(double.infinity, 52),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 14, horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.people, color: Color(0xFF0B2E5A)),
+                            const SizedBox(width: 12),
+                            Text(
+                              lang == 'PL'
+                                  ? 'Lista klientów'
+                                  : lang == 'NO'
+                                      ? 'Klientliste'
+                                      : 'Client List',
+                              style: const TextStyle(
+                                color: Color(0xFF0B2E5A),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
-                        foregroundColor: gold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    OutlinedButton.icon(
-                      onPressed: () => _continueOffline(context),
-                      icon: const Icon(Icons.arrow_forward, color: gold),
-                      label: Text(
-                        Translations.get('continue_without_login',
-                            language: lang),
-                        style: const TextStyle(
-                          color: gold,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: gold.withValues(alpha: 0.7)),
-                        minimumSize: const Size(double.infinity, 52),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        foregroundColor: gold,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    OutlinedButton.icon(
-                      onPressed: () => _showContact(context, lang),
-                      icon: const Icon(Icons.contact_phone, color: gold),
-                      label: Text(
-                        Translations.get('contact', language: lang),
-                        style: const TextStyle(
-                          color: gold,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: gold.withValues(alpha: 0.7)),
-                        minimumSize: const Size(double.infinity, 52),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        foregroundColor: gold,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -1915,19 +2097,54 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: _saving ? null : _savePlan,
-                            icon: const Icon(Icons.save,
-                                color: Color(0xFF0B2E5A)),
-                            label: Text(_saving
-                                ? Translations.get('plan_saving',
-                                    language: lang)
-                                : Translations.get('plan_save',
-                                    language: lang)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accent,
-                              foregroundColor: const Color(0xFF0B2E5A),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Material(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: _saving ? null : _savePlan,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      accent,
+                                      accent.withValues(alpha: 0.8),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: accent.withValues(alpha: 0.4),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.save,
+                                        color: Color(0xFF0B2E5A)),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _saving
+                                          ? Translations.get('plan_saving',
+                                              language: lang)
+                                          : Translations.get('plan_save',
+                                              language: lang),
+                                      style: const TextStyle(
+                                        color: Color(0xFF0B2E5A),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -2041,7 +2258,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
     if (current.isEmpty || newPass.isEmpty || confirm.isEmpty) {
       setState(() {
-        _error = 'All fields are required';
+        _error = Translations.get('all_fields_required', language: lang);
       });
       return;
     }
@@ -2053,7 +2270,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       return;
     }
 
-    if (newPass.length < 4) {
+    if (newPass.length < 6) {
       setState(() {
         _error = Translations.get('password_too_short', language: lang);
       });
@@ -2081,7 +2298,17 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       }
     } catch (e) {
       setState(() {
-        _error = e.toString();
+        final errorMsg = e.toString();
+        if (errorMsg.contains('Current password is incorrect') ||
+            errorMsg.contains('wrong-password') ||
+            errorMsg.contains('invalid-credential')) {
+          _error =
+              Translations.get('current_password_incorrect', language: lang);
+        } else if (errorMsg.contains('Failed to update password')) {
+          _error = errorMsg.replaceAll('Exception: ', '');
+        } else {
+          _error = errorMsg.replaceAll('Exception: ', '');
+        }
         _loading = false;
       });
     }
@@ -2198,6 +2425,302 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   }
 }
 
+// ============================================================
+// CLIENT LOGIN SCREEN
+// ============================================================
+class ClientLoginScreen extends StatefulWidget {
+  final Color themeColor;
+  const ClientLoginScreen(
+      {super.key, this.themeColor = const Color(0xFF1E88E5)});
+
+  @override
+  State<ClientLoginScreen> createState() => _ClientLoginScreenState();
+}
+
+class _ClientLoginScreenState extends State<ClientLoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _loading = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    PlanAccessController.instance.initialize();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      await PlanAccessController.instance.signInAsClient(
+          _emailController.text.trim(), _passwordController.text);
+      // Po udanym logowaniu jako klient - przechodzi do CategoryScreen
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const CategoryScreen()),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _signOut() async {
+    await PlanAccessController.instance.signOut();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = widget.themeColor;
+    return ValueListenableBuilder<String>(
+      valueListenable: globalLanguageNotifier,
+      builder: (context, lang, _) {
+        return Scaffold(
+          appBar: buildCustomAppBar(context, accentColor: accent),
+          body: GymBackgroundWithFitness(
+            goldDumbbells: true,
+            backgroundImage: 'assets/tlo.png',
+            backgroundImageOpacity: 0.32,
+            accentColor: accent,
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: Card(
+                    color: const Color(0xFF0B2E5A).withValues(alpha: 0.6),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(color: accent.withValues(alpha: 0.3)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 22),
+                      child: ValueListenableBuilder<PlanAccessState>(
+                        valueListenable: PlanAccessController.instance.notifier,
+                        builder: (context, state, _) {
+                          if (state.isAuthenticated) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.person,
+                                        color: Color(0xFF1E88E5), size: 28),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                        Translations.get('logged_in_as',
+                                            language: lang),
+                                        style: const TextStyle(
+                                            color: Color(0xFF1E88E5),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16)),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Text(state.userEmail ?? '',
+                                    style: const TextStyle(
+                                        color: Color(0xFF1E88E5),
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 18)),
+                                const SizedBox(height: 12),
+                                Text(
+                                    Translations.withParams('role_label',
+                                        language: lang,
+                                        params: {'role': state.role.name}),
+                                    style: const TextStyle(
+                                        color: Color(0xFF1E88E5))),
+                                const SizedBox(height: 18),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (_) => PlanOnlineScreen(
+                                                  themeColor: accent,
+                                                )));
+                                  },
+                                  icon: const Icon(Icons.fitness_center,
+                                      color: Colors.white),
+                                  label: Text(Translations.get(
+                                      'open_online_plan',
+                                      language: lang)),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF1E88E5),
+                                      foregroundColor: Colors.white,
+                                      minimumSize:
+                                          const Size(double.infinity, 48)),
+                                ),
+                                const SizedBox(height: 10),
+                                OutlinedButton.icon(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => ChangePasswordDialog(
+                                        themeColor: accent,
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.lock_reset,
+                                      color: Color(0xFF1E88E5)),
+                                  label: Text(Translations.get(
+                                      'change_password',
+                                      language: lang)),
+                                  style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                          color: Color(0xFF1E88E5)),
+                                      minimumSize:
+                                          const Size(double.infinity, 46),
+                                      foregroundColor: const Color(0xFF1E88E5)),
+                                ),
+                                const SizedBox(height: 10),
+                                OutlinedButton.icon(
+                                  onPressed: _signOut,
+                                  icon: const Icon(Icons.logout,
+                                      color: Colors.red),
+                                  label: Text(Translations.get('logout',
+                                      language: lang)),
+                                  style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                          color: Colors.red
+                                              .withValues(alpha: 0.6)),
+                                      minimumSize:
+                                          const Size(double.infinity, 46),
+                                      foregroundColor: Colors.red),
+                                ),
+                              ],
+                            );
+                          }
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.person,
+                                      color: Color(0xFF1E88E5), size: 28),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                      Translations.get('client_login_title',
+                                          language: lang),
+                                      style: const TextStyle(
+                                          color: Color(0xFF1E88E5),
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 20)),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              TextField(
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                style:
+                                    const TextStyle(color: Color(0xFF1E88E5)),
+                                decoration: InputDecoration(
+                                    labelText: Translations.get('email',
+                                        language: lang),
+                                    labelStyle: const TextStyle(
+                                        color: Color(0xFF1E88E5)),
+                                    prefixIcon: const Icon(
+                                        Icons.alternate_email,
+                                        size: 20,
+                                        color: Color(0xFF1E88E5)),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Color(0xFF1E88E5)),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF1E88E5), width: 2),
+                                    )),
+                              ),
+                              const SizedBox(height: 12),
+                              TextField(
+                                controller: _passwordController,
+                                obscureText: true,
+                                style:
+                                    const TextStyle(color: Color(0xFF1E88E5)),
+                                decoration: InputDecoration(
+                                    labelText: Translations.get('password',
+                                        language: lang),
+                                    labelStyle: const TextStyle(
+                                        color: Color(0xFF1E88E5)),
+                                    prefixIcon: const Icon(Icons.lock,
+                                        size: 20, color: Color(0xFF1E88E5)),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Color(0xFF1E88E5)),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF1E88E5), width: 2),
+                                    )),
+                              ),
+                              const SizedBox(height: 14),
+                              if (_error != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Text(
+                                    _error!,
+                                    style: const TextStyle(
+                                        color: Colors.redAccent, fontSize: 13),
+                                  ),
+                                ),
+                              ElevatedButton.icon(
+                                onPressed: _loading ? null : _signIn,
+                                icon: _loading
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white))
+                                    : const Icon(Icons.login,
+                                        color: Colors.white),
+                                label: Text(_loading
+                                    ? Translations.get('logging_in',
+                                        language: lang)
+                                    : Translations.get('login_action',
+                                        language: lang)),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF1E88E5),
+                                    foregroundColor: Colors.white,
+                                    minimumSize:
+                                        const Size(double.infinity, 48)),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class LoginScreen extends StatefulWidget {
   final Color themeColor;
   const LoginScreen({super.key, this.themeColor = const Color(0xFF1E88E5)});
@@ -2236,6 +2759,20 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await PlanAccessController.instance
           .signIn(_emailController.text.trim(), _passwordController.text);
+      final role = await _waitForResolvedRole();
+      if (!mounted) return;
+      if (role == PlanUserRole.coach) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+              builder: (_) => TrainerOptionsScreen(
+                    themeColor: widget.themeColor,
+                  )),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const CategoryScreen()),
+        );
+      }
     } catch (e) {
       setState(() {
         _error = e.toString();
@@ -2249,8 +2786,30 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _signOut() async {
-    await PlanAccessController.instance.signOut();
+  Future<PlanUserRole> _waitForResolvedRole() async {
+    final controller = PlanAccessController.instance;
+    final current = controller.notifier.value.role;
+    if (current != PlanUserRole.anonymous) {
+      return current;
+    }
+
+    final completer = Completer<PlanUserRole>();
+    late VoidCallback listener;
+    listener = () {
+      final role = controller.notifier.value.role;
+      if (role != PlanUserRole.anonymous) {
+        controller.notifier.removeListener(listener);
+        if (!completer.isCompleted) {
+          completer.complete(role);
+        }
+      }
+    };
+    controller.notifier.addListener(listener);
+
+    return completer.future.timeout(const Duration(seconds: 5), onTimeout: () {
+      controller.notifier.removeListener(listener);
+      return controller.notifier.value.role;
+    });
   }
 
   @override
@@ -2278,187 +2837,95 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 18, vertical: 22),
-                      child: ValueListenableBuilder<PlanAccessState>(
-                        valueListenable: PlanAccessController.instance.notifier,
-                        builder: (context, state, _) {
-                          if (state.isAuthenticated) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                    Translations.get('logged_in_as',
-                                        language: lang),
-                                    style: const TextStyle(
-                                        color: Colors.white70,
-                                        fontWeight: FontWeight.w600)),
-                                const SizedBox(height: 6),
-                                Text(state.userEmail ?? '',
-                                    style: TextStyle(
-                                        color: accent,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 18)),
-                                const SizedBox(height: 12),
-                                Text(
-                                    Translations.withParams('role_label',
-                                        language: lang,
-                                        params: {'role': state.role.name}),
-                                    style:
-                                        const TextStyle(color: Colors.white70)),
-                                const SizedBox(height: 18),
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (_) => PlanOnlineScreen(
-                                                  themeColor: accent,
-                                                )));
-                                  },
-                                  icon: const Icon(Icons.cloud_download,
-                                      color: Color(0xFF0B2E5A)),
-                                  label: Text(Translations.get(
-                                      'open_online_plan',
-                                      language: lang)),
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: accent,
-                                      foregroundColor: const Color(0xFF0B2E5A),
-                                      minimumSize:
-                                          const Size(double.infinity, 48)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(Translations.get('login_title', language: lang),
+                              style: const TextStyle(
+                                  color: Color(0xFFFFD700),
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 20)),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(color: Color(0xFFFFD700)),
+                            decoration: InputDecoration(
+                                labelText:
+                                    Translations.get('email', language: lang),
+                                labelStyle:
+                                    const TextStyle(color: Color(0xFFFFD700)),
+                                prefixIcon: const Icon(Icons.alternate_email,
+                                    size: 20, color: Color(0xFFFFD700)),
+                                enabledBorder: const UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFFFD700)),
                                 ),
-                                const SizedBox(height: 10),
-                                // Change password button (only for clients, not coaches)
-                                if (state.role == PlanUserRole.client)
-                                  OutlinedButton.icon(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (_) => ChangePasswordDialog(
-                                          themeColor: accent,
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(Icons.lock_reset, color: accent),
-                                    label: Text(Translations.get(
-                                        'change_password',
-                                        language: lang)),
-                                    style: OutlinedButton.styleFrom(
-                                        side: BorderSide(color: accent),
-                                        minimumSize:
-                                            const Size(double.infinity, 46),
-                                        foregroundColor: accent),
-                                  ),
-                                if (state.role == PlanUserRole.client)
-                                  const SizedBox(height: 10),
-                                OutlinedButton.icon(
-                                  onPressed: _signOut,
-                                  icon: const Icon(Icons.logout,
-                                      color: Colors.red),
-                                  label: Text(Translations.get('logout',
-                                      language: lang)),
-                                  style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                          color: Colors.red
-                                              .withValues(alpha: 0.6)),
-                                      minimumSize:
-                                          const Size(double.infinity, 46),
-                                      foregroundColor: Colors.red),
-                                ),
-                              ],
-                            );
-                          }
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                  Translations.get('login_title',
-                                      language: lang),
-                                  style: TextStyle(
-                                      color: accent,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 20)),
-                              const SizedBox(height: 16),
-                              TextField(
-                                controller: _emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                style: const TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                    labelText: Translations.get('email',
-                                        language: lang),
-                                    labelStyle: TextStyle(
-                                        color: accent.withOpacity(0.7)),
-                                    prefixIcon: Icon(Icons.alternate_email,
-                                        size: 20, color: accent),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: accent.withOpacity(0.5)),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: accent),
-                                    )),
-                              ),
-                              const SizedBox(height: 12),
-                              TextField(
-                                controller: _passwordController,
-                                obscureText: true,
-                                style: const TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                    labelText: Translations.get('password',
-                                        language: lang),
-                                    labelStyle: TextStyle(
-                                        color: accent.withOpacity(0.7)),
-                                    prefixIcon: Icon(Icons.lock,
-                                        size: 20, color: accent),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: accent.withOpacity(0.5)),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: accent),
-                                    )),
-                              ),
-                              const SizedBox(height: 14),
-                              if (_error != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Text(
-                                    _error!,
-                                    style: const TextStyle(
-                                        color: Colors.redAccent, fontSize: 13),
-                                  ),
-                                ),
-                              ElevatedButton.icon(
-                                onPressed: _loading ? null : _signIn,
-                                icon: _loading
-                                    ? const SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Color(0xFF0B2E5A)))
-                                    : const Icon(Icons.login,
-                                        color: Color(0xFF0B2E5A)),
-                                label: Text(_loading
-                                    ? Translations.get('logging_in',
-                                        language: lang)
-                                    : Translations.get('login_action',
-                                        language: lang)),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: accent,
-                                  foregroundColor: const Color(0xFF0B2E5A),
-                                  minimumSize: const Size(double.infinity, 48),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                Translations.get('test_version_hint',
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFFFD700), width: 2),
+                                )),
+                          ),
+                          const SizedBox(height: 12),
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            style: const TextStyle(color: Color(0xFFFFD700)),
+                            decoration: InputDecoration(
+                                labelText: Translations.get('password',
                                     language: lang),
+                                labelStyle:
+                                    const TextStyle(color: Color(0xFFFFD700)),
+                                prefixIcon: const Icon(Icons.lock,
+                                    size: 20, color: Color(0xFFFFD700)),
+                                enabledBorder: const UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFFFD700)),
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFFFD700), width: 2),
+                                )),
+                          ),
+                          const SizedBox(height: 14),
+                          if (_error != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                _error!,
                                 style: const TextStyle(
-                                    color: Colors.white54, fontSize: 12),
+                                    color: Colors.redAccent, fontSize: 13),
                               ),
-                            ],
-                          );
-                        },
+                            ),
+                          ElevatedButton.icon(
+                            onPressed: _loading ? null : _signIn,
+                            icon: _loading
+                                ? const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Color(0xFF0B2E5A)))
+                                : const Icon(Icons.login,
+                                    color: Color(0xFF0B2E5A)),
+                            label: Text(_loading
+                                ? Translations.get('logging_in', language: lang)
+                                : Translations.get('login_action',
+                                    language: lang)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFFD700),
+                              foregroundColor: const Color(0xFF0B2E5A),
+                              minimumSize: const Size(double.infinity, 48),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            Translations.get('test_version_hint',
+                                language: lang),
+                            style: const TextStyle(
+                                color: Colors.white54, fontSize: 12),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -2533,195 +3000,182 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
     return ValueListenableBuilder<String>(
       valueListenable: globalLanguageNotifier,
       builder: (context, lang, _) {
-        return Scaffold(
-          appBar: buildCustomAppBar(context, accentColor: accent),
-          body: GymBackgroundWithFitness(
-            goldDumbbells: false,
-            accentColor: accent,
-            child: ValueListenableBuilder<PlanAccessState>(
-              valueListenable: PlanAccessController.instance.notifier,
-              builder: (context, state, _) {
-                if (!state.isAuthenticated) {
-                  return Center(
-                    child: Text(
-                        Translations.get('login_required', language: lang),
-                        style: const TextStyle(color: Colors.white70)),
-                  );
-                }
-                if (state.role == PlanUserRole.coach) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+        // Jeśli coach - zwróć CategoryScreen bezpośrednio (bez zagnieżdżonego Scaffold)
+        return ValueListenableBuilder<PlanAccessState>(
+          valueListenable: PlanAccessController.instance.notifier,
+          builder: (context, state, _) {
+            if (state.isAuthenticated && state.role == PlanUserRole.coach) {
+              return TrainerOptionsScreen(themeColor: accent);
+            }
+            return Scaffold(
+              appBar: buildCustomAppBar(context, accentColor: accent),
+              body: GymBackgroundWithFitness(
+                goldDumbbells: false,
+                accentColor: accent,
+                child: Builder(
+                  builder: (context) {
+                    if (!state.isAuthenticated) {
+                      return Center(
+                        child: Text(
+                            Translations.get('login_required', language: lang),
+                            style: const TextStyle(color: Colors.white70)),
+                      );
+                    }
+                    if (_fetching || state.planLoading) {
+                      return ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: 6,
+                        itemBuilder: (context, index) => buildShimmerCard(),
+                      );
+                    }
+                    if (state.activePlan == null) {
+                      final statusText = _statusKey == null
+                          ? Translations.get('no_online_plan', language: lang)
+                          : Translations.get(_statusKey!, language: lang);
+                      return Center(
+                          child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(statusText,
+                              style: const TextStyle(color: Colors.white70)),
+                          const SizedBox(height: 12),
+                          ElevatedButton.icon(
+                            onPressed: _ensurePlan,
+                            icon: const Icon(Icons.refresh,
+                                color: Color(0xFF0B2E5A)),
+                            label: Text(
+                                Translations.get('refresh', language: lang)),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: accent,
+                                foregroundColor: Color(0xFF0B2E5A)),
+                          )
+                        ],
+                      ));
+                    }
+
+                    final plan = state.activePlan!;
+                    return ListView(
+                      padding: const EdgeInsets.all(16),
                       children: [
-                        Text(
-                            Translations.get('coach_mode_title',
-                                language: lang),
+                        Text(plan.title,
                             style: TextStyle(
                                 color: accent,
                                 fontWeight: FontWeight.w800,
-                                fontSize: 20)),
-                        const SizedBox(height: 12),
+                                fontSize: 22)),
+                        const SizedBox(height: 6),
                         Text(
-                          Translations.get('coach_mode_hint', language: lang),
-                          style: const TextStyle(color: Colors.white70),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 18),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        ClientListScreen(themeColor: accent)));
-                          },
-                          icon: const Icon(Icons.people,
-                              color: Color(0xFF0B2E5A)),
-                          label: Text(
-                            lang == 'PL'
-                                ? 'Lista klientów'
-                                : lang == 'NO'
-                                    ? 'Klientliste'
-                                    : 'Client List',
-                            style: const TextStyle(color: Color(0xFF0B2E5A)),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFFD700),
-                              foregroundColor: const Color(0xFF0B2E5A),
-                              minimumSize: const Size(double.infinity, 50)),
-                        ),
+                            Translations.withParams('plan_updated_at',
+                                language: lang,
+                                params: {
+                                  'date': plan.updatedAt
+                                      .toLocal()
+                                      .toString()
+                                      .split('.')
+                                      .first
+                                }),
+                            style: const TextStyle(
+                                color: Colors.white54, fontSize: 12)),
                         const SizedBox(height: 10),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => ExerciseListScreen(
-                                        category: 'CHEST',
-                                        themeColor: accent)));
-                          },
-                          icon: const Icon(Icons.folder_copy,
-                              color: Color(0xFF0B2E5A)),
-                          label: Text(Translations.get('exercise_database_btn',
-                              language: lang)),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: accent,
-                              foregroundColor: const Color(0xFF0B2E5A),
-                              minimumSize: const Size(double.infinity, 50)),
-                        ),
-                        const SizedBox(height: 10),
-                        OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const CategoryScreen()));
-                            },
-                            icon: Icon(Icons.apps, color: accent),
-                            label: Text(Translations.get('all_categories_btn',
-                                language: lang)),
-                            style: OutlinedButton.styleFrom(
-                                side: BorderSide(
-                                    color: accent.withValues(alpha: 0.6)),
-                                minimumSize: const Size(double.infinity, 50),
-                                foregroundColor: Color(0xFFFFD700))),
-                      ],
-                    ),
-                  );
-                }
-                if (_fetching || state.planLoading) {
-                  return const Center(
-                      child:
-                          CircularProgressIndicator(color: Color(0xFFFFD700)));
-                }
-                if (state.activePlan == null) {
-                  final statusText = _statusKey == null
-                      ? Translations.get('no_online_plan', language: lang)
-                      : Translations.get(_statusKey!, language: lang);
-                  return Center(
-                      child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(statusText,
-                          style: const TextStyle(color: Colors.white70)),
-                      const SizedBox(height: 12),
-                      ElevatedButton.icon(
-                        onPressed: _ensurePlan,
-                        icon:
-                            const Icon(Icons.refresh, color: Color(0xFF0B2E5A)),
-                        label:
-                            Text(Translations.get('refresh', language: lang)),
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: accent,
-                            foregroundColor: Color(0xFF0B2E5A)),
-                      )
-                    ],
-                  ));
-                }
-
-                final plan = state.activePlan!;
-                return ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    Text(plan.title,
-                        style: TextStyle(
-                            color: accent,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 22)),
-                    const SizedBox(height: 6),
-                    Text(
-                        Translations.withParams('plan_updated_at',
-                            language: lang,
-                            params: {
-                              'date': plan.updatedAt
-                                  .toLocal()
-                                  .toString()
-                                  .split('.')
-                                  .first
-                            }),
-                        style: const TextStyle(
-                            color: Colors.white54, fontSize: 12)),
-                    const SizedBox(height: 10),
-                    if (plan.notes.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                            color:
-                                const Color(0xFF0B2E5A).withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                                color: accent.withValues(alpha: 0.2))),
-                        child: Text(plan.notes,
-                            style: const TextStyle(color: Colors.white70)),
-                      ),
-                    const SizedBox(height: 12),
-                    ...plan.entries.map((e) => Card(
-                          color: const Color(0xFF0B2E5A).withValues(alpha: 0.6),
-                          shape: RoundedRectangleBorder(
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              color: const Color(0xFF0B2E5A)
+                                  .withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(12),
-                              side: BorderSide(
-                                  color: accent.withValues(alpha: 0.18))),
-                          child: ListTile(
-                            title: Text(e.exercise,
-                                style: const TextStyle(
-                                    color: Color(0xFFFFD700),
-                                    fontWeight: FontWeight.w700)),
-                            subtitle: Text(
-                                '${Translations.withParams('plan_entry_core', language: lang, params: {
-                                      'sets': e.sets.toString(),
-                                      'rest': e.restSeconds.toString()
-                                    })}${e.timeSeconds > 0 ? Translations.withParams('plan_entry_time', language: lang, params: {
-                                        'time': e.timeSeconds.toString()
-                                      }) : ''}',
-                                style: const TextStyle(color: Colors.white70)),
+                              border: Border.all(
+                                  color: accent.withValues(alpha: 0.2))),
+                          child: Text(
+                            plan.notes.isNotEmpty
+                                ? plan.notes
+                                : Translations.get('no_notes', language: lang),
+                            style: const TextStyle(color: Colors.white70),
                           ),
-                        ))
-                  ],
-                );
-              },
-            ),
-          ),
+                        ),
+                        const SizedBox(height: 20),
+                        if (plan.entries.isNotEmpty) ...[
+                          Text(
+                            Translations.get('training_plan', language: lang),
+                            style: const TextStyle(
+                              color: Color(0xFFFFD700),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          ...plan.entries.map((entry) {
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    const Color(0xFF0B2E5A)
+                                        .withValues(alpha: 0.6),
+                                    const Color(0xFF0E3D8C)
+                                        .withValues(alpha: 0.4),
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: accent.withValues(alpha: 0.2),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                                border: Border.all(
+                                  color: accent.withValues(alpha: 0.4),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                title: Text(
+                                  localizedExerciseName(entry.exercise, lang),
+                                  style: const TextStyle(
+                                    color: Color(0xFFFFD700),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  entry.timeSeconds > 0
+                                      ? '${entry.sets} ${lang == 'PL' ? 'serie' : lang == 'NO' ? 'sett' : 'sets'} × ${entry.timeSeconds}s | ${lang == 'PL' ? 'Przerwa' : lang == 'NO' ? 'Pause' : 'Rest'}: ${entry.restSeconds}s'
+                                      : '${entry.sets} ${lang == 'PL' ? 'serie' : lang == 'NO' ? 'sett' : 'sets'} | ${lang == 'PL' ? 'Przerwa' : lang == 'NO' ? 'Pause' : 'Rest'}: ${entry.restSeconds}s',
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                trailing: const Icon(
+                                  Icons.fitness_center,
+                                  color: Color(0xFFFFD700),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    createFadeSlideRoute(
+                                      ExerciseDetailScreen(
+                                        exerciseName: entry.exercise,
+                                        themeColor: accent,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          }),
+                        ],
+                      ],
+                    );
+                  },
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -2772,9 +3226,22 @@ class _ProgressChartState extends State<ProgressChart> {
         // For weight-based exercises, use weight * reps
         final w = double.tryParse(h.weight.trim()) ?? 0.0;
         final r = double.tryParse(h.reps.trim()) ?? 0.0;
-        final raw = w * r;
+        // If weight is 0, use reps value for chart (bodyweight exercises)
+        final raw = w > 0 ? (w * r) : r;
         return raw > 0 ? raw : 0.0;
       }
+    }).toList();
+
+    final xLabels = widget.history.map((h) {
+      if (isTimeBased) {
+        return '${h.durationSeconds}s';
+      }
+      // If weight is 0, show only reps (bodyweight exercise)
+      final w = double.tryParse(h.weight.trim()) ?? 0.0;
+      if (w == 0.0) {
+        return '${h.reps} reps';
+      }
+      return '${h.weight} kg × ${h.reps}';
     }).toList();
 
     final maxVal = values.fold<double>(0.0, (prev, v) => v > prev ? v : prev);
@@ -2816,7 +3283,7 @@ class _ProgressChartState extends State<ProgressChart> {
                   final localPosition =
                       box.globalToLocal(details.globalPosition);
 
-                  final double h = constraints.maxHeight - 12;
+                  final double h = constraints.maxHeight - 30;
                   final double w = constraints.maxWidth;
                   final int n = values.length;
 
@@ -2863,7 +3330,9 @@ class _ProgressChartState extends State<ProgressChart> {
                           values: values,
                           accent: widget.accentColor,
                           maxVal: maxVal,
-                          selectedIndex: _selectedIndex),
+                          xLabels: xLabels,
+                          selectedIndex: _selectedIndex,
+                          isTimeBased: isTimeBased),
                     ),
                     if (_selectedIndex != null && _tapPosition != null)
                       Positioned(
@@ -2943,18 +3412,22 @@ class _LineChartPainter extends CustomPainter {
   final Color accent;
   final double maxVal;
   final int? selectedIndex;
+  final bool isTimeBased;
+  final List<String> xLabels;
 
   _LineChartPainter(
       {required this.values,
       required this.accent,
       required this.maxVal,
-      this.selectedIndex});
+      required this.xLabels,
+      this.selectedIndex,
+      this.isTimeBased = false});
 
   @override
   void paint(Canvas canvas, Size size) {
     if (values.isEmpty) return;
     final double maxValue = maxVal == 0.0 ? 1.0 : maxVal;
-    final double h = size.height - 12;
+    final double h = size.height - 36; // Reserve space for labels at bottom
     final double w = size.width;
     final int n = values.length;
 
@@ -2971,6 +3444,26 @@ class _LineChartPainter extends CustomPainter {
     for (int i = 0; i <= 4; i++) {
       final double y = h * i / 4;
       canvas.drawLine(Offset(0, y), Offset(w, y), gridPaint);
+
+      // Draw Y-axis labels (values)
+      final value = maxValue * (1 - i / 4);
+      final String labelText = isTimeBased
+          ? '${value.toStringAsFixed(0)}s'
+          : value.toStringAsFixed(0);
+
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: labelText,
+          style: const TextStyle(
+            color: Color(0xFFFFD700),
+            fontSize: 10,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(canvas,
+          Offset(w - textPainter.width - 2, y - textPainter.height / 2));
     }
 
     // Draw baseline
@@ -2979,7 +3472,7 @@ class _LineChartPainter extends CustomPainter {
       ..strokeWidth = 1.5;
     canvas.drawLine(Offset(0, h), Offset(w, h), basePaint);
 
-    // Draw bars
+    // Draw bars and labels
     for (int i = 0; i < n; i++) {
       final double x = spacing + (barWidth + spacing) * i;
       final double barHeight = (values[i] / maxValue) * h;
@@ -3019,44 +3512,46 @@ class _LineChartPainter extends CustomPainter {
       // Draw border for selected bar
       if (isSelected) {
         final borderPaint = Paint()
-          ..color = Colors.white
+          ..color = const Color(0xFFFFD700)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.0;
         canvas.drawRRect(rrect, borderPaint);
       }
+
+      // Draw X-axis label (set number) below each bar
+      final String bottomLabel = i < xLabels.length ? xLabels[i] : '${i + 1}';
+      final labelPainter = TextPainter(
+        text: TextSpan(
+          text: bottomLabel,
+          style: const TextStyle(
+            color: Color(0xFFFFD700),
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      labelPainter.layout();
+      labelPainter.paint(
+        canvas,
+        Offset(x + barWidth / 2 - labelPainter.width / 2, h + 8),
+      );
     }
   }
 
   @override
   bool shouldRepaint(covariant _LineChartPainter oldDelegate) =>
       selectedIndex != oldDelegate.selectedIndex ||
-      values != oldDelegate.values;
+      values != oldDelegate.values ||
+      isTimeBased != oldDelegate.isTimeBased;
 }
 
-class CategoryScreen extends StatelessWidget {
+class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
-
-  Widget _categoryBackground(String path) {
-    final lower = path.toLowerCase();
-    final Widget child = lower.endsWith('.svg')
-        ? SvgPicture.asset(path, fit: BoxFit.cover)
-        : Image.asset(path, fit: BoxFit.cover);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: child,
-    );
-  }
 
   static const Color _navy = Color(0xFF0B2E5A);
   static const Color _gold = Color(0xFFFFD700);
   static const List<Map<String, dynamic>> categories = [
-    {
-      'name': 'PLAN',
-      'icon': Icons.assignment,
-      'color': _gold,
-      'isPlan': true,
-      'image': 'assets/mojelogo.svg',
-    },
     {
       'name': 'CHEST',
       'icon': Icons.fitness_center,
@@ -3070,10 +3565,23 @@ class CategoryScreen extends StatelessWidget {
       'image': 'assets/plecy.svg',
     },
     {
+      'name': 'LEGS',
+      'icon': Icons.directions_walk,
+      'color': _navy,
+      'image': 'assets/nogi.svg',
+    },
+    {
       'name': 'BICEPS',
       'icon': Icons.bolt,
       'color': _navy,
       'image': 'assets/biceps.svg',
+    },
+    {
+      'name': 'PLAN',
+      'icon': Icons.assignment,
+      'color': _gold,
+      'isPlan': true,
+      'image': 'assets/mojelogo.svg',
     },
     {
       'name': 'TRICEPS',
@@ -3082,22 +3590,10 @@ class CategoryScreen extends StatelessWidget {
       'image': 'assets/triceps.svg',
     },
     {
-      'name': 'SHOULDERS',
-      'icon': Icons.architecture,
-      'color': _navy,
-      'image': 'assets/barki.svg',
-    },
-    {
       'name': 'ABS',
       'icon': Icons.grid_view,
       'color': _navy,
       'image': 'assets/brzuch.svg',
-    },
-    {
-      'name': 'LEGS',
-      'icon': Icons.directions_walk,
-      'color': _navy,
-      'image': 'assets/nogi.svg',
     },
     {
       'name': 'FOREARMS',
@@ -3105,16 +3601,61 @@ class CategoryScreen extends StatelessWidget {
       'color': _navy,
       'image': 'assets/przedramie.svg',
     },
+    {
+      'name': 'SHOULDERS',
+      'icon': Icons.architecture,
+      'color': _navy,
+      'image': 'assets/barki.svg',
+    },
   ];
+
+  @override
+  State<CategoryScreen> createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Precache PNG images only
+    for (var cat in CategoryScreen.categories) {
+      final imagePath = cat['image'] as String?;
+      if (imagePath != null && !imagePath.toLowerCase().endsWith('.svg')) {
+        precacheImage(AssetImage(imagePath), context);
+      }
+    }
+  }
+
+  Widget _categoryBackground(String path) {
+    final lower = path.toLowerCase();
+    final Widget child = lower.endsWith('.svg')
+        ? SvgPicture.asset(
+            path,
+            fit: BoxFit.cover,
+            placeholderBuilder: (context) =>
+                Container(color: Colors.transparent),
+          )
+        : Image.asset(
+            path,
+            fit: BoxFit.cover,
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+              if (wasSynchronouslyLoaded) return child;
+              return frame != null
+                  ? child
+                  : Container(color: Colors.transparent);
+            },
+          );
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: child,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
       valueListenable: globalLanguageNotifier,
       builder: (context, lang, _) {
-        final theme = Theme.of(context);
-        const Color cardBlue1 = Color(0xFF0B2E5A);
-        const Color cardBlue2 = Color(0xFF0E3D8C);
         const Color gold = Color(0xFFFFD700);
 
         return Scaffold(
@@ -3126,140 +3667,222 @@ class CategoryScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final double tileSize = (constraints.maxWidth - 24) / 3;
+            child: Column(
+              children: [
+                // Pasek z nazwą zalogowanego użytkownika (jeśli zalogowany)
+                ValueListenableBuilder<PlanAccessState>(
+                  valueListenable: PlanAccessController.instance.notifier,
+                  builder: (context, state, _) {
+                    if (state.isAuthenticated && state.userEmail != null) {
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                          color:
+                              const Color(0xFF0B2E5A).withValues(alpha: 0.85),
+                          border: Border(
+                            bottom: BorderSide(
+                              color: const Color(0xFFFFD700)
+                                  .withValues(alpha: 0.5),
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.person,
+                                color: Color(0xFFFFD700), size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              state.userEmail!,
+                              style: const TextStyle(
+                                color: Color(0xFFFFD700),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const Spacer(),
+                            TextButton.icon(
+                              onPressed: () async {
+                                await PlanAccessController.instance.signOut();
+                                if (context.mounted) {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const StartChoiceScreen()),
+                                    (route) => false,
+                                  );
+                                }
+                              },
+                              icon: const Icon(Icons.logout,
+                                  color: Colors.red, size: 18),
+                              label: Text(
+                                lang == 'PL'
+                                    ? 'Wyloguj'
+                                    : lang == 'NO'
+                                        ? 'Logg ut'
+                                        : 'Log out',
+                                style: const TextStyle(
+                                    color: Colors.red, fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final double tileSize = (constraints.maxWidth - 32) / 3;
 
-                  Widget buildCategoryTile(Map<String, dynamic> cat) {
-                    final color = cat['color'] as Color;
-                    final bool isPlan = (cat['isPlan'] as bool?) ?? false;
-                    final String? imagePath = cat['image'] as String?;
-                    final String name = cat['name'] as String;
-                    final displayName = localizedCategoryName(name, lang);
+                        Widget buildCategoryTile(Map<String, dynamic> cat) {
+                          final color = cat['color'] as Color;
+                          final bool isPlan = (cat['isPlan'] as bool?) ?? false;
+                          final String? imagePath = cat['image'] as String?;
+                          final String name = cat['name'] as String;
+                          final displayName = localizedCategoryName(name, lang);
 
-                    void handleTap() {
-                      if (isPlan) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PlanImportScreen(
+                          void handleTap() {
+                            if (isPlan) {
+                              final state =
+                                  PlanAccessController.instance.notifier.value;
+                              if (state.isAuthenticated &&
+                                  state.role == PlanUserRole.client) {
+                                Navigator.push(
+                                    context,
+                                    createFadeSlideRoute(PlanOnlineScreen(
                                       themeColor: color,
                                     )));
-                        return;
-                      }
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ExerciseListScreen(
-                                  category: name, themeColor: color)));
-                    }
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    createFadeSlideRoute(PlanImportScreen(
+                                      themeColor: color,
+                                    )));
+                              }
+                              return;
+                            }
+                            Navigator.push(
+                                context,
+                                createFadeSlideRoute(ExerciseListScreen(
+                                    category: name, themeColor: color)));
+                          }
 
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: handleTap,
-                      child: Container(
-                        width: tileSize,
-                        height: tileSize,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0xFFFFD700).withValues(alpha: 0.25),
-                              const Color(0xFFFFD700).withValues(alpha: 0.15)
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                                color: const Color(0xFFFFD700)
-                                    .withValues(alpha: 0.3),
-                                blurRadius: 14,
-                                offset: const Offset(0, 8))
-                          ],
-                          border: Border.all(
-                              color: gold.withValues(alpha: 0.9), width: 2.5),
-                        ),
-                        child: Stack(
-                          children: [
-                            if (imagePath != null)
-                              Positioned.fill(
-                                child: _categoryBackground(imagePath),
-                              ),
-                            Positioned.fill(
+                          return TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0.95, end: 1.0),
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOutBack,
+                            builder: (context, scale, child) {
+                              return Transform.scale(
+                                scale: scale,
+                                child: child,
+                              );
+                            },
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: handleTap,
                               child: Container(
+                                width: tileSize,
+                                height: tileSize,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16),
                                   gradient: LinearGradient(
                                     colors: [
-                                      const Color(0xFF0B2E5A)
-                                          .withValues(alpha: 0.2),
-                                      cardBlue2.withValues(alpha: 0.06)
+                                      const Color(0xFFFFD700)
+                                          .withValues(alpha: 0.25),
+                                      const Color(0xFFFFD700)
+                                          .withValues(alpha: 0.15)
                                     ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: const Color(0xFFFFD700)
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 14,
+                                        offset: const Offset(0, 8))
+                                  ],
+                                  border: Border.all(
+                                      color: gold.withValues(alpha: 0.9),
+                                      width: 2.5),
                                 ),
-                              ),
-                            ),
-                            Positioned(
-                              top: 16,
-                              left: 0,
-                              right: 0,
-                              child: Text(
-                                displayName,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Color(0xFFFFD700),
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 18,
-                                  shadows: [
-                                    Shadow(
-                                      color: Color(0xFF0B2E5A),
-                                      blurRadius: 8,
-                                      offset: Offset(0, 2),
+                                child: Stack(
+                                  children: [
+                                    if (imagePath != null)
+                                      Positioned.fill(
+                                        child: _categoryBackground(imagePath),
+                                      ),
+                                    Positioned.fill(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xFF0B2E5A)
+                                                  .withValues(alpha: 0.2),
+                                              const Color(0xFF0E3D8C)
+                                                  .withValues(alpha: 0.06)
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 16,
+                                      left: 0,
+                                      right: 0,
+                                      child: Text(
+                                        displayName,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Color(0xFFFFD700),
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 18,
+                                          shadows: [
+                                            Shadow(
+                                              color: Color(0xFF0B2E5A),
+                                              blurRadius: 8,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
+                          );
+                        }
 
-                  // Separate PLAN and other categories
-                  final planCategory = categories[0]; // PLAN is first
-                  final otherCategories = categories.sublist(1);
-
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        // First row: PLAN in center
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            buildCategoryTile(planCategory),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        // Remaining categories in 3-column grid
-                        Wrap(
-                          spacing: 12,
-                          runSpacing: 12,
-                          alignment: WrapAlignment.center,
-                          children: otherCategories
-                              .map((cat) => buildCategoryTile(cat))
-                              .toList(),
-                        ),
-                      ],
+                        return Center(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Wrap(
+                              spacing: 16,
+                              runSpacing: 16,
+                              alignment: WrapAlignment.center,
+                              children: CategoryScreen.categories
+                                  .map((cat) => buildCategoryTile(cat))
+                                  .toList(),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -3282,6 +3905,7 @@ class ExerciseListScreen extends StatefulWidget {
 class _ExerciseListScreenState extends State<ExerciseListScreen> {
   List<String> _exercises = [];
   Map<String, String> _recs = {};
+  bool _isLoading = true;
   static const Map<String, String> _categoryAliases = {
     'KLATA': 'CHEST',
     'CHEST': 'CHEST',
@@ -3304,17 +3928,60 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     return _categoryAliases[raw] ?? raw;
   }
 
+  String _normalizeCategoryKey(String raw) {
+    final upper = raw.trim().toUpperCase();
+    return _categoryAliases[upper] ?? upper;
+  }
+
+  bool _entryMatchesCategory(ClientPlanEntry entry, String category) {
+    final entryCategory = entry.category?.trim() ?? '';
+    if (entryCategory.isNotEmpty) {
+      return _normalizeCategoryKey(entryCategory) == category;
+    }
+    final inferred =
+        kExerciseCategoryByName[entry.exercise.trim().toLowerCase()];
+    if (inferred == null) return false;
+    return _normalizeCategoryKey(inferred) == category;
+  }
+
   String get _prefsKey => 'ex_$_normalizedCategory';
 
   @override
   void initState() {
     super.initState();
     _load();
+    PlanAccessController.instance.notifier.addListener(_load);
+  }
+
+  @override
+  void dispose() {
+    PlanAccessController.instance.notifier.removeListener(_load);
+    super.dispose();
   }
 
   Future<void> _load() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final prefs = await SharedPreferences.getInstance();
     List<String> list = prefs.getStringList(_prefsKey) ?? [];
+
+    final state = PlanAccessController.instance.notifier.value;
+    if (state.isAuthenticated && state.role == PlanUserRole.client) {
+      final email = state.userEmail ?? '';
+      ClientPlan? plan = state.activePlan;
+      if ((plan == null) && email.isNotEmpty) {
+        plan = await PlanAccessController.instance.fetchPlanForEmail(email);
+      }
+      final entries = plan?.entries ?? const <ClientPlanEntry>[];
+      final category = _normalizedCategory;
+      list = entries
+          .where((entry) => _entryMatchesCategory(entry, category))
+          .map((entry) => entry.exercise)
+          .toSet()
+          .toList(growable: false);
+    }
 
     // Do not auto-seed; start empty until user adds exercises.
     Map<String, String> lastRecs = {};
@@ -3325,9 +3992,14 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         final last =
             ExerciseLog.fromJson(jsonDecode(logs.last), defaultExercise: ex);
         if (last.durationSeconds > 0) {
-          final restTime =
-              last.reps.isNotEmpty ? ' | Przerwa: ${last.reps}s' : '';
-          lastRecs[ex] = "${last.durationSeconds}s$restTime";
+          // For time-based exercises: show both measured and planned time
+          final planned =
+              last.plannedTime != null && last.plannedTime!.isNotEmpty
+                  ? last.plannedTime
+                  : '?';
+          final rest = last.reps.isNotEmpty ? ' | Rest: ${last.reps}s' : '';
+          lastRecs[ex] =
+              "Planned: ${planned}s | Measured: ${last.durationSeconds}s$rest";
         } else {
           lastRecs[ex] = "${last.weight} kg x ${last.reps}";
         }
@@ -3337,6 +4009,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
       setState(() {
         _exercises = list;
         _recs = lastRecs;
+        _isLoading = false;
       });
     }
   }
@@ -3512,7 +4185,6 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
   void _showAddExerciseSheet(Color accent, String lang) {
     final customController = TextEditingController();
     final searchController = TextEditingController();
-    bool isTimeBased = false;
     String searchQuery = '';
     showModalBottomSheet(
       context: context,
@@ -3540,7 +4212,15 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
             final available = categoryExercisesInCategory
                 .where((name) => !existingLower.contains(name.toLowerCase()))
                 .map((ex) {
-                  final localized = kExerciseTranslations[ex]?[lang] ?? ex;
+                  // Wyciągnij polską nazwę jako klucz do tłumaczeń
+                  String polishKey = ex;
+                  if (ex.contains(' ◆ ')) {
+                    polishKey = ex.split(' ◆ ')[0].trim();
+                  } else if (ex.contains(' � ')) {
+                    polishKey = ex.split(' � ')[0].trim();
+                  }
+                  final localized = kExerciseTranslations[polishKey]?[lang] ??
+                      localizedExerciseName(ex, lang);
                   return {
                     'original': ex,
                     'display': localized,
@@ -3598,33 +4278,32 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                 if (available.isNotEmpty)
                   SizedBox(
                     height: 300,
-                    child: RawScrollbar(
-                      thumbColor: const Color(0xFFFFD700),
-                      radius: const Radius.circular(8),
-                      thickness: 6,
-                      thumbVisibility: true,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: available.length,
-                        itemBuilder: (ctx, idx) {
-                          final item = available[idx];
-                          final originalName = item['original']!;
-                          final displayName = item['display']!;
-                          final isTime =
-                              kTimeBasedExercises.contains(originalName);
-                          return ListTile(
-                            dense: true,
-                            title: Text(displayName,
-                                style:
-                                    const TextStyle(color: Color(0xFFFFD700))),
-                            onTap: () async {
-                              await _addExercise(originalName,
-                                  isTimeBased: isTime);
-                              if (ctx.mounted) Navigator.pop(ctx);
-                            },
-                          );
-                        },
-                      ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: available.length,
+                      itemBuilder: (ctx, idx) {
+                        final item = available[idx];
+                        final originalName = item['original']!;
+                        final displayName = item['display']!;
+                        // Wyciągnij polską nazwę do sprawdzenia czy jest czasowe
+                        String polishName = originalName;
+                        if (originalName.contains(' ◆ ')) {
+                          polishName = originalName.split(' ◆ ')[0].trim();
+                        } else if (originalName.contains(' � ')) {
+                          polishName = originalName.split(' � ')[0].trim();
+                        }
+                        final isTime = kTimeBasedExercises.contains(polishName);
+                        return ListTile(
+                          dense: true,
+                          title: Text(displayName,
+                              style: const TextStyle(color: Color(0xFFFFD700))),
+                          onTap: () async {
+                            await _addExercise(originalName,
+                                isTimeBased: isTime);
+                            if (ctx.mounted) Navigator.pop(ctx);
+                          },
+                        );
+                      },
                     ),
                   )
                 else
@@ -3777,111 +4456,169 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     return ValueListenableBuilder<String>(
         valueListenable: globalLanguageNotifier,
         builder: (context, lang, _) {
-          return Scaffold(
-            appBar: buildCustomAppBar(context, accentColor: accent),
-            body: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/tlo.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Column(children: [
-                Expanded(
-                    child: _exercises.isEmpty
-                        ? Center(
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 24.0),
-                                child: Text(
-                                    Translations.get('no_exercises_yet',
-                                        language: lang),
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                        color: Color(0xFFFFD700)))))
-                        : ListView.builder(
-                            padding: const EdgeInsets.all(16),
-                            itemCount: _exercises.length,
-                            itemBuilder: (ctx, i) {
-                              final name = _exercises[i];
-                              final displayName =
-                                  localizedExerciseName(name, lang);
-                              final rec = _recs[name] ??
-                                  Translations.get('no_data', language: lang);
-                              return Container(
-                                  margin: const EdgeInsets.only(bottom: 12),
-                                  child: Card(
-                                    color: Theme.of(context).cardColor,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    child: ListTile(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 12),
-                                      onTap: () {
-                                        Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
+          return ValueListenableBuilder<PlanAccessState>(
+              valueListenable: PlanAccessController.instance.notifier,
+              builder: (context, state, __) {
+                final isClient =
+                    state.isAuthenticated && state.role == PlanUserRole.client;
+                return Scaffold(
+                  appBar: buildCustomAppBar(context, accentColor: accent),
+                  body: Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/tlo.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Column(children: [
+                      Expanded(
+                        child: _isLoading
+                            ? ListView.builder(
+                                padding: const EdgeInsets.all(16),
+                                itemCount: 8,
+                                itemBuilder: (context, index) =>
+                                    buildShimmerCard(),
+                              )
+                            : _exercises.isEmpty
+                                ? Center(
+                                    child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 24.0),
+                                        child: Text(
+                                            Translations.get('no_exercises_yet',
+                                                language: lang),
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                                color: Color(0xFFFFD700)))))
+                                : ListView.builder(
+                                    padding: const EdgeInsets.all(16),
+                                    itemCount: _exercises.length,
+                                    itemBuilder: (ctx, i) {
+                                      final name = _exercises[i];
+                                      final displayName =
+                                          localizedExerciseName(name, lang);
+                                      final rec = _recs[name] ??
+                                          Translations.get('no_data',
+                                              language: lang);
+                                      return Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 12),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xFF0B2E5A)
+                                                  .withValues(alpha: 0.6),
+                                              const Color(0xFF0E3D8C)
+                                                  .withValues(alpha: 0.4),
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: accent.withValues(
+                                                  alpha: 0.25),
+                                              blurRadius: 16,
+                                              offset: const Offset(0, 6),
+                                            ),
+                                            BoxShadow(
+                                              color: Colors.black
+                                                  .withValues(alpha: 0.2),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                          border: Border.all(
+                                            color:
+                                                accent.withValues(alpha: 0.35),
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 16, vertical: 12),
+                                          onTap: () {
+                                            Navigator.push(
+                                                    context,
+                                                    createFadeSlideRoute(
                                                         ExerciseDetailScreen(
                                                             exerciseName: name,
                                                             themeColor:
                                                                 accent)))
-                                            .then((_) => _load());
-                                      },
-                                      onLongPress: () {
-                                        _showEditDeleteMenu(name);
-                                      },
-                                      leading: CircleAvatar(
-                                          radius: 22,
-                                          backgroundColor: accent,
-                                          child: Text(
-                                              displayName.isNotEmpty
-                                                  ? displayName[0].toUpperCase()
-                                                  : '?',
+                                                .then((_) => _load());
+                                          },
+                                          onLongPress: isClient
+                                              ? null
+                                              : () {
+                                                  _showEditDeleteMenu(name);
+                                                },
+                                          leading: Hero(
+                                            tag: 'exercise_$name',
+                                            child: CircleAvatar(
+                                                radius: 22,
+                                                backgroundColor: accent,
+                                                child: Text(
+                                                    displayName.isNotEmpty
+                                                        ? displayName[0]
+                                                            .toUpperCase()
+                                                        : '?',
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Color(0xFFFFD700),
+                                                        fontWeight:
+                                                            FontWeight.bold))),
+                                          ),
+                                          title: Text(displayName,
                                               style: const TextStyle(
                                                   color: Color(0xFFFFD700),
-                                                  fontWeight:
-                                                      FontWeight.bold))),
-                                      title: Text(displayName,
-                                          style: const TextStyle(
-                                              color: Color(0xFFFFD700),
-                                              fontWeight: FontWeight.bold)),
-                                      subtitle: Text(
-                                          "${Translations.get('latest', language: lang)}: $rec",
-                                          style: const TextStyle(
-                                              color: Color(0xFFFFD700))),
-                                      trailing: IconButton(
-                                          onPressed: () {
-                                            _showEditDeleteMenu(name);
-                                          },
-                                          icon: const Icon(Icons.more_vert,
-                                              color: Color(0xFFFFD700))),
-                                    ),
-                                  ));
-                            },
-                          )),
-              ]),
-            ),
-            floatingActionButton: FloatingActionButton.extended(
-                backgroundColor: const Color(0xFFFFD700),
-                onPressed: () => _showAddExerciseSheet(accent, lang),
-                elevation: 8,
-                label: Text(
-                  Translations.get('add_exercise_title', language: lang),
-                  style: const TextStyle(
-                    color: Color(0xFF0B2E5A),
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
+                                                  fontWeight: FontWeight.bold)),
+                                          subtitle: Text(
+                                              "${Translations.get('latest', language: lang)}: $rec",
+                                              style: const TextStyle(
+                                                  color: Color(0xFFFFD700))),
+                                          trailing: isClient
+                                              ? null
+                                              : IconButton(
+                                                  onPressed: () {
+                                                    _showEditDeleteMenu(name);
+                                                  },
+                                                  icon: const Icon(
+                                                      Icons.more_vert,
+                                                      color:
+                                                          Color(0xFFFFD700))),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                      ),
+                    ]),
                   ),
-                ),
-                icon: const Icon(
-                  Icons.add,
-                  color: Color(0xFF0B2E5A),
-                  size: 24,
-                )),
-          );
+                  floatingActionButton: isClient
+                      ? null
+                      : FloatingActionButton.extended(
+                          backgroundColor: const Color(0xFFFFD700),
+                          onPressed: () => _showAddExerciseSheet(accent, lang),
+                          elevation: 8,
+                          label: Text(
+                            Translations.get('add_exercise_title',
+                                language: lang),
+                            style: const TextStyle(
+                              color: Color(0xFF0B2E5A),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 15,
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.add,
+                            color: Color(0xFF0B2E5A),
+                            size: 24,
+                          ),
+                        ),
+                );
+              });
         });
   }
 }
@@ -3904,6 +4641,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   final _tController = TextEditingController();
   final _restController = TextEditingController();
 
+  int? _plannedSets;
+  int? _plannedRestSeconds;
+
   bool _isTimeBased = false;
   Timer? _setTimer;
   DateTime? _setStart;
@@ -3924,8 +4664,21 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     super.initState();
     _audioPlayerInit();
     _animControllerInit();
-    _loadHistory();
     _loadAutoStart();
+    // First load plan config (which sets isTimeBased and saves to SharedPreferences),
+    // then load history (which reads from SharedPreferences)
+    _loadPlanConfig().then((_) => _loadHistory());
+    PlanAccessController.instance.notifier.addListener(_onPlanChanged);
+
+    // Sync rest time from _restController to _totalRestSeconds
+    _restController.addListener(() {
+      final value = int.tryParse(_restController.text);
+      if (value != null && value > 0 && value <= 600) {
+        setState(() {
+          _totalRestSeconds = value;
+        });
+      }
+    });
   }
 
   void _audioPlayerInit() {
@@ -3937,10 +4690,15 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         vsync: this, duration: const Duration(milliseconds: 600));
   }
 
+  void _onPlanChanged() {
+    _loadPlanConfig().then((_) => _loadHistory());
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
     _setTimer?.cancel();
+    PlanAccessController.instance.notifier.removeListener(_onPlanChanged);
     try {
       _audioPlayer.dispose();
     } catch (_) {}
@@ -4105,57 +4863,26 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     });
   }
 
-  void _promptNextSet(int nextSet) {
-    if (!mounted) return;
-    final lang = globalLanguage;
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.clearSnackBars();
-    messenger.showSnackBar(SnackBar(
-      content: Text(Translations.withParams('prompt_next_set',
-          language: lang, params: {'set': nextSet.toString()})),
-      action: SnackBarAction(
-        label: Translations.withParams('prompt_next_set_action',
-            language: lang, params: {'set': nextSet.toString()}),
-        onPressed: () {
-          setState(() {
-            _sController.text = nextSet.toString();
-          });
-        },
-      ),
-    ));
-  }
-
   Future<void> _notifyEnd() async {
     final lang = globalLanguage;
     final exName = localizedExerciseName(widget.exerciseName, lang);
-    try {
-      if (await Vibration.hasVibrator() == true) {
-        if (await Vibration.hasCustomVibrationsSupport() == true) {
-          Vibration.vibrate(pattern: [0, 300, 120, 300]);
-        } else {
-          await Vibration.vibrate(duration: 500);
-        }
-      }
-    } catch (_) {}
-    try {
-      await _audioPlayer.play(AssetSource('sounds/alert.mp3'));
-    } catch (_) {}
-    try {
-      HapticFeedback.heavyImpact();
-    } catch (_) {}
-    try {
-      await NotificationService.instance.showNotification(
-          title: Translations.get('rest_finished_title', language: lang),
-          body: Translations.withParams('rest_finished_body',
-              language: lang, params: {'exercise': exName}));
-    } catch (_) {}
+    await restEndActions.notifyRestFinished(
+        exerciseName: exName, language: lang, audioPlayer: _audioPlayer);
   }
 
   Future<void> _loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getStringList('history_${widget.exerciseName}') ?? [];
-    final bool isTime =
-        prefs.getBool('ex_type_time_${widget.exerciseName}') ?? false;
+
+    // First check SharedPreferences
+    bool isTime = prefs.getBool('ex_type_time_${widget.exerciseName}') ?? false;
+
+    // If not in SharedPreferences, check kTimeBasedExercises
+    if (!isTime) {
+      isTime = kTimeBasedExercises.contains(widget.exerciseName) ||
+          kTimeBasedExercises.contains(widget.exerciseName.trim());
+    }
+
     if (mounted) {
       setState(() {
         _history.clear();
@@ -4182,6 +4909,83 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         }
       });
     }
+  }
+
+  Future<void> _loadPlanConfig() async {
+    final state = PlanAccessController.instance.notifier.value;
+    if (!state.isAuthenticated || state.role != PlanUserRole.client) return;
+
+    final plan = state.activePlan;
+    if (plan == null) return;
+
+    ClientPlanEntry? entry;
+    final target = widget.exerciseName.trim().toLowerCase();
+    for (final e in plan.entries) {
+      if (e.exercise.trim().toLowerCase() == target) {
+        entry = e;
+        break;
+      }
+    }
+
+    // If not found, also check kTimeBasedExercises as fallback
+    if (entry == null) {
+      final isTimeBasedFallback =
+          kTimeBasedExercises.contains(widget.exerciseName.trim());
+      if (isTimeBasedFallback) {
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('ex_type_time_${widget.exerciseName}', true);
+        } catch (_) {}
+        if (mounted) {
+          setState(() {
+            _isTimeBased = true;
+          });
+        }
+      }
+      return;
+    }
+
+    final isTimeBased = entry.timeSeconds > 0;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('ex_type_time_${widget.exerciseName}', isTimeBased);
+    } catch (_) {}
+
+    if (mounted) {
+      setState(() {
+        _plannedSets = entry!.sets > 0 ? entry.sets : null;
+        _plannedRestSeconds = entry.restSeconds > 0 ? entry.restSeconds : null;
+        _isTimeBased = isTimeBased;
+        if (isTimeBased && entry.timeSeconds > 0) {
+          _wController.text = entry.timeSeconds.toString();
+        }
+        if (_plannedRestSeconds != null) {
+          _totalRestSeconds = _plannedRestSeconds!;
+          if (!_isTimerRunning) {
+            _secondsRemaining = _totalRestSeconds;
+          }
+          if (_isTimeBased) {
+            _restController.text = _totalRestSeconds.toString();
+          }
+        }
+      });
+    }
+  }
+
+  void _showPlannedSetsWarning() {
+    if (!mounted || _plannedSets == null) return;
+    final lang = globalLanguage;
+    final count = _plannedSets!.toString();
+    final message = lang == 'PL'
+        ? 'Trener zalecił Ci $count serii.'
+        : lang == 'NO'
+            ? 'Treneren anbefalte $count sett.'
+            : 'Your coach recommends $count sets.';
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+    messenger.showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.orange),
+    );
   }
 
   void _showContinueOrResetDialog(int currentSetNum, int nextSetNum) {
@@ -4271,6 +5075,18 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     data.add(jsonEncode(log.toJson()));
     await prefs.setStringList('history_${widget.exerciseName}', data);
 
+    final state = PlanAccessController.instance.notifier.value;
+    if (state.isAuthenticated && state.role == PlanUserRole.client) {
+      final email = state.userEmail ?? '';
+      if (email.isNotEmpty) {
+        await PlanAccessController.instance.appendClientExerciseHistory(
+          email,
+          widget.exerciseName,
+          log.toJson(),
+        );
+      }
+    }
+
     try {
       if (await Vibration.hasVibrator() == true) {
         await Vibration.vibrate(duration: 40);
@@ -4284,6 +5100,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       _wController.clear();
     }
     _loadHistory();
+
+    if (_plannedSets != null && currentSetNum >= _plannedSets!) {
+      _showPlannedSetsWarning();
+    }
 
     if (currentSetNum == 3) {
       _showContinueOrResetDialog(3, 4);
@@ -4311,12 +5131,210 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     return "$mins:${secs.toString().padLeft(2, '0')}";
   }
 
-  double _progressValue() {
-    if (_totalRestSeconds == 0) return 0.0;
-    final int used =
-        (_totalRestSeconds - _secondsRemaining).clamp(0, _totalRestSeconds);
-    final double p = (used / _totalRestSeconds).clamp(0.0, 1.0);
-    return p;
+  List<Widget> _buildTimeBasedStats(String lang, Color accent) {
+    // Calculate statistics from history for time-based exercises
+    if (_history.isEmpty) return [];
+
+    final durations = _history
+        .where((h) => h.durationSeconds > 0)
+        .map((h) => h.durationSeconds)
+        .toList();
+
+    if (durations.isEmpty) return [];
+
+    durations.sort();
+    final avg = (durations.reduce((a, b) => a + b) / durations.length)
+        .toStringAsFixed(0);
+    final best = durations.last.toString();
+    final worst = durations.first.toString();
+
+    return [
+      const SizedBox(height: 16),
+      Text(
+        lang == 'PL'
+            ? 'Statystyki'
+            : lang == 'NO'
+                ? 'Statistikk'
+                : 'Statistics',
+        style:
+            TextStyle(color: accent, fontWeight: FontWeight.w800, fontSize: 16),
+      ),
+      const SizedBox(height: 10),
+      Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF0B2E5A).withValues(alpha: 0.6),
+                    const Color(0xFF0E3D8C).withValues(alpha: 0.4),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFFFD700).withValues(alpha: 0.2),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+                border: Border.all(
+                  color: const Color(0xFFFFD700).withValues(alpha: 0.3),
+                  width: 1.5,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      lang == 'PL'
+                          ? 'Średnia'
+                          : lang == 'NO'
+                              ? 'Gjennomsnitt'
+                              : 'Average',
+                      style: const TextStyle(
+                          color: Color(0xFFFFD700), fontSize: 12),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${avg}s',
+                      style: const TextStyle(
+                          color: Color(0xFFFFD700),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF0B2E5A).withValues(alpha: 0.6),
+                    const Color(0xFF1E5A3D).withValues(alpha: 0.4),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF4CAF50).withValues(alpha: 0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+                border: Border.all(
+                  color: const Color(0xFF4CAF50).withValues(alpha: 0.3),
+                  width: 1.5,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      lang == 'PL'
+                          ? 'Najlepiej'
+                          : lang == 'NO'
+                              ? 'Beste'
+                              : 'Best',
+                      style: const TextStyle(
+                          color: Color(0xFFFFD700), fontSize: 12),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${best}s',
+                      style: const TextStyle(
+                          color: Color(0xFFFFD700),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF0B2E5A).withValues(alpha: 0.6),
+                    const Color(0xFF5A1E1E).withValues(alpha: 0.4),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFF44336).withValues(alpha: 0.2),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+                border: Border.all(
+                  color: const Color(0xFFF44336).withValues(alpha: 0.25),
+                  width: 1.5,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      lang == 'PL'
+                          ? 'Najgorzej'
+                          : lang == 'NO'
+                              ? 'Verste'
+                              : 'Worst',
+                      style: const TextStyle(
+                          color: Color(0xFFFFD700), fontSize: 12),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${worst}s',
+                      style: const TextStyle(
+                          color: Color(0xFFFFD700),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ];
   }
 
   @override
@@ -4325,19 +5343,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     return ValueListenableBuilder<String>(
         valueListenable: globalLanguageNotifier,
         builder: (context, lang, _) {
-          final last = _history.isNotEmpty ? _history.last : null;
-          final String lastText;
-          if (last == null) {
-            lastText = Translations.get('no_history', language: lang);
-          } else {
-            final value = last.durationSeconds > 0
-                ? (last.reps.isNotEmpty
-                    ? "${last.durationSeconds}s | ${lang == 'PL' ? 'Przerwa' : lang == 'NO' ? 'Pause' : 'Rest'}: ${last.reps}s"
-                    : "${last.durationSeconds}s")
-                : "${last.weight} kg x ${last.reps}";
-            lastText = Translations.withParams('last_entry',
-                language: lang, params: {'value': value});
-          }
           final pauseResumeLabel = _isTimerRunning
               ? Translations.get('timer_pause', language: lang)
               : Translations.get('timer_resume', language: lang);
@@ -4352,30 +5357,60 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                 ),
               ),
               child: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: RawScrollbar(
-                        thumbColor: const Color(0xFFFFD700),
-                        radius: const Radius.circular(8),
-                        thickness: 6,
-                        thumbVisibility: true,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeOut,
+                  builder: (context, opacity, child) {
+                    return Opacity(
+                      opacity: opacity,
+                      child: child,
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Expanded(
                         child: ListView(
                           padding: const EdgeInsets.fromLTRB(16, 10, 16, 140),
                           children: [
-                            ProgressChart(
-                                history: _history,
-                                accentColor: accent,
-                                title: '',
-                                language: lang),
+                            RepaintBoundary(
+                              child: ProgressChart(
+                                  history: _history,
+                                  accentColor: accent,
+                                  title: '',
+                                  language: lang),
+                            ),
                             const SizedBox(height: 10),
-                            Card(
-                              color: const Color(0xFF0B2E5A)
-                                  .withValues(alpha: 0.5),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                  side: BorderSide(
-                                      color: accent.withValues(alpha: 0.2))),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    const Color(0xFF0B2E5A)
+                                        .withValues(alpha: 0.7),
+                                    const Color(0xFF0E3D8C)
+                                        .withValues(alpha: 0.5),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: accent.withValues(alpha: 0.3),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.3),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                                border: Border.all(
+                                  color: accent.withValues(alpha: 0.4),
+                                  width: 1.5,
+                                ),
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(14),
                                 child: Column(
@@ -4392,7 +5427,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                                 color: accent,
                                                 fontWeight: FontWeight.w700)),
                                         Text(
-                                            '${_totalRestSeconds ~/ 60}:${(_totalRestSeconds % 60).toString().padLeft(2, '0')}',
+                                            _isTimeBased
+                                                ? '${_totalRestSeconds}s'
+                                                : '${_totalRestSeconds ~/ 60}:${(_totalRestSeconds % 60).toString().padLeft(2, '0')}',
                                             style: const TextStyle(
                                                 color: Color(0xFFFFD700),
                                                 fontWeight: FontWeight.w700,
@@ -4404,31 +5441,56 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        IconButton(
-                                          onPressed: _isTimerRunning
-                                              ? null
-                                              : () {
-                                                  setState(() {
-                                                    if (_totalRestSeconds >
-                                                        10) {
-                                                      _totalRestSeconds -= 10;
-                                                      if (_isTimeBased) {
-                                                        _wController.text =
-                                                            _totalRestSeconds
-                                                                .toString();
+                                        Material(
+                                          color: Colors.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          child: InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            onTap: _isTimerRunning
+                                                ? null
+                                                : () {
+                                                    setState(() {
+                                                      if (_totalRestSeconds >
+                                                          30) {
+                                                        _totalRestSeconds -= 30;
+                                                        if (_isTimeBased) {
+                                                          _wController.text =
+                                                              _totalRestSeconds
+                                                                  .toString();
+                                                        }
                                                       }
-                                                    }
-                                                  });
-                                                },
-                                          icon: const Icon(Icons.remove_circle,
-                                              size: 40),
-                                          color: const Color(0xFFFFD700),
-                                          disabledColor: Colors.grey,
-                                          style: IconButton.styleFrom(
-                                            foregroundColor:
-                                                const Color(0xFFFFD700),
-                                            disabledForegroundColor:
-                                                Colors.grey,
+                                                    });
+                                                  },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    const Color(0xFFFFD700)
+                                                        .withValues(alpha: 0.9),
+                                                    const Color(0xFFFFC107)
+                                                        .withValues(alpha: 0.8),
+                                                  ],
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color:
+                                                        const Color(0xFFFFD700)
+                                                            .withValues(
+                                                                alpha: 0.4),
+                                                    blurRadius: 12,
+                                                    offset: const Offset(0, 4),
+                                                  ),
+                                                ],
+                                              ),
+                                              padding: const EdgeInsets.all(8),
+                                              child: const Icon(
+                                                  Icons.remove_circle,
+                                                  size: 32,
+                                                  color: Color(0xFF0B2E5A)),
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(width: 20),
@@ -4440,31 +5502,56 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                               fontWeight: FontWeight.bold),
                                         ),
                                         const SizedBox(width: 20),
-                                        IconButton(
-                                          onPressed: _isTimerRunning
-                                              ? null
-                                              : () {
-                                                  setState(() {
-                                                    if (_totalRestSeconds <
-                                                        600) {
-                                                      _totalRestSeconds += 10;
-                                                      if (_isTimeBased) {
-                                                        _wController.text =
-                                                            _totalRestSeconds
-                                                                .toString();
+                                        Material(
+                                          color: Colors.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          child: InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            onTap: _isTimerRunning
+                                                ? null
+                                                : () {
+                                                    setState(() {
+                                                      if (_totalRestSeconds <
+                                                          600) {
+                                                        _totalRestSeconds += 30;
+                                                        if (_isTimeBased) {
+                                                          _wController.text =
+                                                              _totalRestSeconds
+                                                                  .toString();
+                                                        }
                                                       }
-                                                    }
-                                                  });
-                                                },
-                                          icon: const Icon(Icons.add_circle,
-                                              size: 40),
-                                          color: const Color(0xFFFFD700),
-                                          disabledColor: Colors.grey,
-                                          style: IconButton.styleFrom(
-                                            foregroundColor:
-                                                const Color(0xFFFFD700),
-                                            disabledForegroundColor:
-                                                Colors.grey,
+                                                    });
+                                                  },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    const Color(0xFFFFD700)
+                                                        .withValues(alpha: 0.9),
+                                                    const Color(0xFFFFC107)
+                                                        .withValues(alpha: 0.8),
+                                                  ],
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color:
+                                                        const Color(0xFFFFD700)
+                                                            .withValues(
+                                                                alpha: 0.4),
+                                                    blurRadius: 12,
+                                                    offset: const Offset(0, 4),
+                                                  ),
+                                                ],
+                                              ),
+                                              padding: const EdgeInsets.all(8),
+                                              child: const Icon(
+                                                  Icons.add_circle,
+                                                  size: 32,
+                                                  color: Color(0xFF0B2E5A)),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -4499,13 +5586,36 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                               ),
                             ),
                             const SizedBox(height: 10),
-                            Card(
-                              color: const Color(0xFF0B2E5A)
-                                  .withValues(alpha: 0.5),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                  side: BorderSide(
-                                      color: accent.withValues(alpha: 0.22))),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    const Color(0xFF0B2E5A)
+                                        .withValues(alpha: 0.7),
+                                    const Color(0xFF0E3D8C)
+                                        .withValues(alpha: 0.5),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: accent.withValues(alpha: 0.3),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.3),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                                border: Border.all(
+                                  color: accent.withValues(alpha: 0.4),
+                                  width: 1.5,
+                                ),
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(14),
                                 child: Column(
@@ -4585,39 +5695,124 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                           ),
                                           const SizedBox(width: 12),
                                           Expanded(
-                                            child: TextField(
-                                              controller: _restController,
-                                              style: const TextStyle(
-                                                  color: Color(0xFFFFD700)),
-                                              decoration: InputDecoration(
-                                                  labelText: lang == 'PL'
-                                                      ? 'PRZERWA (s)'
-                                                      : lang == 'NO'
-                                                          ? 'PAUSE (s)'
-                                                          : 'REST (s)',
-                                                  labelStyle: const TextStyle(
-                                                      color: Color(0xFFFFD700)),
-                                                  hintText: lang == 'PL'
-                                                      ? 'np. 60'
-                                                      : lang == 'NO'
-                                                          ? 'f.eks. 60'
-                                                          : 'e.g. 60',
-                                                  enabledBorder:
-                                                      const OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Color(
-                                                                  0xFFFFD700),
-                                                              width: 2)),
-                                                  focusedBorder:
-                                                      const OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Color(
-                                                                  0xFFFFD700),
-                                                              width: 2)),
-                                                  border:
-                                                      const OutlineInputBorder()),
-                                              keyboardType:
-                                                  TextInputType.number,
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: TextField(
+                                                    controller: _restController,
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Color(0xFFFFD700)),
+                                                    decoration: InputDecoration(
+                                                        labelText: lang == 'PL'
+                                                            ? 'PRZERWA (s)'
+                                                            : lang == 'NO'
+                                                                ? 'PAUSE (s)'
+                                                                : 'REST (s)',
+                                                        labelStyle:
+                                                            const TextStyle(
+                                                                color: Color(
+                                                                    0xFFFFD700)),
+                                                        hintText: lang == 'PL'
+                                                            ? 'np. 60'
+                                                            : lang == 'NO'
+                                                                ? 'f.eks. 60'
+                                                                : 'e.g. 60',
+                                                        enabledBorder:
+                                                            const OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Color(
+                                                                        0xFFFFD700),
+                                                                    width: 2)),
+                                                        focusedBorder:
+                                                            const OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Color(
+                                                                        0xFFFFD700),
+                                                                    width: 2)),
+                                                        border:
+                                                            const OutlineInputBorder()),
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      lang == 'PL'
+                                                          ? 'Przerwa ±10s'
+                                                          : lang == 'NO'
+                                                              ? 'Pause ±10s'
+                                                              : 'Rest ±10s',
+                                                      style: const TextStyle(
+                                                          color:
+                                                              Color(0xFFFFD700),
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Row(
+                                                      children: [
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              final current =
+                                                                  int.tryParse(
+                                                                          _restController
+                                                                              .text) ??
+                                                                      0;
+                                                              if (current >
+                                                                  10) {
+                                                                _restController
+                                                                        .text =
+                                                                    (current -
+                                                                            10)
+                                                                        .toString();
+                                                              }
+                                                            });
+                                                          },
+                                                          icon: const Icon(
+                                                              Icons
+                                                                  .remove_circle,
+                                                              size: 24),
+                                                          color: const Color(
+                                                              0xFFFFD700),
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              final current =
+                                                                  int.tryParse(
+                                                                          _restController
+                                                                              .text) ??
+                                                                      0;
+                                                              if (current <
+                                                                  600) {
+                                                                _restController
+                                                                        .text =
+                                                                    (current +
+                                                                            10)
+                                                                        .toString();
+                                                              }
+                                                            });
+                                                          },
+                                                          icon: const Icon(
+                                                              Icons.add_circle,
+                                                              size: 24),
+                                                          color: const Color(
+                                                              0xFFFFD700),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -4628,77 +5823,207 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Expanded(
-                                            child: OutlinedButton.icon(
-                                              onPressed: _setStart == null
-                                                  ? _startSetStopwatch
-                                                  : null,
-                                              icon: const Icon(Icons.play_arrow,
-                                                  color: Color(0xFFFFD700),
-                                                  size: 18),
-                                              label: const Text('PLAY',
-                                                  style: TextStyle(
-                                                      color: Color(0xFFFFD700),
-                                                      fontSize: 13)),
-                                              style: OutlinedButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color(0xFF0B2E5A),
-                                                side: const BorderSide(
-                                                  color: Color(0xFFFFD700),
-                                                  width: 2,
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: InkWell(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                onTap: _setStart == null
+                                                    ? _startSetStopwatch
+                                                    : null,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        const Color(0xFF0B2E5A),
+                                                        const Color(0xFF0E3D8C),
+                                                      ],
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    border: Border.all(
+                                                      color: const Color(
+                                                          0xFFFFD700),
+                                                      width: 2,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: const Color(
+                                                                0xFFFFD700)
+                                                            .withValues(
+                                                                alpha: 0.3),
+                                                        blurRadius: 8,
+                                                        offset:
+                                                            const Offset(0, 3),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      const Icon(
+                                                          Icons.play_arrow,
+                                                          color:
+                                                              Color(0xFFFFD700),
+                                                          size: 18),
+                                                      const SizedBox(width: 4),
+                                                      const Text('PLAY',
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xFFFFD700),
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600)),
+                                                    ],
+                                                  ),
                                                 ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8),
                                               ),
                                             ),
                                           ),
                                           const SizedBox(width: 8),
                                           Expanded(
-                                            child: OutlinedButton.icon(
-                                              onPressed: _setStart != null
-                                                  ? _stopSetStopwatch
-                                                  : null,
-                                              icon: const Icon(Icons.stop,
-                                                  color: Color(0xFFFFD700),
-                                                  size: 18),
-                                              label: const Text('STOP',
-                                                  style: TextStyle(
-                                                      color: Color(0xFFFFD700),
-                                                      fontSize: 13)),
-                                              style: OutlinedButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color(0xFF0B2E5A),
-                                                side: const BorderSide(
-                                                  color: Color(0xFFFFD700),
-                                                  width: 2,
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: InkWell(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                onTap: _setStart != null
+                                                    ? _stopSetStopwatch
+                                                    : null,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        const Color(0xFF0B2E5A),
+                                                        const Color(0xFF0E3D8C),
+                                                      ],
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    border: Border.all(
+                                                      color: const Color(
+                                                          0xFFFFD700),
+                                                      width: 2,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: const Color(
+                                                                0xFFFFD700)
+                                                            .withValues(
+                                                                alpha: 0.3),
+                                                        blurRadius: 8,
+                                                        offset:
+                                                            const Offset(0, 3),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      const Icon(Icons.stop,
+                                                          color:
+                                                              Color(0xFFFFD700),
+                                                          size: 18),
+                                                      const SizedBox(width: 4),
+                                                      const Text('STOP',
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xFFFFD700),
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600)),
+                                                    ],
+                                                  ),
                                                 ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8),
                                               ),
                                             ),
                                           ),
                                           const SizedBox(width: 8),
                                           Expanded(
-                                            child: OutlinedButton.icon(
-                                              onPressed: _resetSetStopwatch,
-                                              icon: const Icon(Icons.refresh,
-                                                  color: Color(0xFFFFD700),
-                                                  size: 18),
-                                              label: const Text('RESET',
-                                                  style: TextStyle(
-                                                      color: Color(0xFFFFD700),
-                                                      fontSize: 13)),
-                                              style: OutlinedButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color(0xFF0B2E5A),
-                                                side: const BorderSide(
-                                                  color: Color(0xFFFFD700),
-                                                  width: 2,
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: InkWell(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                onTap: _resetSetStopwatch,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        const Color(0xFF0B2E5A),
+                                                        const Color(0xFF0E3D8C),
+                                                      ],
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    border: Border.all(
+                                                      color: const Color(
+                                                          0xFFFFD700),
+                                                      width: 2,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: const Color(
+                                                                0xFFFFD700)
+                                                            .withValues(
+                                                                alpha: 0.3),
+                                                        blurRadius: 8,
+                                                        offset:
+                                                            const Offset(0, 3),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      const Icon(Icons.refresh,
+                                                          color:
+                                                              Color(0xFFFFD700),
+                                                          size: 18),
+                                                      const SizedBox(width: 4),
+                                                      const Text('RESET',
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xFFFFD700),
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600)),
+                                                    ],
+                                                  ),
                                                 ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8),
                                               ),
                                             ),
                                           ),
@@ -4751,33 +6076,137 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                           ),
                                           const SizedBox(width: 12),
                                           Expanded(
-                                            child: TextField(
-                                              controller: _wController,
-                                              style: const TextStyle(
-                                                  color: Color(0xFFFFD700)),
-                                              decoration: InputDecoration(
-                                                  labelText: Translations.get(
-                                                          'kg_label',
-                                                          language: lang)
-                                                      .toUpperCase(),
-                                                  labelStyle: const TextStyle(
-                                                      color: Color(0xFFFFD700)),
-                                                  enabledBorder:
-                                                      const OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Color(
+                                            child: Row(
+                                              children: [
+                                                // Weight Slider block
+                                                SizedBox(
+                                                  width: 80,
+                                                  child: Column(
+                                                    children: [
+                                                      RotatedBox(
+                                                        quarterTurns: 3,
+                                                        child: Slider(
+                                                          value: double.tryParse(
+                                                                  _wController
+                                                                      .text) ??
+                                                              20.0,
+                                                          min: 0,
+                                                          max: 200,
+                                                          divisions: 200,
+                                                          activeColor:
+                                                              const Color(
                                                                   0xFFFFD700),
-                                                              width: 2)),
-                                                  focusedBorder:
-                                                      const OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color: Color(
-                                                                  0xFFFFD700),
-                                                              width: 2)),
-                                                  border:
-                                                      const OutlineInputBorder()),
-                                              keyboardType:
-                                                  TextInputType.number,
+                                                          inactiveColor:
+                                                              const Color(
+                                                                      0xFFFFD700)
+                                                                  .withValues(
+                                                                      alpha:
+                                                                          0.3),
+                                                          onChanged: (val) {
+                                                            setState(() {
+                                                              _wController
+                                                                      .text =
+                                                                  val
+                                                                      .toInt()
+                                                                      .toString();
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: [
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                final curr =
+                                                                    int.tryParse(
+                                                                            _wController.text) ??
+                                                                        0;
+                                                                if (curr > 0) {
+                                                                  _wController
+                                                                          .text =
+                                                                      (curr - 1)
+                                                                          .toString();
+                                                                }
+                                                              });
+                                                            },
+                                                            icon: const Icon(
+                                                                Icons
+                                                                    .remove_circle,
+                                                                size: 20),
+                                                            color: const Color(
+                                                                0xFFFFD700),
+                                                          ),
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                final curr =
+                                                                    int.tryParse(
+                                                                            _wController.text) ??
+                                                                        0;
+                                                                if (curr <
+                                                                    200) {
+                                                                  _wController
+                                                                          .text =
+                                                                      (curr + 1)
+                                                                          .toString();
+                                                                }
+                                                              });
+                                                            },
+                                                            icon: const Icon(
+                                                                Icons
+                                                                    .add_circle,
+                                                                size: 20),
+                                                            color: const Color(
+                                                                0xFFFFD700),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 16),
+                                                // Weight TextField
+                                                Expanded(
+                                                  child: TextField(
+                                                    controller: _wController,
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Color(0xFFFFD700)),
+                                                    decoration: InputDecoration(
+                                                        labelText:
+                                                            Translations.get(
+                                                                    'kg_label',
+                                                                    language:
+                                                                        lang)
+                                                                .toUpperCase(),
+                                                        labelStyle:
+                                                            const TextStyle(
+                                                                color: Color(
+                                                                    0xFFFFD700)),
+                                                        enabledBorder:
+                                                            const OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Color(
+                                                                        0xFFFFD700),
+                                                                    width: 2)),
+                                                        focusedBorder:
+                                                            const OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Color(
+                                                                        0xFFFFD700),
+                                                                    width: 2)),
+                                                        border:
+                                                            const OutlineInputBorder()),
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                           const SizedBox(width: 12),
@@ -4890,11 +6319,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                   ),
                                 );
                               }),
+                            if (_isTimeBased && _history.isNotEmpty)
+                              ..._buildTimeBasedStats(lang, accent),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -4982,47 +6413,65 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                       ],
                     ),
                   ),
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFD700),
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                            color:
-                                const Color(0xFFFFD700).withValues(alpha: 0.6),
-                            blurRadius: 24,
-                            offset: const Offset(0, 8)),
-                        BoxShadow(
-                            color:
-                                const Color(0xFF0B2E5A).withValues(alpha: 0.5),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4))
-                      ],
+                  TweenAnimationBuilder<double>(
+                    tween: Tween(
+                      begin: 1.0,
+                      end: _isTimerRunning ? 1.05 : 1.0,
                     ),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                              _isTimerRunning
-                                  ? Icons.pause_circle_filled
-                                  : Icons.play_circle_filled,
-                              color: const Color(0xFF0B2E5A),
-                              size: 40),
-                          const SizedBox(height: 8),
-                          Text(
-                            _secondsRemaining > 0
-                                ? _formatTime(_secondsRemaining)
-                                : _formatTime(_totalRestSeconds),
-                            style: const TextStyle(
-                                color: Color(0xFF0B2E5A),
-                                fontWeight: FontWeight.w900,
-                                fontSize: 24,
-                                letterSpacing: 1.2),
-                          ),
+                    duration: const Duration(milliseconds: 800),
+                    curve: Curves.easeInOut,
+                    builder: (context, scale, child) {
+                      return Transform.scale(
+                        scale: scale,
+                        child: child,
+                      );
+                    },
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFD700),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                              color: const Color(0xFFFFD700)
+                                  .withValues(alpha: 0.6),
+                              blurRadius: 24,
+                              offset: const Offset(0, 8)),
+                          BoxShadow(
+                              color: const Color(0xFF0B2E5A)
+                                  .withValues(alpha: 0.5),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4))
                         ],
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                                _isTimerRunning
+                                    ? Icons.pause_circle_filled
+                                    : Icons.play_circle_filled,
+                                color: const Color(0xFF0B2E5A),
+                                size: 40),
+                            const SizedBox(height: 8),
+                            Text(
+                              _isTimeBased
+                                  ? (_secondsRemaining > 0
+                                      ? '${_secondsRemaining}s'
+                                      : '${_totalRestSeconds}s')
+                                  : (_secondsRemaining > 0
+                                      ? _formatTime(_secondsRemaining)
+                                      : _formatTime(_totalRestSeconds)),
+                              style: const TextStyle(
+                                  color: Color(0xFF0B2E5A),
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 24,
+                                  letterSpacing: 1.2),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

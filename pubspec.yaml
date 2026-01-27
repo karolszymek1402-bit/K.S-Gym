@@ -1,10 +1,10 @@
-﻿name: silownia_app
+name: silownia_app
 description: A K.S-GYM Flutter app
 publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -12,20 +12,35 @@ dependencies:
 
   flutter_svg: ^2.0.9
   shared_preferences: ^2.0.15
-  flutter_local_notifications: ^17.0.0
-  vibration: ^1.8.4
+  flutter_local_notifications: ^19.5.0
+  vibration: ^3.1.5
   audioplayers: ^6.0.0
   font_awesome_flutter: ^10.7.0
   url_launcher: ^6.1.0
+  image: ^4.1.7
+  firebase_core: ^4.3.0
+  firebase_auth: ^6.1.3
+  cloud_firestore: ^6.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/ks_gym_logo.png
-    - assets/ks_gym_logo_electro_bw.svg
+    - assets/mojelogo.svg
+    - assets/barki.svg
+    - assets/biceps.svg
+    - assets/brzuch.svg
+    - assets/klata.svg
+    - assets/plecy.svg
+    - assets/nogi.svg
+    - assets/notatnik.svg
+    - assets/plan.svg
+    - assets/przedramie.svg
+    - assets/triceps.svg
+    - assets/tlo.png
     - assets/default_exercises.json
+    - assets/sounds/

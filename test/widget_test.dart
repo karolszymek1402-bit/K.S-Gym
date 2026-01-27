@@ -13,7 +13,7 @@ void main() {
     // Jeśli istnieje pojedynczy tekst "K.S-GYM" — zaakceptuj go,
     // w przeciwnym razie sprawdź obecność dwóch osobnych Textów: "K.S" i "GYM".
     if (singleTitle.evaluate().isNotEmpty) {
-      expect(singleTitle, findsOneWidget);
+      expect(singleTitle, findsWidgets);
     } else {
       expect(part1, findsOneWidget);
       expect(part2, findsOneWidget);

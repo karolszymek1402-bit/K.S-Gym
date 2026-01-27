@@ -40,7 +40,8 @@
     "Rozpiętki z gumami oporowymi",
     "Pompki z gumą oporową na plecach",
     "Wyciskanie sztangi z łańcuchami",
-    "Wyciskanie z Slingshotem (specjalna taśma wspomagająca)"
+    "Wyciskanie z Slingshotem (specjalna taśma wspomagająca)",
+    "Wyciskanie z deską (Board Press)"
   ],
   "BACK": [
     "Deadlift",
@@ -65,13 +66,17 @@
     "Overhead Press",
     "Lateral Raise",
     "Front Raise",
-    "Rear Delt Fly"
+    "Rear Delt Fly",
+    "Spacer z hantlem jednorącz (Suitcase Carry)"
   ],
   "ABS": [
     "Plank",
     "Crunches",
     "Leg Raises",
-    "Russian Twist"
+    "Russian Twist",
+    "L-sit",
+    "Wspinaczka w podporze (Mountain Climbers)",
+    "Spacer z hantlem jednorącz (Suitcase Carry)"
   ],
   "LEGS": [
     "Squat",

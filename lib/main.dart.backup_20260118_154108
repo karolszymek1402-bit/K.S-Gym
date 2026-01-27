@@ -1,0 +1,724 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibration/vibration.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+// Baza domyślnych ćwiczeń
+const Map<String, List<String>> defaultExercises = {
+  'KLATKA': [
+    'Wyciskanie sztangi na ławce płaskiej',
+    'Wyciskanie sztangi na ławce skośnej',
+    'Wyciskanie hantli na ławce płaskiej',
+    'Wyciskanie hantli na ławce skośnej',
+    'Rozpiętki hantlami na ławce płaskiej',
+    'Rozpiętki hantlami na ławce skośnej',
+    'Pompki klasyczne',
+    'Pompki diamentowe',
+    'Pompki na poręczach (Dipy)',
+    'Wyciskanie na maszynie',
+  ],
+  'PLECY': [
+    'Podciąganie na drążku',
+    'Wiosłowanie sztangą w opadzie',
+    'Wiosłowanie hantlem jedną ręką',
+    'Wiosłowanie na wyciągu dolnym',
+    'Ściąganie drążka wyciągu górnego',
+    'Martwy ciąg klasyczny',
+    'Martwy ciąg rumuński',
+    'Podciąganie australijskie',
+    'Wiosłowanie na maszynie',
+    'Face Pull',
+  ],
+  'BICEPS': [
+    'Uginanie ramion ze sztangą stojąc',
+    'Uginanie ramion ze sztangą łamaną',
+    'Uginanie ramion z hantlami stojąc',
+    'Uginanie ramion z hantlami siedząc',
+    'Uginanie ramion chwytem młotkowym',
+    'Uginanie ramion na modlitewniku',
+    'Uginanie ramion na wyciągu dolnym',
+    'Uginanie skoncentrowane',
+    'Uginanie ramion na ławce skośnej',
+    'Podciąganie podchwytem',
+  ],
+  'TRICEPS': [
+    'Wyciskanie francuskie sztangi leżąc',
+    'Wyciskanie francuskie hantla stojąc',
+    'Pompki wąskim chwytem',
+    'Dipy na poręczach',
+    'Prostowanie ramion na wyciągu górnym',
+    'Prostowanie ramienia z hantlem zza głowy',
+    'Wyciskanie wąskim chwytem',
+    'Kick-back z hantlem',
+    'Pompki tyłem',
+    'Prostowanie ramion na wyciągu jednorącz',
+  ],
+  'BARKI': [
+    'Wyciskanie sztangi nad głowę stojąc',
+    'Wyciskanie sztangi zza głowy',
+    'Wyciskanie hantli nad głowę siedząc',
+    'Wyciskanie Arnold',
+    'Wznosy boczne hantli',
+    'Wznosy przednie hantli',
+    'Wznosy w opadzie (tylne)',
+    'Unoszenie barków ze sztangą',
+    'Unoszenie barków z hantlami',
+    'Face Pull',
+  ],
+  'NOGI': [
+    'Przysiad ze sztangą',
+    'Przysiad przedni',
+    'Martwy ciąg klasyczny',
+    'Martwy ciąg rumuński',
+    'Wypychanie nóg na suwnicy',
+    'Wyprost nóg na maszynie',
+    'Uginanie nóg leżąc',
+    'Wykroki ze sztangą',
+    'Przysiad bułgarski',
+    'Wspięcia na palce stojąc',
+    'Wspięcia na palce siedząc',
+    'Hip Thrust',
+  ],
+  'BRZUCH': [
+    'Plank',
+    'Spięcia brzucha',
+    'Unoszenie nóg w zwisie',
+    'Rower',
+    'Russian Twist',
+    'Deska boczna',
+    'Mountain Climbers',
+    'Nożyce',
+    'Hollow Hold',
+    'Ab Wheel Rollout',
+  ],
+};
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Gym App',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF0E1117),
+        primaryColor: const Color(0xFF1E90FF),
+      ),
+      home: const CategoryScreen(),
+    );
+  }
+}
+
+class CategoryScreen extends StatelessWidget {
+  const CategoryScreen({super.key});
+
+  static const List<Map<String, dynamic>> categories = [
+    {'name': 'KLATKA', 'emoji': '💪', 'color': Color(0xFF1E90FF)},
+    {'name': 'PLECY', 'emoji': '🏋️', 'color': Color(0xFF32CD32)},
+    {'name': 'BICEPS', 'emoji': '💪', 'color': Color(0xFFFF6347)},
+    {'name': 'TRICEPS', 'emoji': '🔥', 'color': Color(0xFFFFD700)},
+    {'name': 'BARKI', 'emoji': '🦾', 'color': Color(0xFFFF69B4)},
+    {'name': 'NOGI', 'emoji': '🦵', 'color': Color(0xFF8A2BE2)},
+    {'name': 'BRZUCH', 'emoji': '⚡', 'color': Color(0xFF00CED1)},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Kategorie Ćwiczeń',
+            style: TextStyle(
+                color: Color(0xFFFFD700), fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1.1,
+        ),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ExerciseListScreen(
+                    category: category['name'] as String,
+                    categoryColor: category['color'] as Color,
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: (category['color'] as Color).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: (category['color'] as Color).withOpacity(0.5),
+                  width: 2,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(category['emoji'] as String,
+                      style: const TextStyle(fontSize: 48)),
+                  const SizedBox(height: 8),
+                  Text(
+                    category['name'] as String,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: category['color'] as Color,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ExerciseListScreen extends StatefulWidget {
+  final String category;
+  final Color categoryColor;
+
+  const ExerciseListScreen({
+    super.key,
+    required this.category,
+    required this.categoryColor,
+  });
+
+  @override
+  State<ExerciseListScreen> createState() => _ExerciseListScreenState();
+}
+
+class _ExerciseListScreenState extends State<ExerciseListScreen> {
+  final List<String> _exercises = [];
+  final TextEditingController _exerciseController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExercises();
+  }
+
+  @override
+  void dispose() {
+    _exerciseController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadExercises() async {
+    final prefs = await SharedPreferences.getInstance();
+    var exercises = prefs.getStringList('exercises_${widget.category}');
+
+    // Jeśli brak zapisanych, użyj domyślnych
+    if (exercises == null || exercises.isEmpty) {
+      exercises = defaultExercises[widget.category] ?? [];
+      if (exercises.isNotEmpty) {
+        await prefs.setStringList('exercises_${widget.category}', exercises);
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _exercises.clear();
+        _exercises.addAll(exercises);
+      });
+    }
+  }
+
+  Future<void> _addExercise() async {
+    final name = _exerciseController.text.trim();
+    if (name.isEmpty) return;
+    Future<void> _deleteExercise(int index) async {
+      final prefs = await SharedPreferences.getInstance();
+      _exercises.removeAt(index);
+      await prefs.setStringList('exercises_${widget.category}', _exercises);
+      if (mounted) setState(() {});
+    }
+
+    Future<void> _resetToDefaults() async {
+      final defaults = defaultExercises[widget.category] ?? [];
+      final prefs = await SharedPreferences.getInstance();
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, color: widget.categoryColor),
+            onSelected: (value) {
+              if (value == 'reset') {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    backgroundColor: const Color(0xFF1a1f2e),
+                    title: const Text('Resetuj do domyślnych?',
+                        style: TextStyle(color: Colors.white)),
+                    content: const Text(
+                        'To przywróci domyślną listę ćwiczeń i usunie dodane przez Ciebie.',
+                        style: TextStyle(color: Colors.white70)),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text('Anuluj'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          _resetToDefaults();
+                        },
+                        child: Text('Resetuj',
+                            style: TextStyle(color: widget.categoryColor)),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'reset',
+                child: Row(
+                  children: [
+                    Icon(Icons.restore, color: Colors.white70),
+                    SizedBox(width: 8),
+                    Text('Resetuj do domyślnych',
+                        style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      await prefs.setStringList('exercises_${widget.category}', defaults);
+      if (mounted) {
+        setState(() {
+          _exercises.clear();
+          _exercises.addAll(defaults);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text('Przywrócono domyślne ćwiczenia (${defaults.length})'),
+            backgroundColor: widget.categoryColor,
+          ),
+        );
+      }
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    _exercises.add(name);
+    await prefs.setStringList('exercises_${widget.category}', _exercises);
+
+    _exerciseController.clear();
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.category,
+            style: TextStyle(
+                color: widget.categoryColor, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: widget.categoryColor),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _exerciseController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Dodaj ćwiczenie...',
+                      hintStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.5)),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    onSubmitted: (_) => _addExercise(),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: _addExercise,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: widget.categoryColor,
+                    padding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Icon(Icons.add, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: _exercises.isEmpty
+                ? Center(
+                    child: Text('Brak ćwiczeń\nDodaj pierwsze!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.5),
+                            fontSize: 18)),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: _exercises.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ExerciseScreen(
+                                  exerciseName: _exercises[index],
+                                  categoryColor: widget.categoryColor,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: widget.categoryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                  color: widget.categoryColor.withOpacity(0.3)),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.fitness_center,
+                                    color: widget.categoryColor),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(_exercises[index],
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 16)),
+                                ),
+                                Icon(Icons.arrow_forward_ios,
+                                    color:
+                                        widget.categoryColor.withOpacity(0.5),
+                                    size: 16),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ExerciseScreen extends StatefulWidget {
+  final String exerciseName;
+  final Color categoryColor;
+
+  const ExerciseScreen({
+    super.key,
+    required this.exerciseName,
+    required this.categoryColor,
+  });
+
+  @override
+  State<ExerciseScreen> createState() => _ExerciseScreenState();
+}
+
+class _ExerciseScreenState extends State<ExerciseScreen> {
+  int _restSeconds = 60;
+  Timer? _timer;
+  bool _isRunning = false;
+  int _currentSet = 1;
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _repsController = TextEditingController();
+  static const int _restAdjustmentStep = 10;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _weightController.dispose();
+    _repsController.dispose();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    if (_isRunning) return;
+
+    setState(() => _isRunning = true);
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_restSeconds > 0) {
+        setState(() => _restSeconds--);
+      } else {
+        timer.cancel();
+        setState(() => _isRunning = false);
+        _notifyTimerEnd();
+      }
+    });
+  }
+
+  void _pauseTimer() {
+    _timer?.cancel();
+    setState(() => _isRunning = false);
+  }
+
+  void _resetTimer() {
+    _timer?.cancel();
+    setState(() {
+      _isRunning = false;
+      _restSeconds = 60;
+    });
+  }
+
+  Future<void> _notifyTimerEnd() async {
+    try {
+      if (await Vibration.hasVibrator() == true) {
+        Vibration.vibrate(duration: 500);
+      }
+      HapticFeedback.heavyImpact();
+    } catch (_) {}
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Czas odpoczynku minął!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  Future<void> _saveSet() async {
+    final weight = _weightController.text.trim();
+    final reps = _repsController.text.trim();
+
+    if (weight.isEmpty || reps.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Wprowadź wagę i powtórzenia!')),
+      );
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final history = prefs.getStringList('history_${widget.exerciseName}') ?? [];
+
+    final logEntry = jsonEncode({
+      'date': DateTime.now().toIso8601String(),
+      'set': _currentSet,
+      'weight': weight,
+      'reps': reps,
+    });
+
+    history.add(logEntry);
+    await prefs.setStringList('history_${widget.exerciseName}', history);
+
+    setState(() => _currentSet++);
+    _repsController.clear();
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Seria $_currentSet zapisana!'),
+          backgroundColor: widget.categoryColor,
+        ),
+      );
+      _startTimer();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.exerciseName,
+            style: TextStyle(
+                color: widget.categoryColor, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: widget.categoryColor),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Timer display
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: widget.categoryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                    color: widget.categoryColor.withOpacity(0.3), width: 2),
+              ),
+              child: Column(
+                children: [
+                  Text('Odpoczynek',
+                      style:
+                          TextStyle(fontSize: 18, color: widget.categoryColor)),
+                  const SizedBox(height: 12),
+                  Text('$_restSeconds s',
+                      style: TextStyle(
+                        fontSize: 64,
+                        fontWeight: FontWeight.bold,
+                        color: _isRunning ? widget.categoryColor : Colors.white,
+                      )),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove_circle),
+                        iconSize: 36,
+                        color: Colors.red,
+                        onPressed: _isRunning
+                            ? null
+                            : () {
+                                setState(() {
+                                  _restSeconds =
+                                      (_restSeconds - _restAdjustmentStep)
+                                          .clamp(10, 600);
+                                });
+                              },
+                      ),
+                      const SizedBox(width: 20),
+                      IconButton(
+                        icon: Icon(_isRunning ? Icons.pause : Icons.play_arrow),
+                        iconSize: 48,
+                        color: widget.categoryColor,
+                        onPressed: _isRunning ? _pauseTimer : _startTimer,
+                      ),
+                      const SizedBox(width: 20),
+                      IconButton(
+                        icon: const Icon(Icons.refresh),
+                        iconSize: 36,
+                        color: Colors.orange,
+                        onPressed: _resetTimer,
+                      ),
+                      const SizedBox(width: 20),
+                      IconButton(
+                        icon: const Icon(Icons.add_circle),
+                        iconSize: 36,
+                        color: Colors.green,
+                        onPressed: _isRunning
+                            ? null
+                            : () {
+                                setState(() {
+                                  _restSeconds =
+                                      (_restSeconds + _restAdjustmentStep)
+                                          .clamp(10, 600);
+                                });
+                              },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Set input
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Seria $_currentSet',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _weightController,
+                    keyboardType: TextInputType.number,
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    decoration: InputDecoration(
+                      labelText: 'Waga (kg)',
+                      labelStyle: TextStyle(color: widget.categoryColor),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _repsController,
+                    keyboardType: TextInputType.number,
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    decoration: InputDecoration(
+                      labelText: 'Powtórzenia',
+                      labelStyle: TextStyle(color: widget.categoryColor),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    onSubmitted: (_) => _saveSet(),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _saveSet,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: widget.categoryColor,
+                        padding: const EdgeInsets.all(16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Zapisz serię',
+                          style: TextStyle(fontSize: 18, color: Colors.white)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

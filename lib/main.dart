@@ -4673,96 +4673,18 @@ class _LineChartPainter extends CustomPainter {
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
 
-  Widget _categoryBackground(String path) {
-    final lower = path.toLowerCase();
-    if (lower.endsWith('.svg')) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: SvgPicture.asset(
-          path,
-          fit: BoxFit.cover,
-          placeholderBuilder: (context) => Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: const Color(0xFF0B2E5A),
-            ),
-          ),
-        ),
-      );
-    }
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Image.asset(
-        path,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: const Color(0xFF0B2E5A),
-          ),
-        ),
-      ),
-    );
-  }
-
   static const Color _navy = Color(0xFF0B2E5A);
   static const Color _gold = Color(0xFFFFD700);
   static const List<Map<String, dynamic>> categories = [
-    {
-      'name': 'PLAN',
-      'icon': Icons.assignment,
-      'color': _gold,
-      'isPlan': true,
-      'image': 'assets/mojelogo.svg',
-    },
-    {
-      'name': 'CHEST',
-      'icon': Icons.fitness_center,
-      'color': _navy,
-      'image': 'assets/klata.svg',
-    },
-    {
-      'name': 'BACK',
-      'icon': Icons.list,
-      'color': _navy,
-      'image': 'assets/plecy.svg',
-    },
-    {
-      'name': 'BICEPS',
-      'icon': Icons.bolt,
-      'color': _navy,
-      'image': 'assets/biceps.svg',
-    },
-    {
-      'name': 'TRICEPS',
-      'icon': Icons.trending_down,
-      'color': _navy,
-      'image': 'assets/triceps.svg',
-    },
-    {
-      'name': 'SHOULDERS',
-      'icon': Icons.architecture,
-      'color': _navy,
-      'image': 'assets/barki.svg',
-    },
-    {
-      'name': 'ABS',
-      'icon': Icons.grid_view,
-      'color': _navy,
-      'image': 'assets/brzuch.svg',
-    },
-    {
-      'name': 'LEGS',
-      'icon': Icons.directions_walk,
-      'color': _navy,
-      'image': 'assets/nogi.svg',
-    },
-    {
-      'name': 'FOREARMS',
-      'icon': Icons.pan_tool_alt,
-      'color': _navy,
-      'image': 'assets/przedramie.svg',
-    },
+    {'name': 'PLAN', 'icon': Icons.assignment, 'isPlan': true},
+    {'name': 'CHEST', 'icon': Icons.fitness_center},
+    {'name': 'BACK', 'icon': Icons.list},
+    {'name': 'BICEPS', 'icon': Icons.bolt},
+    {'name': 'TRICEPS', 'icon': Icons.trending_down},
+    {'name': 'SHOULDERS', 'icon': Icons.architecture},
+    {'name': 'ABS', 'icon': Icons.grid_view},
+    {'name': 'LEGS', 'icon': Icons.directions_walk},
+    {'name': 'FOREARMS', 'icon': Icons.pan_tool_alt},
   ];
 
   @override
@@ -4770,149 +4692,141 @@ class CategoryScreen extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: globalLanguageNotifier,
       builder: (context, lang, _) {
-        final theme = Theme.of(context);
         const Color cardBlue1 = Color(0xFF0B2E5A);
         const Color cardBlue2 = Color(0xFF0E3D8C);
         const Color gold = Color(0xFFFFD700);
 
         return Scaffold(
-          appBar: buildCustomAppBar(context, accentColor: Color(0xFFFFD700)),
-          body: LayoutBuilder(builder: (context, constraints) {
-            // Responsywna liczba kolumn
-            final screenWidth = constraints.maxWidth;
-            final crossAxisCount =
-                screenWidth < 400 ? 2 : (screenWidth < 600 ? 2 : 3);
-            final childAspectRatio = screenWidth < 400 ? 0.95 : 1.0;
-            final padding = screenWidth < 400 ? 8.0 : 16.0;
-            final spacing = screenWidth < 400 ? 8.0 : 12.0;
+          appBar: buildCustomAppBar(context, accentColor: gold),
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0A0E21), Color(0xFF0E1A38)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: categories.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final cat = categories[index];
+                          final bool isPlan = (cat['isPlan'] as bool?) ?? false;
+                          final String name = cat['name'] as String;
+                          final IconData icon = cat['icon'] as IconData;
+                          final displayName = localizedCategoryName(name, lang);
 
-            return Padding(
-              padding: EdgeInsets.all(padding),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: spacing,
-                  mainAxisSpacing: spacing,
-                  childAspectRatio: childAspectRatio,
-                ),
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  final cat = categories[index];
-                  final color = cat['color'] as Color;
-                  final bool isPlan = (cat['isPlan'] as bool?) ?? false;
-                  final String? imagePath = cat['image'] as String?;
-                  final String name = cat['name'] as String;
-                  final displayName = localizedCategoryName(name, lang);
+                          void handleTap() {
+                            if (isPlan) {
+                              final state =
+                                  PlanAccessController.instance.notifier.value;
+                              if (state.isAuthenticated &&
+                                  state.role == PlanUserRole.client) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PlanOnlineScreen(
+                                              themeColor: gold,
+                                            )));
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PlanImportScreen(
+                                              themeColor: gold,
+                                            )));
+                              }
+                              return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ExerciseListScreen(
+                                  category: name,
+                                  themeColor: gold,
+                                ),
+                              ),
+                            );
+                          }
 
-                  void handleTap() {
-                    if (isPlan) {
-                      // Sprawdź czy użytkownik jest zalogowany jako klient
-                      final state =
-                          PlanAccessController.instance.notifier.value;
-                      if (state.isAuthenticated &&
-                          state.role == PlanUserRole.client) {
-                        // Klient - pokaż plan online
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PlanOnlineScreen(
-                                      themeColor: const Color(0xFFFFD700),
-                                    )));
-                      } else {
-                        // Niezalogowany lub coach - pokaż lokalny import planu
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PlanImportScreen(
-                                      themeColor: const Color(0xFFFFD700),
-                                    )));
-                      }
-                      return;
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ExerciseListScreen(
-                          category: name,
-                          themeColor: const Color(0xFFFFD700),
-                        ),
-                      ),
-                    );
-                  }
-
-                  return InkWell(
-                    borderRadius: BorderRadius.circular(16),
-                    onTap: handleTap,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        gradient: LinearGradient(
-                          colors: [cardBlue1, cardBlue2.withValues(alpha: 0.9)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.35),
-                              blurRadius: 14,
-                              offset: const Offset(0, 8))
-                        ],
-                        border: Border.all(
-                            color: gold.withValues(alpha: 0.9), width: 1.6),
-                      ),
-                      child: Stack(
-                        children: [
-                          if (imagePath != null)
-                            Positioned.fill(
-                              child: _categoryBackground(imagePath),
-                            ),
-                          Positioned.fill(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.black.withValues(alpha: 0.12),
-                                    cardBlue2.withValues(alpha: 0.06)
+                          return Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(14),
+                              onTap: handleTap,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 16),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      cardBlue1.withValues(alpha: 0.9),
+                                      cardBlue2.withValues(alpha: 0.7),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  border: Border.all(
+                                    color: gold.withValues(alpha: 0.8),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.3),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
                                   ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: gold.withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Icon(icon, color: gold, size: 24),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Text(
+                                        displayName,
+                                        style: const TextStyle(
+                                          color: gold,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: gold.withValues(alpha: 0.7),
+                                      size: 18,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          ),
-                          Positioned(
-                            top: 10,
-                            left: 12,
-                            right: 12,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: gold.withValues(alpha: 0.9),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                    color: cardBlue1.withValues(alpha: 0.9),
-                                    width: 1.2),
-                              ),
-                              child: Text(
-                                displayName,
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: cardBlue1,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
-            );
-          }),
+            ),
+          ),
         );
       },
     );

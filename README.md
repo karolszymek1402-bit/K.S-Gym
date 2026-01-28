@@ -1,4 +1,4 @@
-# silownia_app
+# K.S-Gym
 
 A new Flutter project.
 

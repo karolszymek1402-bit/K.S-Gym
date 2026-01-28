@@ -4765,46 +4765,23 @@ class CategoryScreen extends StatelessWidget {
                                     horizontal: 20, vertical: 16),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(14),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      cardBlue1.withValues(alpha: 0.9),
-                                      cardBlue2.withValues(alpha: 0.7),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
+                                  color: Colors.transparent,
                                   border: Border.all(
-                                    color: gold.withValues(alpha: 0.8),
+                                    color: gold,
                                     width: 1.5,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.3),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
                                 ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        displayName,
-                                        style: const TextStyle(
-                                          color: gold,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w700,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
+                                child: Center(
+                                  child: Text(
+                                    displayName,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: gold,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.5,
                                     ),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: gold.withValues(alpha: 0.7),
-                                      size: 18,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),

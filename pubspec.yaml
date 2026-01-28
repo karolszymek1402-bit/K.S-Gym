@@ -31,6 +31,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/mojelogo.svg
+    - assets/moje_tlo.png
     - assets/barki.svg
     - assets/biceps.svg
     - assets/brzuch.svg
@@ -41,6 +42,5 @@ flutter:
     - assets/plan.svg
     - assets/przedramie.svg
     - assets/triceps.svg
-    - assets/tlo.png
     - assets/default_exercises.json
     - assets/sounds/

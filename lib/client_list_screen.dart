@@ -253,11 +253,12 @@ class _ClientListScreenState extends State<ClientListScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
               final email = emailController.text.trim();
               final password = passwordController.text.trim();
 
               if (email.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(
                     content: Text(
                       lang == 'PL'
@@ -277,36 +278,35 @@ class _ClientListScreenState extends State<ClientListScreen> {
               try {
                 await PlanAccessController.instance
                     .createClientAccount(email, password);
-                _loadClients();
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        lang == 'PL'
-                            ? 'Klient dodany pomyślnie'
-                            : lang == 'NO'
-                                ? 'Klient lagt til'
-                                : 'Client added successfully',
-                      ),
-                      backgroundColor: Colors.green,
+                if (!mounted) return;
+                await _loadClients();
+                if (!mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      lang == 'PL'
+                          ? 'Klient dodany pomyślnie'
+                          : lang == 'NO'
+                              ? 'Klient lagt til'
+                              : 'Client added successfully',
                     ),
-                  );
-                }
+                    backgroundColor: Colors.green,
+                  ),
+                );
               } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        lang == 'PL'
-                            ? 'Błąd: ${e.toString()}'
-                            : lang == 'NO'
-                                ? 'Feil: ${e.toString()}'
-                                : 'Error: ${e.toString()}',
-                      ),
-                      backgroundColor: Colors.red,
+                if (!mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      lang == 'PL'
+                          ? 'Błąd: ${e.toString()}'
+                          : lang == 'NO'
+                              ? 'Feil: ${e.toString()}'
+                              : 'Error: ${e.toString()}',
                     ),
-                  );
-                }
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
             style: ElevatedButton.styleFrom(
@@ -378,10 +378,11 @@ class _ClientListScreenState extends State<ClientListScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
               final newEmail = emailController.text.trim();
 
               if (newEmail.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(
                     content: Text(
                       lang == 'PL'
@@ -406,36 +407,35 @@ class _ClientListScreenState extends State<ClientListScreen> {
               try {
                 await PlanAccessController.instance
                     .updateClientEmail(currentEmail, newEmail);
-                _loadClients();
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        lang == 'PL'
-                            ? 'Email klienta zmieniony'
-                            : lang == 'NO'
-                                ? 'Klient e-post endret'
-                                : 'Client email updated',
-                      ),
-                      backgroundColor: Colors.green,
+                if (!mounted) return;
+                await _loadClients();
+                if (!mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      lang == 'PL'
+                          ? 'Email klienta zmieniony'
+                          : lang == 'NO'
+                              ? 'Klient e-post endret'
+                              : 'Client email updated',
                     ),
-                  );
-                }
+                    backgroundColor: Colors.green,
+                  ),
+                );
               } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        lang == 'PL'
-                            ? 'Błąd: ${e.toString()}'
-                            : lang == 'NO'
-                                ? 'Feil: ${e.toString()}'
-                                : 'Error: ${e.toString()}',
-                      ),
-                      backgroundColor: Colors.red,
+                if (!mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      lang == 'PL'
+                          ? 'Błąd: ${e.toString()}'
+                          : lang == 'NO'
+                              ? 'Feil: ${e.toString()}'
+                              : 'Error: ${e.toString()}',
                     ),
-                  );
-                }
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
             style: ElevatedButton.styleFrom(
@@ -523,40 +523,40 @@ class _ClientListScreenState extends State<ClientListScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
               Navigator.pop(context);
 
               try {
                 await PlanAccessController.instance.deleteClient(email);
-                _loadClients();
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        lang == 'PL'
-                            ? 'Klient usunięty'
-                            : lang == 'NO'
-                                ? 'Klient slettet'
-                                : 'Client deleted',
-                      ),
-                      backgroundColor: Colors.green,
+                if (!mounted) return;
+                await _loadClients();
+                if (!mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      lang == 'PL'
+                          ? 'Klient usunięty'
+                          : lang == 'NO'
+                              ? 'Klient slettet'
+                              : 'Client deleted',
                     ),
-                  );
-                }
+                    backgroundColor: Colors.green,
+                  ),
+                );
               } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        lang == 'PL'
-                            ? 'Błąd: ${e.toString()}'
-                            : lang == 'NO'
-                                ? 'Feil: ${e.toString()}'
-                                : 'Error: ${e.toString()}',
-                      ),
-                      backgroundColor: Colors.red,
+                if (!mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      lang == 'PL'
+                          ? 'Błąd: ${e.toString()}'
+                          : lang == 'NO'
+                              ? 'Feil: ${e.toString()}'
+                              : 'Error: ${e.toString()}',
                     ),
-                  );
-                }
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
             style: ElevatedButton.styleFrom(
@@ -803,6 +803,81 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     }
   }
 
+  Future<void> _showAllProgressSummary(BuildContext context) async {
+    final lang = globalLanguage;
+
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => const Center(
+        child: CircularProgressIndicator(color: Color(0xFFFFD700)),
+      ),
+    );
+
+    try {
+      // Get all exercises from the plan or fetch all history
+      final allProgress = <String, List<ExerciseLog>>{};
+
+      if (_plan != null && _plan!.entries.isNotEmpty) {
+        // Fetch history for each exercise in the plan
+        for (final entry in _plan!.entries) {
+          try {
+            final data = await PlanAccessController.instance
+                .fetchClientExerciseHistory(widget.clientEmail, entry.exercise);
+            final logsRaw = data?['logs'];
+            final logs = <ExerciseLog>[];
+            if (logsRaw is Iterable) {
+              for (final item in logsRaw) {
+                if (item is Map) {
+                  logs.add(ExerciseLog.fromJson(
+                    Map<String, dynamic>.from(item),
+                    defaultExercise: entry.exercise,
+                  ));
+                }
+              }
+            }
+            if (logs.isNotEmpty) {
+              allProgress[entry.exercise] = logs;
+            }
+          } catch (_) {
+            // Skip if can't fetch
+          }
+        }
+      }
+
+      if (!context.mounted) return;
+      Navigator.pop(context); // Close loading dialog
+
+      // Show progress summary
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ClientProgressScreen(
+            clientEmail: widget.clientEmail,
+            progressData: allProgress,
+            themeColor: widget.themeColor,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      Navigator.pop(context); // Close loading dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            lang == 'PL'
+                ? 'Błąd ładowania postępów: ${e.toString()}'
+                : lang == 'NO'
+                    ? 'Feil ved lasting av fremgang: ${e.toString()}'
+                    : 'Error loading progress: ${e.toString()}',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Future<void> _pasteFromClipboard() async {
     try {
       final data = await Clipboard.getData('text/plain');
@@ -870,6 +945,34 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                   ),
                                 ),
                               ],
+                            ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                onPressed: () =>
+                                    _showAllProgressSummary(context),
+                                icon: const Icon(Icons.insights, size: 20),
+                                label: Text(
+                                  lang == 'PL'
+                                      ? 'Pokaż postępy'
+                                      : lang == 'NO'
+                                          ? 'Vis fremgang'
+                                          : 'View Progress',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2ECC71),
+                                  foregroundColor: Colors.white,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
                             ),
                             if (_plan != null) ...[
                               const SizedBox(height: 16),
@@ -1531,5 +1634,354 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         );
       }
     }
+  }
+}
+
+/// Ekran podsumowania postępów klienta
+class ClientProgressScreen extends StatelessWidget {
+  final String clientEmail;
+  final Map<String, List<ExerciseLog>> progressData;
+  final Color themeColor;
+
+  const ClientProgressScreen({
+    super.key,
+    required this.clientEmail,
+    required this.progressData,
+    required this.themeColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final lang = globalLanguage;
+    final sortedExercises = progressData.keys.toList()
+      ..sort((a, b) => a.compareTo(b));
+
+    return Scaffold(
+      appBar: buildCustomAppBar(context, accentColor: themeColor),
+      body: GymBackgroundWithFitness(
+        goldDumbbells: true,
+        backgroundImage: 'assets/tlo.png',
+        backgroundImageOpacity: 0.3,
+        gradientColors: const [
+          Color(0xFF0B2E5A),
+          Color(0xFF0A2652),
+          Color(0xFF0E3D8C),
+        ],
+        accentColor: themeColor,
+        child: progressData.isEmpty
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.history,
+                      color: Color(0xFFFFD700),
+                      size: 64,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      lang == 'PL'
+                          ? 'Brak zapisanych postępów'
+                          : lang == 'NO'
+                              ? 'Ingen lagret fremgang'
+                              : 'No saved progress',
+                      style: const TextStyle(
+                        color: Color(0xFFFFD700),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      lang == 'PL'
+                          ? 'Klient jeszcze nie zapisał żadnych ćwiczeń'
+                          : lang == 'NO'
+                              ? 'Klienten har ikke lagret noen øvelser ennå'
+                              : 'Client has not saved any exercises yet',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              )
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header card
+                    Card(
+                      color: const Color(0xFF0B2E5A).withValues(alpha: 0.6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(
+                          color: Color(0xFFFFD700),
+                          width: 2,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.insights,
+                                  color: Color(0xFF2ECC71),
+                                  size: 28,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    lang == 'PL'
+                                        ? 'Postępy klienta'
+                                        : lang == 'NO'
+                                            ? 'Klientens fremgang'
+                                            : 'Client Progress',
+                                    style: const TextStyle(
+                                      color: Color(0xFFFFD700),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              clientEmail,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                _StatCard(
+                                  icon: Icons.fitness_center,
+                                  value: '${sortedExercises.length}',
+                                  label: lang == 'PL'
+                                      ? 'Ćwiczeń'
+                                      : lang == 'NO'
+                                          ? 'Øvelser'
+                                          : 'Exercises',
+                                ),
+                                const SizedBox(width: 12),
+                                _StatCard(
+                                  icon: Icons.repeat,
+                                  value:
+                                      '${progressData.values.fold<int>(0, (sum, logs) => sum + logs.length)}',
+                                  label: lang == 'PL'
+                                      ? 'Zapisów'
+                                      : lang == 'NO'
+                                          ? 'Oppføringer'
+                                          : 'Entries',
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      lang == 'PL'
+                          ? 'Historia ćwiczeń'
+                          : lang == 'NO'
+                              ? 'Øvelseshistorikk'
+                              : 'Exercise History',
+                      style: const TextStyle(
+                        color: Color(0xFFFFD700),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Exercise cards
+                    ...sortedExercises.map((exerciseName) {
+                      final logs = progressData[exerciseName]!;
+                      final latestLog = logs.isNotEmpty ? logs.last : null;
+                      final isTimeBased = latestLog?.durationSeconds != null &&
+                          latestLog!.durationSeconds > 0;
+
+                      return Card(
+                        color: const Color(0xFF0B2E5A).withValues(alpha: 0.5),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(
+                            color: themeColor.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: ExpansionTile(
+                          tilePadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          leading: CircleAvatar(
+                            backgroundColor: themeColor,
+                            child: Text(
+                              '${logs.length}',
+                              style: const TextStyle(
+                                color: Color(0xFF0B2E5A),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          title: Text(
+                            localizedExerciseName(exerciseName, lang),
+                            style: const TextStyle(
+                              color: Color(0xFFFFD700),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: latestLog != null
+                              ? Text(
+                                  isTimeBased
+                                      ? '${lang == 'PL' ? 'Ostatni' : lang == 'NO' ? 'Siste' : 'Last'}: ${latestLog.durationSeconds}s'
+                                      : '${lang == 'PL' ? 'Ostatni' : lang == 'NO' ? 'Siste' : 'Last'}: ${latestLog.weight} kg × ${latestLog.reps}',
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              : null,
+                          iconColor: themeColor,
+                          collapsedIconColor: themeColor,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              child: Column(
+                                children: logs.reversed.take(10).map((log) {
+                                  final isTime = log.durationSeconds > 0;
+                                  final value = isTime
+                                      ? '${log.durationSeconds}s'
+                                      : '${log.weight} kg × ${log.reps}';
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          log.date,
+                                          style: const TextStyle(
+                                            color: Colors.white54,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${lang == 'PL' ? 'S' : lang == 'NO' ? 'S' : 'S'}${log.sets}',
+                                              style: const TextStyle(
+                                                color: Color(0xFFFFD700),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              value,
+                                              style: const TextStyle(
+                                                color: Color(0xFF2ECC71),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            if (logs.length > 10)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: Text(
+                                  lang == 'PL'
+                                      ? '... i ${logs.length - 10} więcej'
+                                      : lang == 'NO'
+                                          ? '... og ${logs.length - 10} mer'
+                                          : '... and ${logs.length - 10} more',
+                                  style: const TextStyle(
+                                    color: Colors.white54,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+
+  const _StatCard({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0E3D8C).withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: const Color(0xFFFFD700).withValues(alpha: 0.3),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: const Color(0xFF2ECC71), size: 24),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: const TextStyle(
+                    color: Color(0xFFFFD700),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

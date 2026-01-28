@@ -249,7 +249,7 @@ class PlanAccessController {
       password: normalizedPassword,
     );
 
-    final role = await _resolveRole(trimmedEmail);
+    await _resolveRole(trimmedEmail);
   }
 
   Future<void> signInAsCoach(String email, String password) async {
@@ -313,6 +313,8 @@ class PlanAccessController {
     await FirebaseAuth.instance.signOut();
   }
 
+  Future<void> logout() async => signOut();
+
   Future<void> changePassword(
       String currentPassword, String newPassword) async {
     final user = FirebaseAuth.instance.currentUser;
@@ -353,7 +355,6 @@ class PlanAccessController {
     );
 
     final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
-    final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
 
     // Ensure password meets Firebase minimum length (6). If empty, fall back to zeros.
     final trimmedEmail = email.trim();
@@ -371,19 +372,18 @@ class PlanAccessController {
         password: normalizedPassword,
       );
 
-      // Create user profile in Firestore (secondary app to avoid auth changes)
+      // Create user profile in Firestore using MAIN instance for proper sync
       final userProfile = UserProfile(
         email: trimmedEmail,
         role: PlanUserRole.client,
         createdAt: DateTime.now(),
       );
 
-      await secondaryFirestore
-          .collection('users')
+      await _usersCollection
           .doc(_docIdFromEmail(trimmedEmail))
           .set(userProfile.toMap());
 
-      // Create empty plan for the new client
+      // Create empty plan for the new client using MAIN instance
       final newPlan = ClientPlan(
         title: 'New Training Plan',
         notes: '',
@@ -394,10 +394,7 @@ class PlanAccessController {
       final planData = newPlan.toMap();
       planData['email'] = trimmedEmail;
 
-      await secondaryFirestore
-          .collection('clientPlans')
-          .doc(_docIdFromEmail(trimmedEmail))
-          .set(planData);
+      await _plansCollection.doc(_docIdFromEmail(trimmedEmail)).set(planData);
     } catch (e) {
       throw Exception('Failed to create client: ${e.toString()}');
     } finally {
@@ -408,13 +405,20 @@ class PlanAccessController {
   Future<ClientPlan?> fetchPlanForEmail(String email) async {
     try {
       final doc = await _plansCollection.doc(_docIdFromEmail(email)).get();
+      debugPrint(
+          '[PlanAccess] fetchPlanForEmail: email=$email, docId=${_docIdFromEmail(email)}, exists=${doc.exists}');
       if (!doc.exists || doc.data() == null) {
+        debugPrint('[PlanAccess] No plan found, loading from cache');
         return await _loadCachedPlan(email);
       }
+      debugPrint('[PlanAccess] Plan data: ${doc.data()}');
       final plan = ClientPlan.fromMap(doc.data()!);
+      debugPrint(
+          '[PlanAccess] Parsed plan: title=${plan.title}, entries=${plan.entries.length}');
       await _cachePlan(email, plan);
       return plan;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[PlanAccess] Error loading plan: $e');
       return await _loadCachedPlan(email);
     }
   }
@@ -542,6 +546,51 @@ class PlanAccessController {
     Map<String, dynamic> log,
   ) async {
     await _appendExerciseLogs(clientEmail, exerciseName, [log]);
+  }
+
+  Future<void> updateClientPlan(String email,
+      {String? title, String? notes}) async {
+    final docId = _docIdFromEmail(email);
+    final doc = await _plansCollection.doc(docId).get();
+
+    if (doc.exists) {
+      final data = doc.data()!;
+      if (title != null) data['title'] = title;
+      if (notes != null) data['notes'] = notes;
+      data['updatedAt'] = DateTime.now().toIso8601String();
+      await _plansCollection.doc(docId).set(data);
+    } else {
+      // Create new plan if doesn't exist
+      final newPlan = ClientPlan(
+        title: title ?? 'New Training Plan',
+        notes: notes ?? '',
+        entries: [],
+        updatedAt: DateTime.now(),
+      );
+      await savePlanForEmail(email, newPlan);
+    }
+  }
+
+  Future<void> updateClientPlanEntries(
+      String email, List<ClientPlanEntry> entries) async {
+    final docId = _docIdFromEmail(email);
+    final doc = await _plansCollection.doc(docId).get();
+
+    if (doc.exists) {
+      final data = doc.data()!;
+      data['entries'] = entries.map((e) => e.toMap()).toList();
+      data['updatedAt'] = DateTime.now().toIso8601String();
+      await _plansCollection.doc(docId).set(data);
+    } else {
+      // Create new plan with entries
+      final newPlan = ClientPlan(
+        title: 'New Training Plan',
+        notes: '',
+        entries: entries,
+        updatedAt: DateTime.now(),
+      );
+      await savePlanForEmail(email, newPlan);
+    }
   }
 
   Future<void> savePlanForEmail(String email, ClientPlan plan) async {

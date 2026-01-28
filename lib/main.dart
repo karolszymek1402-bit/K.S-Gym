@@ -4684,12 +4684,33 @@ class CategoryScreen extends StatelessWidget {
 
   Widget _categoryBackground(String path) {
     final lower = path.toLowerCase();
-    final Widget child = lower.endsWith('.svg')
-        ? SvgPicture.asset(path, fit: BoxFit.cover)
-        : Image.asset(path, fit: BoxFit.cover);
+    if (lower.endsWith('.svg')) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: SvgPicture.asset(
+          path,
+          fit: BoxFit.cover,
+          placeholderBuilder: (context) => Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: const Color(0xFF0B2E5A),
+            ),
+          ),
+        ),
+      );
+    }
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
-      child: child,
+      child: Image.asset(
+        path,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: const Color(0xFF0B2E5A),
+          ),
+        ),
+      ),
     );
   }
 

@@ -4676,15 +4676,15 @@ class CategoryScreen extends StatelessWidget {
   static const Color _navy = Color(0xFF0B2E5A);
   static const Color _gold = Color(0xFFFFD700);
   static const List<Map<String, dynamic>> categories = [
-    {'name': 'PLAN', 'icon': Icons.assignment, 'isPlan': true},
-    {'name': 'CHEST', 'icon': Icons.fitness_center},
-    {'name': 'BACK', 'icon': Icons.list},
-    {'name': 'BICEPS', 'icon': Icons.bolt},
-    {'name': 'TRICEPS', 'icon': Icons.trending_down},
-    {'name': 'SHOULDERS', 'icon': Icons.architecture},
-    {'name': 'ABS', 'icon': Icons.grid_view},
-    {'name': 'LEGS', 'icon': Icons.directions_walk},
-    {'name': 'FOREARMS', 'icon': Icons.pan_tool_alt},
+    {'name': 'PLAN', 'isPlan': true},
+    {'name': 'CHEST'},
+    {'name': 'BACK'},
+    {'name': 'BICEPS'},
+    {'name': 'TRICEPS'},
+    {'name': 'SHOULDERS'},
+    {'name': 'ABS'},
+    {'name': 'LEGS'},
+    {'name': 'FOREARMS'},
   ];
 
   @override
@@ -4720,7 +4720,6 @@ class CategoryScreen extends StatelessWidget {
                           final cat = categories[index];
                           final bool isPlan = (cat['isPlan'] as bool?) ?? false;
                           final String name = cat['name'] as String;
-                          final IconData icon = cat['icon'] as IconData;
                           final displayName = localizedCategoryName(name, lang);
 
                           void handleTap() {
@@ -4789,15 +4788,6 @@ class CategoryScreen extends StatelessWidget {
                                 ),
                                 child: Row(
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        color: gold.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Icon(icon, color: gold, size: 24),
-                                    ),
-                                    const SizedBox(width: 16),
                                     Expanded(
                                       child: Text(
                                         displayName,

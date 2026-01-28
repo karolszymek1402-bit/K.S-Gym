@@ -10,6 +10,7 @@ import 'package:flutter/services.dart'
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 
 import 'firebase_options.dart';
@@ -1899,13 +1900,18 @@ class StartChoiceScreen extends StatelessWidget {
               subtitle:
                   const Text(phone, style: TextStyle(color: Color(0xFFFFD700))),
               onTap: () async {
-                await Clipboard.setData(const ClipboardData(text: phone));
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            Translations.get('copied_phone', language: lang))),
-                  );
+                final Uri phoneUri = Uri(scheme: 'tel', path: phone);
+                if (await canLaunchUrl(phoneUri)) {
+                  await launchUrl(phoneUri);
+                } else {
+                  await Clipboard.setData(const ClipboardData(text: phone));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(Translations.get('copied_phone',
+                              language: lang))),
+                    );
+                  }
                 }
               },
             ),
@@ -1918,13 +1924,18 @@ class StartChoiceScreen extends StatelessWidget {
               subtitle:
                   const Text(email, style: TextStyle(color: Color(0xFFFFD700))),
               onTap: () async {
-                await Clipboard.setData(const ClipboardData(text: email));
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            Translations.get('copied_email', language: lang))),
-                  );
+                final Uri emailUri = Uri(scheme: 'mailto', path: email);
+                if (await canLaunchUrl(emailUri)) {
+                  await launchUrl(emailUri);
+                } else {
+                  await Clipboard.setData(const ClipboardData(text: email));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(Translations.get('copied_email',
+                              language: lang))),
+                    );
+                  }
                 }
               },
             ),

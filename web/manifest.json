@@ -1,11 +1,11 @@
 {
-    "name": "silownia_app",
-    "short_name": "silownia_app",
+    "name": "K.S-Gym",
+    "short_name": "K.S-Gym",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1a1a2e",
+    "theme_color": "#e94560",
+    "description": "Aplikacja fitness K.S-Gym",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

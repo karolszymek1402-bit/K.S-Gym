@@ -32,7 +32,7 @@ jobs:
         run: flutter pub get
 
       - name: Build web
-        run: flutter build web --release --base-href "/silownia-app/"
+        run: flutter build web --release --base-href "/K.S-Gym/"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

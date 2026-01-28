@@ -1617,34 +1617,14 @@ Future<String?> _findExistingAsset(List<String> paths) async {
 }
 
 Widget buildLogo(BuildContext context, Color accentColor, {double size = 34}) {
-  // Try common paths (supports both assets/ks_gym_logo.png and assets/assets/ks_gym_logo.png)
-  return FutureBuilder<String?>(
-    future: _findExistingAsset([
-      'assets/ks_gym_logo.png',
-      'assets/assets/ks_gym_logo.png',
-      'assets/mojelogo.png',
+  // Bezpośrednio używamy mojelogo.svg - wiemy że istnieje
+  return SizedBox(
+    height: size,
+    child: SvgPicture.asset(
       'assets/mojelogo.svg',
-      'assets/ks_gym_logo_electro_bw.svg',
-      'assets/assets/ks_gym_logo_electro_bw.svg',
-    ]),
-    builder: (ctx, snap) {
-      if (snap.connectionState != ConnectionState.done) {
-        return _logoPlaceholder(accentColor, size);
-      }
-      final path = snap.data;
-      if (path == null) {
-        return _logoPlaceholder(accentColor, size);
-      }
-      if (path.toLowerCase().endsWith('.svg')) {
-        try {
-          return SizedBox(
-              height: size, child: SvgPicture.asset(path, fit: BoxFit.contain));
-        } catch (_) {
-          return _logoPlaceholder(accentColor, size);
-        }
-      }
-      return Image.asset(path, height: size, fit: BoxFit.contain);
-    },
+      fit: BoxFit.contain,
+      placeholderBuilder: (context) => _logoPlaceholder(accentColor, size),
+    ),
   );
 }
 

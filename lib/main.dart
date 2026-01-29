@@ -707,6 +707,9 @@ const Map<String, List<String>> kDefaultExercises = {
     'Prostowanie ramion na wyciągu (drążek) – Bar Pushdown / Triceps Pressdown',
     'JM Press – JM Press',
     'Tate Press – Tate Press',
+    'Dipy na poręczach – Dips',
+    'Catana Extension jednorącz – Single Arm Catana Extension',
+    'Catana Extension oburącz – Double Arm Catana Extension',
   ],
   'FOREARMS': [
     'Uginanie nadgarstków podchwytem – Wrist Curl',
@@ -1528,6 +1531,21 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Tate Press',
     'EN': 'Tate Press',
     'NO': 'Tate Press',
+  },
+  'Dipy na poręczach – Dips': {
+    'PL': 'Dipy na poręczach',
+    'EN': 'Dips',
+    'NO': 'Dips',
+  },
+  'Catana Extension jednorącz – Single Arm Catana Extension': {
+    'PL': 'Catana Extension jednorącz',
+    'EN': 'Single Arm Catana Extension',
+    'NO': 'Single Arm Catana Extension',
+  },
+  'Catana Extension oburącz – Double Arm Catana Extension': {
+    'PL': 'Catana Extension oburącz',
+    'EN': 'Double Arm Catana Extension',
+    'NO': 'Double Arm Catana Extension',
   },
 
   // FOREARMS

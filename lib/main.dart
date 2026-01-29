@@ -642,6 +642,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Zakroki – Reverse Lunges',
     'Wejścia na podwyższenie – Step-ups',
     // Dwugłowe i Pośladki
+    'Martwy ciąg klasyczny – Conventional Deadlift',
     'Martwy ciąg na prostych nogach – Stiff Leg Deadlift',
     'Uginanie nóg leżąc – Lying Leg Curl',
     'Uginanie nóg siedząc – Seated Leg Curl',

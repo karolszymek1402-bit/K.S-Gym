@@ -560,7 +560,6 @@ const Map<String, List<String>> kDefaultExercises = {
     'Wyciskanie sztangi typu Gilotyna – Guillotine Press',
     'Wyciskanie z podłogi (sztanga) – Barbell Floor Press',
     'Wyciskanie ze Slingshotem – Slingshot Bench Press',
-    'Wyciskanie z deską (klockiem) – Board Press',
     // Wyciskania – Hantle
     'Wyciskanie hantli na ławce poziomej – Dumbbell Bench Press',
     'Wyciskanie hantli na skosie dodatnim – Incline Dumbbell Press',
@@ -579,7 +578,6 @@ const Map<String, List<String>> kDefaultExercises = {
     'Krzyżowanie linek wyciągu górnego (Brama) – Cable Crossover / High Cable Fly',
     'Rozpiętki z linkami wyciągu dolnego – Low Cable Crossover',
     'Rozpiętki jednorącz na wyciągu – Single Arm Cable Fly',
-    'Przenoszenie hantla za głowę – Dumbbell Pullover',
     'Landmine Press (wyciskanie półsztangi) – Landmine Press',
     // Kalistenika
     'Pompki klasyczne – Push-ups',
@@ -600,7 +598,6 @@ const Map<String, List<String>> kDefaultExercises = {
     'Ściąganie drążka wyciągu górnego chwytem wąskim – Close-Grip Lat Pulldown',
     'Ściąganie drążka wyciągu górnego chwytem neutralnym – Neutral Grip Lat Pulldown',
     'Ściąganie jednorącz na wyciągu – Single Arm Lat Pulldown',
-    'Ściąganie drążka za głowę – Behind the Neck Pulldown',
     'Ściąganie na maszynie Hammer (góra-dół) – Hammer Strength High Row / Pulldown',
     // Wiosłowania w poziomie
     'Wiosłowanie sztangą w opadzie – Bent Over Barbell Row',
@@ -705,7 +702,6 @@ const Map<String, List<String>> kDefaultExercises = {
     'Wyciskanie francuskie hantla oburącz (siedząc) – Overhead Dumbbell Triceps Extension',
     'Prostowanie ramion na wyciągu (sznur) – Rope Pushdown',
     'Prostowanie ramion na wyciągu (drążek) – Bar Pushdown / Triceps Pressdown',
-    'Kickbacks (wyprost ramienia w tył w opadzie) – Triceps Kickback',
     'JM Press – JM Press',
     'Tate Press – Tate Press',
   ],
@@ -788,11 +784,6 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'EN': 'Slingshot Bench Press',
     'NO': 'Slingshot Bench Press',
   },
-  'Wyciskanie z deską (klockiem) – Board Press': {
-    'PL': 'Wyciskanie z deską (klockiem)',
-    'EN': 'Board Press',
-    'NO': 'Board Press',
-  },
   'Wyciskanie hantli na ławce poziomej – Dumbbell Bench Press': {
     'PL': 'Wyciskanie hantli na ławce poziomej',
     'EN': 'Dumbbell Bench Press',
@@ -870,11 +861,6 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Rozpiętki jednorącz na wyciągu',
     'EN': 'Single Arm Cable Fly',
     'NO': 'Single Arm Cable Fly',
-  },
-  'Przenoszenie hantla za głowę – Dumbbell Pullover': {
-    'PL': 'Przenoszenie hantla za głowę',
-    'EN': 'Dumbbell Pullover',
-    'NO': 'Dumbbell Pullover',
   },
   'Landmine Press (wyciskanie półsztangi) – Landmine Press': {
     'PL': 'Landmine Press (wyciskanie półsztangi)',
@@ -958,11 +944,6 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Ściąganie jednorącz na wyciągu',
     'EN': 'Single Arm Lat Pulldown',
     'NO': 'Single Arm Lat Pulldown',
-  },
-  'Ściąganie drążka za głowę – Behind the Neck Pulldown': {
-    'PL': 'Ściąganie drążka za głowę',
-    'EN': 'Behind the Neck Pulldown',
-    'NO': 'Behind the Neck Pulldown',
   },
   'Ściąganie na maszynie Hammer (góra-dół) – Hammer Strength High Row / Pulldown':
       {
@@ -1519,11 +1500,6 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Prostowanie ramion na wyciągu (drążek)',
     'EN': 'Bar Pushdown / Triceps Pressdown',
     'NO': 'Bar Pushdown / Triceps Pressdown',
-  },
-  'Kickbacks (wyprost ramienia w tył w opadzie) – Triceps Kickback': {
-    'PL': 'Kickbacks (wyprost ramienia w tył w opadzie)',
-    'EN': 'Triceps Kickback',
-    'NO': 'Triceps Kickback',
   },
   'JM Press – JM Press': {
     'PL': 'JM Press',

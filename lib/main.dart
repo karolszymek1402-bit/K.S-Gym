@@ -672,6 +672,7 @@ const Map<String, List<String>> kDefaultExercises = {
     // Wznosy
     'Wznosy hantli bokiem – Dumbbell Lateral Raises',
     'Wznosy bokiem na wyciągu – Cable Lateral Raises',
+    'Wznosy bokiem na maszynie – Machine Lateral Raise',
     'Podciąganie sztangi wzdłuż tułowia – Barbell Upright Row',
     'Wznosy hantli przed siebie – Dumbbell Front Raises',
     'Wznosy talerza przed siebie – Plate Front Raise',
@@ -1282,6 +1283,11 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Wznosy bokiem na wyciągu',
     'EN': 'Cable Lateral Raises',
     'NO': 'Cable Lateral Raises',
+  },
+  'Wznosy bokiem na maszynie – Machine Lateral Raise': {
+    'PL': 'Wznosy bokiem na maszynie',
+    'EN': 'Machine Lateral Raise',
+    'NO': 'Machine Lateral Raise',
   },
   'Podciąganie sztangi wzdłuż tułowia – Barbell Upright Row': {
     'PL': 'Podciąganie sztangi wzdłuż tułowia',

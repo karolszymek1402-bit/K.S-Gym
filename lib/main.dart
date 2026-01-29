@@ -12,6 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'firebase_options.dart';
 import 'plan_access.dart';
@@ -6842,6 +6843,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _startRestTimer({bool resume = false}) {
     _timer?.cancel();
+    // Włącz wakelock żeby ekran nie gasł podczas przerwy
+    try {
+      WakelockPlus.enable();
+    } catch (_) {}
     setState(() {
       if (!resume || _secondsRemaining == 0) {
         _secondsRemaining = _totalRestSeconds;
@@ -6893,6 +6898,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _timer?.cancel();
     _stopVibration(); // Zatrzymaj ciągłe wibracje
     _stopSoundLoop(); // Zatrzymaj ciągły dźwięk
+    // Wyłącz wakelock
+    try {
+      WakelockPlus.disable();
+    } catch (_) {}
     setState(() {
       _isTimerRunning = false;
       _secondsRemaining = 0;
@@ -6905,6 +6914,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _resetTimer() {
     _timer?.cancel();
+    // Włącz wakelock podczas resetu
+    try {
+      WakelockPlus.enable();
+    } catch (_) {}
     setState(() {
       _secondsRemaining = _totalRestSeconds;
       _isTimerRunning = true;

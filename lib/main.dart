@@ -2800,51 +2800,6 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
 
                 final plan = state.activePlan!;
 
-                // Nazwy dni tygodnia
-                final dayNames = lang == 'PL'
-                    ? [
-                        'Poniedziałek',
-                        'Wtorek',
-                        'Środa',
-                        'Czwartek',
-                        'Piątek',
-                        'Sobota',
-                        'Niedziela'
-                      ]
-                    : lang == 'NO'
-                        ? [
-                            'Mandag',
-                            'Tirsdag',
-                            'Onsdag',
-                            'Torsdag',
-                            'Fredag',
-                            'Lørdag',
-                            'Søndag'
-                          ]
-                        : [
-                            'Monday',
-                            'Tuesday',
-                            'Wednesday',
-                            'Thursday',
-                            'Friday',
-                            'Saturday',
-                            'Sunday'
-                          ];
-
-                // Pobierz ćwiczenia dla danego dnia
-                List<ClientPlanEntry> getExercisesForDay(int dayIndex) {
-                  return plan.entries
-                      .where((e) => e.dayOfWeek == dayIndex)
-                      .toList();
-                }
-
-                // Sprawdź czy dzień jest wolny
-                bool isRestDay(int dayIndex) {
-                  return plan.restDays.contains(dayIndex);
-                }
-
-                const restDayColor = Color(0xFF4CAF50);
-
                 return ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
@@ -2927,228 +2882,138 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Dni tygodnia
-                    ...List.generate(7, (dayIndex) {
-                      final dayExercises = getExercisesForDay(dayIndex);
-                      final restDay = isRestDay(dayIndex);
-                      final dayName = dayNames[dayIndex];
-
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                          color: restDay
-                              ? restDayColor.withValues(alpha: 0.12)
-                              : Colors.black.withValues(alpha: 0.4),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: restDay
-                                ? restDayColor.withValues(alpha: 0.5)
-                                : accent.withValues(alpha: 0.25),
-                            width: 1.5,
+                    // Lista ćwiczeń
+                    if (plan.entries.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            children: [
+                              Icon(Icons.fitness_center,
+                                  color: accent.withValues(alpha: 0.3),
+                                  size: 48),
+                              const SizedBox(height: 12),
+                              Text(
+                                lang == 'PL'
+                                    ? 'Brak ćwiczeń w planie'
+                                    : lang == 'NO'
+                                        ? 'Ingen øvelser i planen'
+                                        : 'No exercises in plan',
+                                style: TextStyle(
+                                    color: accent.withValues(alpha: 0.6)),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(dividerColor: Colors.transparent),
-                          child: ExpansionTile(
-                            initiallyExpanded:
-                                dayExercises.isNotEmpty && !restDay,
-                            tilePadding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 4),
+                      )
+                    else
+                      ...plan.entries.asMap().entries.map((entry) {
+                        final idx = entry.key;
+                        final exercise = entry.value;
+                        final isTimeBased = exercise.timeSeconds > 0;
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                accent.withValues(alpha: 0.1),
+                                Colors.black.withValues(alpha: 0.35),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color: accent.withValues(alpha: 0.2)),
+                          ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 6),
                             leading: Container(
-                              width: 44,
-                              height: 44,
+                              width: 40,
+                              height: 40,
                               decoration: BoxDecoration(
-                                gradient: restDay
-                                    ? LinearGradient(colors: [
-                                        restDayColor,
-                                        restDayColor.withValues(alpha: 0.7)
-                                      ])
-                                    : LinearGradient(colors: [
-                                        accent,
-                                        accent.withValues(alpha: 0.7)
-                                      ]),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    accent,
+                                    accent.withValues(alpha: 0.7)
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
                                 borderRadius: BorderRadius.circular(10),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: (restDay ? restDayColor : accent)
-                                        .withValues(alpha: 0.3),
-                                    blurRadius: 8,
+                                    color: accent.withValues(alpha: 0.3),
+                                    blurRadius: 6,
                                     spreadRadius: 1,
                                   ),
                                 ],
                               ),
-                              child: Icon(
-                                restDay ? Icons.hotel : Icons.fitness_center,
-                                color: Colors.black,
-                                size: 22,
+                              child: Center(
+                                child: Text(
+                                  '${idx + 1}',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                             ),
                             title: Text(
-                              dayName,
-                              style: TextStyle(
-                                color: restDay ? restDayColor : accent,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                              exercise.exercise.split(' – ').first,
+                              style: const TextStyle(
+                                color: accent,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                             subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                restDay
-                                    ? (lang == 'PL'
-                                        ? '🛏️ Dzień regeneracji'
-                                        : lang == 'NO'
-                                            ? '🛏️ Hviledag'
-                                            : '🛏️ Rest day')
-                                    : dayExercises.isEmpty
-                                        ? (lang == 'PL'
-                                            ? 'Brak zaplanowanych ćwiczeń'
-                                            : lang == 'NO'
-                                                ? 'Ingen planlagte øvelser'
-                                                : 'No exercises planned')
-                                        : '${dayExercises.length} ${lang == 'PL' ? 'ćwiczeń' : lang == 'NO' ? 'øvelser' : 'exercises'}',
-                                style: TextStyle(
-                                  color: restDay
-                                      ? restDayColor.withValues(alpha: 0.8)
-                                      : accent.withValues(alpha: 0.65),
-                                  fontSize: 12,
-                                ),
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Wrap(
+                                spacing: 8,
+                                runSpacing: 4,
+                                children: [
+                                  _buildInfoChip(
+                                      Icons.repeat,
+                                      '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}',
+                                      accent),
+                                  _buildInfoChip(
+                                      Icons.timer_outlined,
+                                      '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}',
+                                      accent),
+                                  if (isTimeBased)
+                                    _buildInfoChip(
+                                        Icons.hourglass_bottom,
+                                        '${exercise.timeSeconds}s',
+                                        const Color(0xFFFFD700)),
+                                ],
                               ),
                             ),
-                            iconColor: accent,
-                            collapsedIconColor: accent.withValues(alpha: 0.5),
-                            children: [
-                              if (dayExercises.isEmpty && !restDay)
-                                Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.event_busy,
-                                          color: accent.withValues(alpha: 0.35),
-                                          size: 36),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        lang == 'PL'
-                                            ? 'Brak ćwiczeń na ten dzień'
-                                            : 'No exercises for this day',
-                                        style: TextStyle(
-                                            color:
-                                                accent.withValues(alpha: 0.5)),
-                                      ),
-                                    ],
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ExerciseDetailScreen(
+                                    exerciseName: exercise.exercise,
+                                    themeColor: accent,
+                                    recommendedSets: exercise.sets,
+                                    recommendedRestSeconds:
+                                        exercise.restSeconds,
+                                    recommendedTimeSeconds:
+                                        exercise.timeSeconds > 0
+                                            ? exercise.timeSeconds
+                                            : null,
                                   ),
                                 ),
-                              ...dayExercises.asMap().entries.map((entry) {
-                                final idx = entry.key;
-                                final exercise = entry.value;
-                                final isTimeBased = exercise.timeSeconds > 0;
-
-                                return Container(
-                                  margin: EdgeInsets.only(
-                                    left: 16,
-                                    right: 16,
-                                    top: idx == 0 ? 4 : 0,
-                                    bottom: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        accent.withValues(alpha: 0.08),
-                                        Colors.black.withValues(alpha: 0.25),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        color: accent.withValues(alpha: 0.15)),
-                                  ),
-                                  child: ListTile(
-                                    dense: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 4),
-                                    leading: Container(
-                                      width: 36,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                        color: accent.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                            color:
-                                                accent.withValues(alpha: 0.3)),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '${idx + 1}',
-                                          style: const TextStyle(
-                                            color: accent,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      exercise.exercise.split(' – ').first,
-                                      style: const TextStyle(
-                                        color: accent,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    subtitle: Padding(
-                                      padding: const EdgeInsets.only(top: 4),
-                                      child: Row(
-                                        children: [
-                                          _buildInfoChip(Icons.repeat,
-                                              '${exercise.sets}', accent),
-                                          const SizedBox(width: 8),
-                                          _buildInfoChip(
-                                              Icons.timer_outlined,
-                                              '${exercise.restSeconds}s',
-                                              accent),
-                                          if (isTimeBased) ...[
-                                            const SizedBox(width: 8),
-                                            _buildInfoChip(
-                                                Icons.hourglass_bottom,
-                                                '${exercise.timeSeconds}s',
-                                                const Color(0xFFFFD700)),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      // Przejdź do szczegółów ćwiczenia
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              ExerciseDetailScreen(
-                                            exerciseName: exercise.exercise,
-                                            themeColor: accent,
-                                            recommendedSets: exercise.sets,
-                                            recommendedRestSeconds:
-                                                exercise.restSeconds,
-                                            recommendedTimeSeconds:
-                                                exercise.timeSeconds > 0
-                                                    ? exercise.timeSeconds
-                                                    : null,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    trailing: const Icon(Icons.chevron_right,
-                                        color: accent, size: 20),
-                                  ),
-                                );
-                              }),
-                              if (dayExercises.isNotEmpty)
-                                const SizedBox(height: 4),
-                            ],
+                              );
+                            },
+                            trailing: const Icon(Icons.chevron_right,
+                                color: accent, size: 22),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      }),
                   ],
                 );
               },
@@ -3161,20 +3026,21 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
 
   Widget _buildInfoChip(IconData icon, String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: color.withValues(alpha: 0.8)),
-          const SizedBox(width: 3),
+          Icon(icon, size: 14, color: color.withValues(alpha: 0.9)),
+          const SizedBox(width: 4),
           Text(text,
               style: TextStyle(
-                  color: color.withValues(alpha: 0.9),
-                  fontSize: 11,
+                  color: color.withValues(alpha: 0.95),
+                  fontSize: 12,
                   fontWeight: FontWeight.w600)),
         ],
       ),

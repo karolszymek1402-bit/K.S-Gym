@@ -622,6 +622,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Wyprosty tułowia na ławce rzymskiej – Back Extension / Hyperextension',
     'Odwrotne wyprosty (nogi w górę) – Reverse Hyperextension',
     'Face Pull (przyciąganie liny do twarzy) – Face Pull',
+    'Przenoszenie hantla za głowę – Dumbbell Pullover',
   ],
   'LEGS': [
     // Czworogłowe
@@ -1053,6 +1054,11 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Face Pull (przyciąganie liny do twarzy)',
     'EN': 'Face Pull',
     'NO': 'Face Pull',
+  },
+  'Przenoszenie hantla za głowę – Dumbbell Pullover': {
+    'PL': 'Przenoszenie hantla za głowę',
+    'EN': 'Dumbbell Pullover',
+    'NO': 'Dumbbell Pullover',
   },
 
   // LEGS

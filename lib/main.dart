@@ -347,6 +347,152 @@ class Translations {
       'NO': 'Vibrasjon'
     },
     'sound_enabled': {'EN': 'Sound', 'PL': 'Dźwięk', 'NO': 'Lyd'},
+    // Dodatkowe tłumaczenia dla trenera
+    'add_client': {
+      'EN': 'Add client',
+      'PL': 'Dodaj klienta',
+      'NO': 'Legg til klient'
+    },
+    'delete_client': {
+      'EN': 'Delete client',
+      'PL': 'Usuń klienta',
+      'NO': 'Slett klient'
+    },
+    'delete_client_confirm': {
+      'EN': 'Are you sure you want to delete this client?',
+      'PL': 'Czy na pewno chcesz usunąć tego klienta?',
+      'NO': 'Er du sikker på at du vil slette denne klienten?'
+    },
+    'no_clients': {
+      'EN': 'No clients',
+      'PL': 'Brak klientów',
+      'NO': 'Ingen klienter'
+    },
+    'edit_plan': {'EN': 'Edit plan', 'PL': 'Edytuj plan', 'NO': 'Rediger plan'},
+    'add_exercise': {
+      'EN': 'Add exercise',
+      'PL': 'Dodaj ćwiczenie',
+      'NO': 'Legg til øvelse'
+    },
+    'delete_exercise_title': {
+      'EN': 'Delete exercise',
+      'PL': 'Usuń ćwiczenie',
+      'NO': 'Slett øvelse'
+    },
+    'delete_exercise_confirm': {
+      'EN': 'Are you sure you want to delete this exercise?',
+      'PL': 'Czy na pewno chcesz usunąć to ćwiczenie?',
+      'NO': 'Er du sikker på at du vil slette denne øvelsen?'
+    },
+    'edit_exercise': {
+      'EN': 'Edit exercise',
+      'PL': 'Edytuj ćwiczenie',
+      'NO': 'Rediger øvelse'
+    },
+    'exercise_added': {
+      'EN': 'Exercise added',
+      'PL': 'Ćwiczenie dodane',
+      'NO': 'Øvelse lagt til'
+    },
+    'error': {'EN': 'Error', 'PL': 'Błąd', 'NO': 'Feil'},
+    'no_exercises_in_plan': {
+      'EN': 'No exercises in plan',
+      'PL': 'Brak ćwiczeń w planie',
+      'NO': 'Ingen øvelser i planen'
+    },
+    'no_exercises': {
+      'EN': 'No exercises',
+      'PL': 'Brak ćwiczeń',
+      'NO': 'Ingen øvelser'
+    },
+    'no_exercises_for_day': {
+      'EN': 'No exercises for this day',
+      'PL': 'Brak ćwiczeń na ten dzień',
+      'NO': 'Ingen øvelser for denne dagen'
+    },
+    'no_plan_from_trainer': {
+      'EN': 'No plan from trainer',
+      'PL': 'Brak planu od trenera',
+      'NO': 'Ingen plan fra trener'
+    },
+    'no_saved_progress': {
+      'EN': 'No saved progress',
+      'PL': 'Brak zapisanych postępów',
+      'NO': 'Ingen lagret fremgang'
+    },
+    'error_loading_progress': {
+      'EN': 'Error loading progress',
+      'PL': 'Błąd ładowania postępów',
+      'NO': 'Feil ved lasting av fremgang'
+    },
+    'edit_entry': {
+      'EN': 'Edit entry',
+      'PL': 'Edytuj wpis',
+      'NO': 'Rediger oppføring'
+    },
+    'entry_updated': {
+      'EN': 'Entry updated',
+      'PL': 'Wpis zaktualizowany',
+      'NO': 'Oppføring oppdatert'
+    },
+    'time_s': {'EN': 'TIME (s)', 'PL': 'CZAS (s)', 'NO': 'TID (s)'},
+    'sets': {'EN': 'sets', 'PL': 'serii', 'NO': 'sett'},
+    'rest': {'EN': 'rest', 'PL': 'przerwy', 'NO': 'pause'},
+    'last': {'EN': 'Last', 'PL': 'Ostatni', 'NO': 'Siste'},
+    'exercises_count': {'EN': 'exercises', 'PL': 'ćwiczeń', 'NO': 'øvelser'},
+    'rest_day': {'EN': 'Rest day', 'PL': 'Dzień wolny', 'NO': 'Hviledag'},
+    'rest_day_message': {
+      'EN': 'Rest and recover!',
+      'PL': 'Odpoczywaj i regeneruj się!',
+      'NO': 'Hvil og kom deg!'
+    },
+    'exercises_to_do': {
+      'EN': 'exercises to do',
+      'PL': 'ćwiczeń do wykonania',
+      'NO': 'øvelser å gjøre'
+    },
+    'rest_day_training': {
+      'EN': 'Rest day from training',
+      'PL': 'Dzień wolny od treningu',
+      'NO': 'Hviledag fra trening'
+    },
+    'category': {'EN': 'Category', 'PL': 'Kategoria', 'NO': 'Kategori'},
+    'exercise': {'EN': 'Exercise', 'PL': 'Ćwiczenie', 'NO': 'Øvelse'},
+    'time_based_exercise': {
+      'EN': 'Time-based exercise',
+      'PL': 'Ćwiczenie na czas',
+      'NO': 'Tidsbasert øvelse'
+    },
+    'sets_count': {
+      'EN': 'Number of sets',
+      'PL': 'Ilość serii',
+      'NO': 'Antall sett'
+    },
+    'exercise_duration': {
+      'EN': 'Exercise duration',
+      'PL': 'Czas trwania ćwiczenia',
+      'NO': 'Varighet av øvelse'
+    },
+    'rest_time_label': {
+      'EN': 'Rest time',
+      'PL': 'Czas przerwy',
+      'NO': 'Pausetid'
+    },
+    'note_for_client': {
+      'EN': 'Note for client (optional)',
+      'PL': 'Notatka dla klienta (opcjonalna)',
+      'NO': 'Notat til klienten (valgfritt)'
+    },
+    'note_hint': {
+      'EN': 'e.g. Remember proper technique...',
+      'PL': 'np. Pamiętaj o poprawnej technice...',
+      'NO': 'f.eks. Husk riktig teknikk...'
+    },
+    'exercise_time_finished': {
+      'EN': 'Exercise time finished!',
+      'PL': 'Czas ćwiczenia minął!',
+      'NO': 'Øvelsestiden er over!'
+    },
   };
 
   static String get(String key, {String language = 'EN'}) {
@@ -3144,11 +3290,7 @@ class CoachDashboardScreen extends StatelessWidget {
                         icon: const Icon(Icons.person_add,
                             color: Colors.black, size: 28),
                         label: Text(
-                          lang == 'PL'
-                              ? 'Dodaj klienta'
-                              : lang == 'NO'
-                                  ? 'Legg til klient'
-                                  : 'Add Client',
+                          Translations.get('add_client', language: lang),
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w700),
                         ),
@@ -3263,40 +3405,51 @@ class _ClientsScreenState extends State<ClientsScreen> {
       builder: (ctx) {
         return AlertDialog(
           backgroundColor: Colors.black.withValues(alpha: 0.8),
-          title: const Text('Dodaj klienta',
-              style: TextStyle(color: Color(0xFFFFD700))),
+          title: Text(Translations.get('add_client', language: globalLanguage),
+              style: const TextStyle(color: Color(0xFFFFD700))),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameCtrl,
                 style: const TextStyle(color: Color(0xFFFFD700)),
-                decoration: const InputDecoration(
-                    labelText: 'Imię i nazwisko',
-                    prefixIcon: Icon(Icons.person)),
+                decoration: InputDecoration(
+                    labelText: globalLanguage == 'PL'
+                        ? 'Imię i nazwisko'
+                        : globalLanguage == 'NO'
+                            ? 'Navn'
+                            : 'Full name',
+                    prefixIcon: const Icon(Icons.person)),
               ),
               const SizedBox(height: 10),
               TextField(
                 controller: emailCtrl,
                 style: const TextStyle(color: Color(0xFFFFD700)),
-                decoration: const InputDecoration(
-                    labelText: 'Email', prefixIcon: Icon(Icons.email)),
+                decoration: InputDecoration(
+                    labelText:
+                        Translations.get('email', language: globalLanguage),
+                    prefixIcon: const Icon(Icons.email)),
               ),
               const SizedBox(height: 10),
               TextField(
                 controller: passwordCtrl,
                 obscureText: true,
                 style: const TextStyle(color: Color(0xFFFFD700)),
-                decoration: const InputDecoration(
-                    labelText: 'Hasło (min. 6 znaków)',
-                    prefixIcon: Icon(Icons.lock)),
+                decoration: InputDecoration(
+                    labelText: globalLanguage == 'PL'
+                        ? 'Hasło (min. 6 znaków)'
+                        : globalLanguage == 'NO'
+                            ? 'Passord (min. 6 tegn)'
+                            : 'Password (min. 6 chars)',
+                    prefixIcon: const Icon(Icons.lock)),
               ),
             ],
           ),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Anuluj')),
+                child:
+                    Text(Translations.get('cancel', language: globalLanguage))),
             ElevatedButton(
                 onPressed: () {
                   if (emailCtrl.text.trim().isNotEmpty &&
@@ -3304,7 +3457,8 @@ class _ClientsScreenState extends State<ClientsScreen> {
                     Navigator.pop(ctx, true);
                   }
                 },
-                child: const Text('Zapisz')),
+                child:
+                    Text(Translations.get('save', language: globalLanguage))),
           ],
         );
       },
@@ -3324,7 +3478,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Błąd: ${e.toString()}')),
+            SnackBar(
+                content: Text(
+                    '${Translations.get('error', language: globalLanguage)}: ${e.toString()}')),
           );
         }
       }
@@ -3336,22 +3492,26 @@ class _ClientsScreenState extends State<ClientsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black.withValues(alpha: 0.9),
-        title: const Text('Usuń klienta',
-            style: TextStyle(color: Color(0xFFFFD700))),
+        title: Text(Translations.get('delete_client', language: globalLanguage),
+            style: const TextStyle(color: Color(0xFFFFD700))),
         content: Text(
-          'Czy na pewno chcesz usunąć klienta $email?\n\nTa operacja usunie również wszystkie dane klienta (plan, historię ćwiczeń).',
-          style: TextStyle(color: Color(0xB3FFD700)),
+          globalLanguage == 'PL'
+              ? 'Czy na pewno chcesz usunąć klienta $email?\n\nTa operacja usunie również wszystkie dane klienta (plan, historię ćwiczeń).'
+              : globalLanguage == 'NO'
+                  ? 'Er du sikker på at du vil slette klienten $email?\n\nDenne operasjonen sletter også alle klientens data (plan, treningshistorikk).'
+                  : 'Are you sure you want to delete client $email?\n\nThis will also delete all client data (plan, exercise history).',
+          style: const TextStyle(color: Color(0xB3FFD700)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Anuluj'),
+            child: Text(Translations.get('cancel', language: globalLanguage)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF5252)),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Usuń'),
+            child: Text(Translations.get('delete', language: globalLanguage)),
           ),
         ],
       ),
@@ -3369,7 +3529,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Błąd: $e')),
+            SnackBar(
+                content: Text(
+                    '${Translations.get('error', language: globalLanguage)}: $e')),
           );
         }
       }
@@ -3390,7 +3552,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Lista klientów',
+              Text(
+                  globalLanguage == 'PL'
+                      ? 'Lista klientów'
+                      : globalLanguage == 'NO'
+                          ? 'Kundeliste'
+                          : 'Client list',
                   style: TextStyle(
                       color: accent,
                       fontWeight: FontWeight.w800,
@@ -3403,9 +3570,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                             CircularProgressIndicator(color: Color(0xFFFFD700)),
                       )
                     : _clientEmails.isEmpty
-                        ? const Center(
-                            child: Text('Brak klientów',
-                                style: TextStyle(color: Color(0xB3FFD700))),
+                        ? Center(
+                            child: Text(
+                                Translations.get('no_clients',
+                                    language: globalLanguage),
+                                style:
+                                    const TextStyle(color: Color(0xB3FFD700))),
                           )
                         : RefreshIndicator(
                             onRefresh: _loadClients,
@@ -3595,8 +3765,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black.withValues(alpha: 0.9),
-        title: const Text('Edytuj plan',
-            style: TextStyle(color: Color(0xFFFFD700))),
+        title: Text(Translations.get('edit_plan', language: globalLanguage),
+            style: const TextStyle(color: Color(0xFFFFD700))),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -3604,9 +3774,13 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
               TextField(
                 controller: titleCtrl,
                 style: const TextStyle(color: Color(0xFFFFD700)),
-                decoration: const InputDecoration(
-                  labelText: 'Tytuł planu',
-                  labelStyle: TextStyle(color: Color(0xB3FFD700)),
+                decoration: InputDecoration(
+                  labelText: globalLanguage == 'PL'
+                      ? 'Tytuł planu'
+                      : globalLanguage == 'NO'
+                          ? 'Plantittel'
+                          : 'Plan title',
+                  labelStyle: const TextStyle(color: Color(0xB3FFD700)),
                 ),
               ),
               const SizedBox(height: 12),
@@ -3614,9 +3788,13 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                 controller: notesCtrl,
                 style: const TextStyle(color: Color(0xFFFFD700)),
                 maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: 'Notatki',
-                  labelStyle: TextStyle(color: Color(0xB3FFD700)),
+                decoration: InputDecoration(
+                  labelText: globalLanguage == 'PL'
+                      ? 'Notatki'
+                      : globalLanguage == 'NO'
+                          ? 'Notater'
+                          : 'Notes',
+                  labelStyle: const TextStyle(color: Color(0xB3FFD700)),
                 ),
               ),
             ],
@@ -3625,11 +3803,11 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Anuluj'),
+            child: Text(Translations.get('cancel', language: globalLanguage)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Zapisz'),
+            child: Text(Translations.get('save', language: globalLanguage)),
           ),
         ],
       ),
@@ -3651,7 +3829,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Błąd: $e')),
+            SnackBar(
+                content: Text(
+                    '${Translations.get('error', language: globalLanguage)}: $e')),
           );
         }
       }
@@ -3695,8 +3875,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
 
           return AlertDialog(
             backgroundColor: Colors.black.withValues(alpha: 0.9),
-            title: const Text('Dodaj ćwiczenie',
-                style: TextStyle(color: Color(0xFFFFD700))),
+            title: Text(
+                Translations.get('add_exercise', language: globalLanguage),
+                style: const TextStyle(color: Color(0xFFFFD700))),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -3706,15 +3887,17 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     value: selectedCategory,
                     dropdownColor: const Color(0xFF1A1A2E),
                     style: const TextStyle(color: Color(0xFF2ECC71)),
-                    decoration: const InputDecoration(
-                      labelText: 'Kategoria',
-                      labelStyle: TextStyle(color: Color(0xFF2ECC71)),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: Translations.get('category',
+                          language: globalLanguage),
+                      labelStyle: const TextStyle(color: Color(0xFF2ECC71)),
+                      border: const OutlineInputBorder(),
                     ),
                     items: categories
                         .map((cat) => DropdownMenuItem(
                               value: cat,
-                              child: Text(localizedCategoryName(cat, 'PL'),
+                              child: Text(
+                                  localizedCategoryName(cat, globalLanguage),
                                   style: const TextStyle(
                                       color: Color(0xFF2ECC71))),
                             ))
@@ -3743,8 +3926,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     isExpanded: true,
                     style:
                         const TextStyle(color: Color(0xFF2ECC71), fontSize: 13),
-                    decoration: const InputDecoration(
-                      labelText: 'Ćwiczenie',
+                    decoration: InputDecoration(
+                      labelText: Translations.get('exercise',
+                          language: globalLanguage),
                       labelStyle: TextStyle(color: Color(0xFF2ECC71)),
                       border: OutlineInputBorder(),
                     ),
@@ -3779,13 +3963,15 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         color: const Color(0xFFFFD700).withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.timer, color: Color(0xFFFFD700), size: 18),
+                          const Icon(Icons.timer,
+                              color: Color(0xFFFFD700), size: 18),
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Ćwiczenie na czas',
+                              Translations.get('time_based_exercise',
+                                  language: globalLanguage),
                               style: TextStyle(
                                   color: Color(0xFFFFD700), fontSize: 12),
                             ),
@@ -3799,8 +3985,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     controller: setsCtrl,
                     keyboardType: TextInputType.number,
                     style: const TextStyle(color: Color(0xFF2ECC71)),
-                    decoration: const InputDecoration(
-                      labelText: 'Ilość serii',
+                    decoration: InputDecoration(
+                      labelText: Translations.get('sets_count',
+                          language: globalLanguage),
                       labelStyle: TextStyle(color: Color(0xFF2ECC71)),
                     ),
                   ),
@@ -3810,7 +3997,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Czas trwania ćwiczenia',
+                        Text(
+                            Translations.get('exercise_duration',
+                                language: globalLanguage),
                             style: TextStyle(
                                 color: Color(0xFF2ECC71), fontSize: 12)),
                         const SizedBox(height: 8),
@@ -3864,7 +4053,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Czas przerwy',
+                      Text(
+                          Translations.get('rest_time_label',
+                              language: globalLanguage),
                           style: TextStyle(
                               color: Color(0xFF2ECC71), fontSize: 12)),
                       const SizedBox(height: 8),
@@ -3920,11 +4111,13 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     maxLines: 3,
                     style: const TextStyle(color: Color(0xFFFFD700)),
                     decoration: InputDecoration(
-                      labelText: 'Notatka dla klienta (opcjonalna)',
+                      labelText: Translations.get('note_for_client',
+                          language: globalLanguage),
                       labelStyle: TextStyle(
                           color:
                               const Color(0xFFFFD700).withValues(alpha: 0.7)),
-                      hintText: 'np. Pamiętaj o poprawnej technice...',
+                      hintText: Translations.get('note_hint',
+                          language: globalLanguage),
                       hintStyle: TextStyle(
                           color:
                               const Color(0xFFFFD700).withValues(alpha: 0.4)),
@@ -3951,7 +4144,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Anuluj'),
+                child:
+                    Text(Translations.get('cancel', language: globalLanguage)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -3959,7 +4153,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     Navigator.pop(ctx, true);
                   }
                 },
-                child: const Text('Dodaj'),
+                child: Text(Translations.get('add', language: globalLanguage)),
               ),
             ],
           );
@@ -3987,13 +4181,17 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         _loadPlan();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Ćwiczenie dodane')),
+            SnackBar(
+                content: Text(Translations.get('exercise_added',
+                    language: globalLanguage))),
           );
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Błąd: $e')),
+            SnackBar(
+                content: Text(
+                    '${Translations.get('error', language: globalLanguage)}: $e')),
           );
         }
       }
@@ -4014,7 +4212,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Błąd: $e')),
+          SnackBar(
+              content: Text(
+                  '${Translations.get('error', language: globalLanguage)}: $e')),
         );
       }
     }
@@ -4032,13 +4232,13 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Anuluj'),
+            child: Text(Translations.get('cancel', language: globalLanguage)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF5252)),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Usuń'),
+            child: Text(Translations.get('delete', language: globalLanguage)),
           ),
         ],
       ),
@@ -4056,7 +4256,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Błąd: $e')),
+            SnackBar(
+                content: Text(
+                    '${Translations.get('error', language: globalLanguage)}: $e')),
           );
         }
       }
@@ -4105,7 +4307,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
 
           return AlertDialog(
             backgroundColor: Colors.black.withValues(alpha: 0.9),
-            title: const Text('Edytuj ćwiczenie',
+            title: Text(
+                Translations.get('edit_exercise', language: globalLanguage),
                 style: TextStyle(color: Color(0xFFFFD700))),
             content: SingleChildScrollView(
               child: Column(
@@ -4116,15 +4319,17 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     value: selectedCategory,
                     dropdownColor: const Color(0xFF1A1A2E),
                     style: const TextStyle(color: Color(0xFF2ECC71)),
-                    decoration: const InputDecoration(
-                      labelText: 'Kategoria',
-                      labelStyle: TextStyle(color: Color(0xFF2ECC71)),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: Translations.get('category',
+                          language: globalLanguage),
+                      labelStyle: const TextStyle(color: Color(0xFF2ECC71)),
+                      border: const OutlineInputBorder(),
                     ),
                     items: categories
                         .map((cat) => DropdownMenuItem(
                               value: cat,
-                              child: Text(localizedCategoryName(cat, 'PL'),
+                              child: Text(
+                                  localizedCategoryName(cat, globalLanguage),
                                   style: const TextStyle(
                                       color: Color(0xFF2ECC71))),
                             ))
@@ -4153,8 +4358,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     isExpanded: true,
                     style:
                         const TextStyle(color: Color(0xFF2ECC71), fontSize: 13),
-                    decoration: const InputDecoration(
-                      labelText: 'Ćwiczenie',
+                    decoration: InputDecoration(
+                      labelText: Translations.get('exercise',
+                          language: globalLanguage),
                       labelStyle: TextStyle(color: Color(0xFF2ECC71)),
                       border: OutlineInputBorder(),
                     ),
@@ -4189,13 +4395,15 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         color: const Color(0xFFFFD700).withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.timer, color: Color(0xFFFFD700), size: 18),
+                          const Icon(Icons.timer,
+                              color: Color(0xFFFFD700), size: 18),
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Ćwiczenie na czas',
+                              Translations.get('time_based_exercise',
+                                  language: globalLanguage),
                               style: TextStyle(
                                   color: Color(0xFFFFD700), fontSize: 12),
                             ),
@@ -4209,8 +4417,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     controller: setsCtrl,
                     keyboardType: TextInputType.number,
                     style: const TextStyle(color: Color(0xFF2ECC71)),
-                    decoration: const InputDecoration(
-                      labelText: 'Ilość serii',
+                    decoration: InputDecoration(
+                      labelText: Translations.get('sets_count',
+                          language: globalLanguage),
                       labelStyle: TextStyle(color: Color(0xFF2ECC71)),
                     ),
                   ),
@@ -4220,7 +4429,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Czas trwania ćwiczenia',
+                        Text(
+                            Translations.get('exercise_duration',
+                                language: globalLanguage),
                             style: TextStyle(
                                 color: Color(0xFF2ECC71), fontSize: 12)),
                         const SizedBox(height: 8),
@@ -4274,7 +4485,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Czas przerwy',
+                      Text(
+                          Translations.get('rest_time_label',
+                              language: globalLanguage),
                           style: TextStyle(
                               color: Color(0xFF2ECC71), fontSize: 12)),
                       const SizedBox(height: 8),
@@ -4329,7 +4542,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Anuluj'),
+                child:
+                    Text(Translations.get('cancel', language: globalLanguage)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -4337,7 +4551,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     Navigator.pop(ctx, true);
                   }
                 },
-                child: const Text('Zapisz'),
+                child: Text(Translations.get('save', language: globalLanguage)),
               ),
             ],
           );
@@ -4365,13 +4579,17 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         _loadPlan();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Ćwiczenie zaktualizowane')),
+            SnackBar(
+                content: Text(Translations.get('exercise_updated',
+                    language: globalLanguage))),
           );
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Błąd: $e')),
+            SnackBar(
+                content: Text(
+                    '${Translations.get('error', language: globalLanguage)}: $e')),
           );
         }
       }
@@ -7219,22 +7437,14 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(lang == 'PL'
-                ? 'Anuluj'
-                : lang == 'NO'
-                    ? 'Avbryt'
-                    : 'Cancel'),
+            child: Text(Translations.get('cancel', language: lang)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFFD700)),
             child: Text(
-              lang == 'PL'
-                  ? 'Zapisz'
-                  : lang == 'NO'
-                      ? 'Lagre'
-                      : 'Save',
+              Translations.get('save', language: lang),
               style: const TextStyle(color: Colors.black),
             ),
           ),
@@ -8656,14 +8866,14 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       actions: [
         TextButton(
           onPressed: _loading ? null : () => Navigator.pop(context),
-          child: const Text('Anuluj'),
+          child: Text(Translations.get('cancel', language: globalLanguage)),
         ),
         ElevatedButton(
           onPressed: _loading ? null : _changePassword,
           child: _loading
               ? const SizedBox(
                   width: 16, height: 16, child: CircularProgressIndicator())
-              : const Text('Zapisz'),
+              : Text(Translations.get('save', language: globalLanguage)),
         ),
       ],
     );

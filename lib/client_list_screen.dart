@@ -115,22 +115,16 @@ class _ClientListScreenState extends State<ClientListScreen> {
                                     color: Color(0xFFFFD700), size: 20),
                                 onPressed: () =>
                                     _showEditClientDialog(context, email),
-                                tooltip: lang == 'PL'
-                                    ? 'Edytuj'
-                                    : lang == 'NO'
-                                        ? 'Rediger'
-                                        : 'Edit',
+                                tooltip:
+                                    Translations.get('edit', language: lang),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete,
                                     color: Colors.red, size: 20),
                                 onPressed: () =>
                                     _showDeleteClientDialog(context, email),
-                                tooltip: lang == 'PL'
-                                    ? 'Usuń'
-                                    : lang == 'NO'
-                                        ? 'Slett'
-                                        : 'Delete',
+                                tooltip:
+                                    Translations.get('delete', language: lang),
                               ),
                               const Icon(
                                 Icons.arrow_forward_ios,
@@ -160,11 +154,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
         backgroundColor: const Color(0xFFFFD700),
         icon: const Icon(Icons.person_add, color: Color(0xFF0B2E5A)),
         label: Text(
-          lang == 'PL'
-              ? 'Dodaj klienta'
-              : lang == 'NO'
-                  ? 'Legg til klient'
-                  : 'Add client',
+          Translations.get('add_client', language: lang),
           style: const TextStyle(
             color: Color(0xFF0B2E5A),
             fontWeight: FontWeight.bold,
@@ -243,11 +233,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              lang == 'PL'
-                  ? 'Anuluj'
-                  : lang == 'NO'
-                      ? 'Avbryt'
-                      : 'Cancel',
+              Translations.get('cancel', language: lang),
               style: const TextStyle(color: Colors.white70),
             ),
           ),
@@ -298,11 +284,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
                 messenger.showSnackBar(
                   SnackBar(
                     content: Text(
-                      lang == 'PL'
-                          ? 'Błąd: ${e.toString()}'
-                          : lang == 'NO'
-                              ? 'Feil: ${e.toString()}'
-                              : 'Error: ${e.toString()}',
+                      '${Translations.get('error', language: lang)}: ${e.toString()}',
                     ),
                     backgroundColor: Colors.red,
                   ),
@@ -314,11 +296,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
               foregroundColor: const Color(0xFF0B2E5A),
             ),
             child: Text(
-              lang == 'PL'
-                  ? 'Dodaj'
-                  : lang == 'NO'
-                      ? 'Legg til'
-                      : 'Add',
+              Translations.get('add', language: lang),
             ),
           ),
         ],
@@ -368,11 +346,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              lang == 'PL'
-                  ? 'Anuluj'
-                  : lang == 'NO'
-                      ? 'Avbryt'
-                      : 'Cancel',
+              Translations.get('cancel', language: lang),
               style: const TextStyle(color: Colors.white70),
             ),
           ),
@@ -427,11 +401,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
                 messenger.showSnackBar(
                   SnackBar(
                     content: Text(
-                      lang == 'PL'
-                          ? 'Błąd: ${e.toString()}'
-                          : lang == 'NO'
-                              ? 'Feil: ${e.toString()}'
-                              : 'Error: ${e.toString()}',
+                      '${Translations.get('error', language: lang)}: ${e.toString()}',
                     ),
                     backgroundColor: Colors.red,
                   ),
@@ -443,11 +413,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
               foregroundColor: const Color(0xFF0B2E5A),
             ),
             child: Text(
-              lang == 'PL'
-                  ? 'Zapisz'
-                  : lang == 'NO'
-                      ? 'Lagre'
-                      : 'Save',
+              Translations.get('save', language: lang),
             ),
           ),
         ],
@@ -463,11 +429,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF0B2E5A),
         title: Text(
-          lang == 'PL'
-              ? 'Usuń klienta'
-              : lang == 'NO'
-                  ? 'Slett klient'
-                  : 'Delete client',
+          Translations.get('delete_client', language: lang),
           style: const TextStyle(
             color: Colors.red,
             fontWeight: FontWeight.bold,
@@ -513,11 +475,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              lang == 'PL'
-                  ? 'Anuluj'
-                  : lang == 'NO'
-                      ? 'Avbryt'
-                      : 'Cancel',
+              Translations.get('cancel', language: lang),
               style: const TextStyle(color: Colors.white70),
             ),
           ),
@@ -548,11 +506,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
                 messenger.showSnackBar(
                   SnackBar(
                     content: Text(
-                      lang == 'PL'
-                          ? 'Błąd: ${e.toString()}'
-                          : lang == 'NO'
-                              ? 'Feil: ${e.toString()}'
-                              : 'Error: ${e.toString()}',
+                      '${Translations.get('error', language: lang)}: ${e.toString()}',
                     ),
                     backgroundColor: Colors.red,
                   ),
@@ -564,11 +518,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
               foregroundColor: Colors.white,
             ),
             child: Text(
-              lang == 'PL'
-                  ? 'Usuń'
-                  : lang == 'NO'
-                      ? 'Slett'
-                      : 'Delete',
+              Translations.get('delete', language: lang),
             ),
           ),
         ],
@@ -1240,9 +1190,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: CategoryScreen.categories
-                .where((cat) => (cat['isPlan'] as bool?) != true)
-                .map((cat) => cat['name'] as String)
+            children: kCategoryNames.keys
+                .where((cat) => cat != 'PLAN')
                 .map((category) {
               return Card(
                 color: const Color(0xFF0B2E5A).withValues(alpha: 0.8),
@@ -1280,11 +1229,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              lang == 'PL'
-                  ? 'Anuluj'
-                  : lang == 'NO'
-                      ? 'Avbryt'
-                      : 'Cancel',
+              Translations.get('cancel', language: lang),
               style: const TextStyle(color: Colors.white70),
             ),
           ),
@@ -1370,11 +1315,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              lang == 'PL'
-                  ? 'Anuluj'
-                  : lang == 'NO'
-                      ? 'Avbryt'
-                      : 'Cancel',
+              Translations.get('cancel', language: lang),
               style: const TextStyle(color: Colors.white70),
             ),
           ),
@@ -1518,11 +1459,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                lang == 'PL'
-                    ? 'Anuluj'
-                    : lang == 'NO'
-                        ? 'Avbryt'
-                        : 'Cancel',
+                Translations.get('cancel', language: lang),
                 style: const TextStyle(color: Colors.white70),
               ),
             ),
@@ -1548,11 +1485,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                 foregroundColor: const Color(0xFF0B2E5A),
               ),
               child: Text(
-                lang == 'PL'
-                    ? 'Dodaj'
-                    : lang == 'NO'
-                        ? 'Legg til'
-                        : 'Add',
+                Translations.get('add', language: lang),
               ),
             ),
           ],
@@ -1623,11 +1556,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              lang == 'PL'
-                  ? 'Błąd: ${e.toString()}'
-                  : lang == 'NO'
-                      ? 'Feil: ${e.toString()}'
-                      : 'Error: ${e.toString()}',
+              '${Translations.get('error', language: lang)}: ${e.toString()}',
             ),
             backgroundColor: Colors.red,
           ),

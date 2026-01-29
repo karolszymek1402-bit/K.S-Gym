@@ -1617,13 +1617,15 @@ Future<String?> _findExistingAsset(List<String> paths) async {
 }
 
 Widget buildLogo(BuildContext context, Color accentColor, {double size = 34}) {
-  // Bezpośrednio używamy mojelogo.svg - wiemy że istnieje
+  // Używamy PNG - SVG z embedded image nie działa na web
   return SizedBox(
     height: size,
-    child: SvgPicture.asset(
-      'assets/mojelogo.svg',
+    width: size,
+    child: Image.asset(
+      'assets/app_icon.png',
       fit: BoxFit.contain,
-      placeholderBuilder: (context) => _logoPlaceholder(accentColor, size),
+      errorBuilder: (context, error, stackTrace) =>
+          _logoPlaceholder(accentColor, size),
     ),
   );
 }

@@ -3867,7 +3867,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     final restCtrl = TextEditingController(text: '90');
     final timeCtrl = TextEditingController(text: '30');
     final noteCtrl = TextEditingController();
+    final searchCtrl = TextEditingController();
     bool isTimeBased = false;
+    String searchQuery = '';
 
     // Pobierz kategorie z kCategoryNames (bez 'PLAN')
     final categories =
@@ -3884,13 +3886,28 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) {
-          // Aktualizuj listę ćwiczeń gdy zmieni się kategoria
-          exercisesForCategory = kDefaultExercises[selectedCategory] ?? [];
+          // Filtruj ćwiczenia na podstawie wyszukiwania
+          List<String> filteredExercises;
+          if (searchQuery.isNotEmpty) {
+            // Szukaj we wszystkich kategoriach
+            final allExercises = <String>[];
+            for (final cat in categories) {
+              allExercises.addAll(kDefaultExercises[cat] ?? []);
+            }
+            filteredExercises = allExercises
+                .where((ex) =>
+                    ex.toLowerCase().contains(searchQuery.toLowerCase()))
+                .toList();
+          } else {
+            // Aktualizuj listę ćwiczeń gdy zmieni się kategoria
+            exercisesForCategory = kDefaultExercises[selectedCategory] ?? [];
+            filteredExercises = exercisesForCategory;
+          }
+
           if (selectedExercise == null ||
-              !exercisesForCategory.contains(selectedExercise)) {
-            selectedExercise = exercisesForCategory.isNotEmpty
-                ? exercisesForCategory.first
-                : null;
+              !filteredExercises.contains(selectedExercise)) {
+            selectedExercise =
+                filteredExercises.isNotEmpty ? filteredExercises.first : null;
           }
           // Automatycznie ustaw czy ćwiczenie jest na czas
           if (selectedExercise != null) {
@@ -3906,78 +3923,136 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Kategoria - dropdown
-                  DropdownButtonFormField<String>(
-                    value: selectedCategory,
-                    dropdownColor: const Color(0xFF1A1A2E),
-                    style: const TextStyle(color: Color(0xFF2ECC71)),
+                  // Pole wyszukiwania
+                  TextField(
+                    controller: searchCtrl,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
                     decoration: InputDecoration(
-                      labelText: Translations.get('category',
+                      hintText: Translations.get('search_hint',
                           language: globalLanguage),
-                      labelStyle: const TextStyle(color: Color(0xFF2ECC71)),
-                      border: const OutlineInputBorder(),
+                      hintStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      prefixIcon:
+                          const Icon(Icons.search, color: Color(0xFFFFD700)),
+                      suffixIcon: searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear,
+                                  color: Color(0xFFFFD700)),
+                              onPressed: () {
+                                searchCtrl.clear();
+                                setDialogState(() {
+                                  searchQuery = '';
+                                });
+                              },
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                            color:
+                                const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Color(0xFFFFD700)),
+                      ),
                     ),
-                    items: categories
-                        .map((cat) => DropdownMenuItem(
-                              value: cat,
-                              child: Text(
-                                  localizedCategoryName(cat, globalLanguage),
-                                  style: const TextStyle(
-                                      color: Color(0xFF2ECC71))),
-                            ))
-                        .toList(),
                     onChanged: (val) {
-                      if (val != null) {
-                        setDialogState(() {
-                          selectedCategory = val;
-                          exercisesForCategory = kDefaultExercises[val] ?? [];
-                          selectedExercise = exercisesForCategory.isNotEmpty
-                              ? exercisesForCategory.first
-                              : null;
-                          if (selectedExercise != null) {
-                            isTimeBased =
-                                kTimeBasedExercises.contains(selectedExercise);
-                          }
-                        });
-                      }
+                      setDialogState(() {
+                        searchQuery = val;
+                      });
                     },
                   ),
                   const SizedBox(height: 12),
-                  // Ćwiczenie - dropdown z bazą
-                  DropdownButtonFormField<String>(
-                    value: selectedExercise,
-                    dropdownColor: const Color(0xFF1A1A2E),
-                    isExpanded: true,
-                    style:
-                        const TextStyle(color: Color(0xFF2ECC71), fontSize: 13),
-                    decoration: InputDecoration(
-                      labelText: Translations.get('exercise',
-                          language: globalLanguage),
-                      labelStyle: TextStyle(color: Color(0xFF2ECC71)),
-                      border: OutlineInputBorder(),
+                  // Kategoria - dropdown (ukryty gdy wyszukiwanie aktywne)
+                  if (searchQuery.isEmpty)
+                    DropdownButtonFormField<String>(
+                      value: selectedCategory,
+                      dropdownColor: const Color(0xFF1A1A2E),
+                      style: const TextStyle(color: Color(0xFF2ECC71)),
+                      decoration: InputDecoration(
+                        labelText: Translations.get('category',
+                            language: globalLanguage),
+                        labelStyle: const TextStyle(color: Color(0xFF2ECC71)),
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: categories
+                          .map((cat) => DropdownMenuItem(
+                                value: cat,
+                                child: Text(
+                                    localizedCategoryName(cat, globalLanguage),
+                                    style: const TextStyle(
+                                        color: Color(0xFF2ECC71))),
+                              ))
+                          .toList(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          setDialogState(() {
+                            selectedCategory = val;
+                            exercisesForCategory = kDefaultExercises[val] ?? [];
+                            selectedExercise = exercisesForCategory.isNotEmpty
+                                ? exercisesForCategory.first
+                                : null;
+                            if (selectedExercise != null) {
+                              isTimeBased = kTimeBasedExercises
+                                  .contains(selectedExercise);
+                            }
+                          });
+                        }
+                      },
                     ),
-                    items: exercisesForCategory
-                        .map((ex) => DropdownMenuItem(
-                              value: ex,
-                              child: Text(
-                                ex
-                                    .split(' – ')
-                                    .first, // Pokaż tylko polską nazwę
-                                style:
-                                    const TextStyle(color: Color(0xFF2ECC71)),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ))
-                        .toList(),
-                    onChanged: (val) {
-                      if (val != null) {
-                        setDialogState(() {
-                          selectedExercise = val;
-                          isTimeBased = kTimeBasedExercises.contains(val);
-                        });
-                      }
-                    },
-                  ),
+                  if (searchQuery.isEmpty) const SizedBox(height: 12),
+                  // Ćwiczenie - dropdown z bazą
+                  if (filteredExercises.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        Translations.get('no_results',
+                            language: globalLanguage),
+                        style: TextStyle(
+                            color:
+                                const Color(0xFFFFD700).withValues(alpha: 0.6)),
+                      ),
+                    )
+                  else
+                    DropdownButtonFormField<String>(
+                      value: selectedExercise,
+                      dropdownColor: const Color(0xFF1A1A2E),
+                      isExpanded: true,
+                      menuMaxHeight: 300,
+                      style: const TextStyle(
+                          color: Color(0xFF2ECC71), fontSize: 13),
+                      decoration: InputDecoration(
+                        labelText:
+                            '${Translations.get('exercise', language: globalLanguage)} (${filteredExercises.length})',
+                        labelStyle: TextStyle(color: Color(0xFF2ECC71)),
+                        border: OutlineInputBorder(),
+                      ),
+                      items: filteredExercises
+                          .map((ex) => DropdownMenuItem(
+                                value: ex,
+                                child: Text(
+                                  ex
+                                      .split(' – ')
+                                      .first, // Pokaż tylko polską nazwę
+                                  style:
+                                      const TextStyle(color: Color(0xFF2ECC71)),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          setDialogState(() {
+                            selectedExercise = val;
+                            isTimeBased = kTimeBasedExercises.contains(val);
+                          });
+                        }
+                      },
+                    ),
                   const SizedBox(height: 12),
                   // Info czy ćwiczenie na czas
                   if (isTimeBased)

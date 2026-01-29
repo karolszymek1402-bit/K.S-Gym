@@ -690,7 +690,8 @@ const Map<String, List<String>> kDefaultExercises = {
     'Uginanie ramion na modlitewniku – Preacher Curl',
     'Uginanie skoncentrowane – Concentration Curl',
     'Uginanie Zottman Curl – Zottman Curl',
-    'Uginanie Spider Curl – Spider Curl',
+    'Spider Curl ze sztangą – Barbell Spider Curl',
+    'Spider Curl z hantlami – Dumbbell Spider Curl',
     'Uginanie na wyciągu dolnym – Cable Curl',
     'Podciąganie podchwytem (wąsko) – Chin-ups',
   ],
@@ -1447,10 +1448,15 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'EN': 'Zottman Curl',
     'NO': 'Zottman Curl',
   },
-  'Uginanie Spider Curl – Spider Curl': {
-    'PL': 'Uginanie Spider Curl',
-    'EN': 'Spider Curl',
-    'NO': 'Spider Curl',
+  'Spider Curl ze sztangą – Barbell Spider Curl': {
+    'PL': 'Spider Curl ze sztangą',
+    'EN': 'Barbell Spider Curl',
+    'NO': 'Barbell Spider Curl',
+  },
+  'Spider Curl z hantlami – Dumbbell Spider Curl': {
+    'PL': 'Spider Curl z hantlami',
+    'EN': 'Dumbbell Spider Curl',
+    'NO': 'Dumbbell Spider Curl',
   },
   'Uginanie na wyciągu dolnym – Cable Curl': {
     'PL': 'Uginanie na wyciągu dolnym',

@@ -3889,25 +3889,29 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           // Filtruj ćwiczenia na podstawie wyszukiwania
           List<String> filteredExercises;
           if (searchQuery.isNotEmpty) {
-            // Szukaj we wszystkich kategoriach
-            final allExercises = <String>[];
+            // Szukaj we wszystkich kategoriach - używaj Set aby uniknąć duplikatów
+            final allExercisesSet = <String>{};
             for (final cat in categories) {
-              allExercises.addAll(kDefaultExercises[cat] ?? []);
+              allExercisesSet.addAll(kDefaultExercises[cat] ?? []);
             }
-            filteredExercises = allExercises
+            filteredExercises = allExercisesSet
                 .where((ex) =>
                     ex.toLowerCase().contains(searchQuery.toLowerCase()))
+                .toSet() // Dodatkowe zabezpieczenie przed duplikatami
                 .toList();
           } else {
             // Aktualizuj listę ćwiczeń gdy zmieni się kategoria
             exercisesForCategory = kDefaultExercises[selectedCategory] ?? [];
-            filteredExercises = exercisesForCategory;
+            // Usuń duplikaty z kategorii
+            filteredExercises = exercisesForCategory.toSet().toList();
           }
 
-          if (selectedExercise == null ||
+          // Upewnij się że selectedExercise jest w liście
+          if (filteredExercises.isEmpty) {
+            selectedExercise = null;
+          } else if (selectedExercise == null ||
               !filteredExercises.contains(selectedExercise)) {
-            selectedExercise =
-                filteredExercises.isNotEmpty ? filteredExercises.first : null;
+            selectedExercise = filteredExercises.first;
           }
           // Automatycznie ustaw czy ćwiczenie jest na czas
           if (selectedExercise != null) {

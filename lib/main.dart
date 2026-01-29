@@ -3344,6 +3344,38 @@ class CoachDashboardScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const CategoryScreen()),
+                          );
+                        },
+                        icon: const Icon(Icons.fitness_center,
+                            color: Colors.black, size: 28),
+                        label: Text(
+                          lang == 'PL'
+                              ? 'Baza ćwiczeń'
+                              : lang == 'NO'
+                                  ? 'Øvelsesdatabase'
+                                  : 'Exercise Database',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w700),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: accent,
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 30),
                     OutlinedButton.icon(
                       onPressed: () async {

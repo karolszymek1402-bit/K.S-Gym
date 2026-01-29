@@ -5674,10 +5674,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  color: gold.withValues(alpha: 0.1),
+                  color: Colors.transparent,
                   border: Border.all(
                     color: gold,
-                    width: 2,
+                    width: 1.5,
                   ),
                 ),
                 child: Row(

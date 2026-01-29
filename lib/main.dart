@@ -682,6 +682,7 @@ const Map<String, List<String>> kDefaultExercises = {
     // Kaptury
     'Szrugsy z hantlami – Dumbbell Shrugs',
     'Szrugsy ze sztangą – Barbell Shrugs',
+    'Odwrotne rozpiętki leżąc na ławce – Prone Dumbbell Reverse Fly',
   ],
   'BICEPS': [
     'Uginanie ramion ze sztangą stojąc – Barbell Curl',
@@ -1308,6 +1309,11 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Szrugsy ze sztangą',
     'EN': 'Barbell Shrugs',
     'NO': 'Barbell Shrugs',
+  },
+  'Odwrotne rozpiętki leżąc na ławce – Prone Dumbbell Reverse Fly': {
+    'PL': 'Odwrotne rozpiętki leżąc na ławce',
+    'EN': 'Prone Dumbbell Reverse Fly',
+    'NO': 'Prone Dumbbell Reverse Fly',
   },
   'Szrugsy na maszynie Smitha – Smith Machine Shrugs': {
     'PL': 'Szrugsy na maszynie Smitha',

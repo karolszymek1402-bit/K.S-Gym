@@ -4698,14 +4698,15 @@ class CategoryScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: buildCustomAppBar(context, accentColor: gold),
-          body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF0A0E21), Color(0xFF0E1A38)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
+          body: GymBackgroundWithFitness(
+            goldDumbbells: false,
+            backgroundImage: 'assets/moje_tlo.png',
+            backgroundImageOpacity: 0.32,
+            gradientColors: [
+              const Color(0xFF0B2E5A),
+              const Color(0xFF0A2652),
+              const Color(0xFF0E3D8C),
+            ],
             child: SafeArea(
               child: Padding(
                 padding:

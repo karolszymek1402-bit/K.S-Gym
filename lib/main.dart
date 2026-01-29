@@ -693,6 +693,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Spider Curl ze sztangą – Barbell Spider Curl',
     'Spider Curl z hantlami – Dumbbell Spider Curl',
     'Uginanie na wyciągu dolnym – Cable Curl',
+    'Uginanie ramienia jednorącz w podporze – Single Arm Incline Curl',
     'Podciąganie podchwytem (wąsko) – Chin-ups',
   ],
   'TRICEPS': [
@@ -1462,6 +1463,11 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Uginanie na wyciągu dolnym',
     'EN': 'Cable Curl',
     'NO': 'Cable Curl',
+  },
+  'Uginanie ramienia jednorącz w podporze – Single Arm Incline Curl': {
+    'PL': 'Uginanie ramienia jednorącz w podporze',
+    'EN': 'Single Arm Incline Curl',
+    'NO': 'Single Arm Incline Curl',
   },
   'Podciąganie podchwytem (wąsko) – Chin-ups': {
     'PL': 'Podciąganie podchwytem (wąsko)',

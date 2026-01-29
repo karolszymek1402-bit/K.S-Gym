@@ -114,6 +114,7 @@ class ClientPlanEntry {
     required this.restSeconds,
     this.timeSeconds = 0,
     this.dayOfWeek = 0,
+    this.note = '',
   });
 
   final String? category;
@@ -122,6 +123,7 @@ class ClientPlanEntry {
   final int restSeconds;
   final int timeSeconds;
   final int dayOfWeek; // 0=Poniedziałek, 1=Wtorek, ..., 6=Niedziela
+  final String note; // Notatka trenera dla klienta
 
   Map<String, dynamic> toMap() => {
         if (category != null && category!.trim().isNotEmpty)
@@ -131,6 +133,7 @@ class ClientPlanEntry {
         'restSeconds': restSeconds,
         'timeSeconds': timeSeconds,
         'dayOfWeek': dayOfWeek,
+        'note': note,
       };
 
   factory ClientPlanEntry.fromMap(Map<String, dynamic> map) {
@@ -141,6 +144,7 @@ class ClientPlanEntry {
       restSeconds: (map['restSeconds'] as num?)?.toInt() ?? 0,
       timeSeconds: (map['timeSeconds'] as num?)?.toInt() ?? 0,
       dayOfWeek: (map['dayOfWeek'] as num?)?.toInt() ?? 0,
+      note: (map['note'] as String?) ?? '',
     );
   }
 
@@ -151,6 +155,7 @@ class ClientPlanEntry {
     int? restSeconds,
     int? timeSeconds,
     int? dayOfWeek,
+    String? note,
   }) {
     return ClientPlanEntry(
       category: category ?? this.category,
@@ -159,6 +164,7 @@ class ClientPlanEntry {
       restSeconds: restSeconds ?? this.restSeconds,
       timeSeconds: timeSeconds ?? this.timeSeconds,
       dayOfWeek: dayOfWeek ?? this.dayOfWeek,
+      note: note ?? this.note,
     );
   }
 }

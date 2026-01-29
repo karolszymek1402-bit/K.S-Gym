@@ -3661,6 +3661,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     final setsCtrl = TextEditingController(text: '3');
     final restCtrl = TextEditingController(text: '90');
     final timeCtrl = TextEditingController(text: '30');
+    final noteCtrl = TextEditingController();
     bool isTimeBased = false;
 
     // Pobierz kategorie z kCategoryNames (bez 'PLAN')
@@ -3911,6 +3912,38 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  // Notatka dla klienta
+                  TextField(
+                    controller: noteCtrl,
+                    maxLines: 3,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    decoration: InputDecoration(
+                      labelText: 'Notatka dla klienta (opcjonalna)',
+                      labelStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.7)),
+                      hintText: 'np. Pamiętaj o poprawnej technice...',
+                      hintStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.4)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                            color:
+                                const Color(0xFFFFD700).withValues(alpha: 0.3)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      prefixIcon: Icon(Icons.note_add,
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.7)),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -3942,6 +3975,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           restSeconds: int.tryParse(restCtrl.text) ?? 90,
           timeSeconds: isTimeBased ? (int.tryParse(timeCtrl.text) ?? 30) : 0,
           dayOfWeek: dayIndex,
+          note: noteCtrl.text.trim(),
         );
 
         final currentEntries = _plan?.entries ?? [];
@@ -5653,99 +5687,157 @@ class ClientDayExercisesScreen extends StatelessWidget {
                                       border: Border.all(
                                           color: accent.withValues(alpha: 0.2)),
                                     ),
-                                    child: ListTile(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 14, vertical: 6),
-                                      leading: Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              accent,
-                                              accent.withValues(alpha: 0.7)
-                                            ],
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  accent.withValues(alpha: 0.3),
-                                              blurRadius: 6,
-                                              spreadRadius: 1,
-                                            ),
-                                          ],
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            '${index + 1}',
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      title: Text(
-                                        exercise.exercise.split(' – ').first,
-                                        style: const TextStyle(
-                                          color: accent,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 15,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      subtitle: Padding(
-                                        padding: const EdgeInsets.only(top: 6),
-                                        child: Wrap(
-                                          spacing: 8,
-                                          runSpacing: 4,
-                                          children: [
-                                            _buildInfoChip(
-                                              Icons.repeat,
-                                              '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}',
-                                              accent,
-                                            ),
-                                            _buildInfoChip(
-                                              Icons.timer_outlined,
-                                              '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}',
-                                              accent,
-                                            ),
-                                            if (isTimeBased)
-                                              _buildInfoChip(
-                                                Icons.hourglass_bottom,
-                                                '${exercise.timeSeconds}s',
-                                                const Color(0xFFFFD700),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ListTile(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 14, vertical: 6),
+                                          leading: Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  accent,
+                                                  accent.withValues(alpha: 0.7)
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
                                               ),
-                                          ],
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ExerciseDetailScreen(
-                                              exerciseName: exercise.exercise,
-                                              themeColor: accent,
-                                              recommendedSets: exercise.sets,
-                                              recommendedRestSeconds:
-                                                  exercise.restSeconds,
-                                              recommendedTimeSeconds:
-                                                  exercise.timeSeconds > 0
-                                                      ? exercise.timeSeconds
-                                                      : null,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: accent.withValues(
+                                                      alpha: 0.3),
+                                                  blurRadius: 6,
+                                                  spreadRadius: 1,
+                                                ),
+                                              ],
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '${index + 1}',
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                      trailing: const Icon(Icons.chevron_right,
-                                          color: accent, size: 22),
+                                          title: Text(
+                                            exercise.exercise
+                                                .split(' – ')
+                                                .first,
+                                            style: const TextStyle(
+                                              color: accent,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          subtitle: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 6),
+                                            child: Wrap(
+                                              spacing: 8,
+                                              runSpacing: 4,
+                                              children: [
+                                                _buildInfoChip(
+                                                  Icons.repeat,
+                                                  '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}',
+                                                  accent,
+                                                ),
+                                                _buildInfoChip(
+                                                  Icons.timer_outlined,
+                                                  '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}',
+                                                  accent,
+                                                ),
+                                                if (isTimeBased)
+                                                  _buildInfoChip(
+                                                    Icons.hourglass_bottom,
+                                                    '${exercise.timeSeconds}s',
+                                                    const Color(0xFFFFD700),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ExerciseDetailScreen(
+                                                  exerciseName:
+                                                      exercise.exercise,
+                                                  themeColor: accent,
+                                                  recommendedSets:
+                                                      exercise.sets,
+                                                  recommendedRestSeconds:
+                                                      exercise.restSeconds,
+                                                  recommendedTimeSeconds:
+                                                      exercise.timeSeconds > 0
+                                                          ? exercise.timeSeconds
+                                                          : null,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          trailing: const Icon(
+                                              Icons.chevron_right,
+                                              color: accent,
+                                              size: 22),
+                                        ),
+                                        // Notatka od trenera
+                                        if (exercise.note.isNotEmpty)
+                                          Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.fromLTRB(
+                                                14, 0, 14, 12),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue
+                                                    .withValues(alpha: 0.15),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    color: Colors.blue
+                                                        .withValues(
+                                                            alpha: 0.3)),
+                                              ),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Icon(Icons.note,
+                                                      color: Colors.blue
+                                                          .withValues(
+                                                              alpha: 0.8),
+                                                      size: 16),
+                                                  const SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: Text(
+                                                      exercise.note,
+                                                      style: TextStyle(
+                                                        color: Colors.blue
+                                                            .withValues(
+                                                                alpha: 0.9),
+                                                        fontSize: 13,
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                   );
                                 },

@@ -113,6 +113,7 @@ class ClientPlanEntry {
     required this.sets,
     required this.restSeconds,
     this.timeSeconds = 0,
+    this.dayOfWeek = 0,
   });
 
   final String? category;
@@ -120,6 +121,7 @@ class ClientPlanEntry {
   final int sets;
   final int restSeconds;
   final int timeSeconds;
+  final int dayOfWeek; // 0=Poniedziałek, 1=Wtorek, ..., 6=Niedziela
 
   Map<String, dynamic> toMap() => {
         if (category != null && category!.trim().isNotEmpty)
@@ -128,6 +130,7 @@ class ClientPlanEntry {
         'sets': sets,
         'restSeconds': restSeconds,
         'timeSeconds': timeSeconds,
+        'dayOfWeek': dayOfWeek,
       };
 
   factory ClientPlanEntry.fromMap(Map<String, dynamic> map) {
@@ -137,6 +140,25 @@ class ClientPlanEntry {
       sets: (map['sets'] as num?)?.toInt() ?? 0,
       restSeconds: (map['restSeconds'] as num?)?.toInt() ?? 0,
       timeSeconds: (map['timeSeconds'] as num?)?.toInt() ?? 0,
+      dayOfWeek: (map['dayOfWeek'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  ClientPlanEntry copyWith({
+    String? category,
+    String? exercise,
+    int? sets,
+    int? restSeconds,
+    int? timeSeconds,
+    int? dayOfWeek,
+  }) {
+    return ClientPlanEntry(
+      category: category ?? this.category,
+      exercise: exercise ?? this.exercise,
+      sets: sets ?? this.sets,
+      restSeconds: restSeconds ?? this.restSeconds,
+      timeSeconds: timeSeconds ?? this.timeSeconds,
+      dayOfWeek: dayOfWeek ?? this.dayOfWeek,
     );
   }
 }
@@ -147,22 +169,26 @@ class ClientPlan {
     required this.notes,
     required this.entries,
     required this.updatedAt,
+    this.restDays = const [],
   });
 
   final String title;
   final String notes;
   final List<ClientPlanEntry> entries;
   final DateTime updatedAt;
+  final List<int> restDays; // Dni wolne: 0=Poniedziałek, ..., 6=Niedziela
 
   Map<String, dynamic> toMap() => {
         'title': title,
         'notes': notes,
         'updatedAt': updatedAt.toIso8601String(),
         'entries': entries.map((e) => e.toMap()).toList(growable: false),
+        'restDays': restDays,
       };
 
   factory ClientPlan.fromMap(Map<String, dynamic> map) {
     final rawEntries = map['entries'];
+    final rawRestDays = map['restDays'];
     return ClientPlan(
       title: map['title'] as String? ?? '',
       notes: map['notes'] as String? ?? '',
@@ -174,6 +200,9 @@ class ClientPlan {
                     Map<String, dynamic>.from(e as Map),
                   ))
               .toList(growable: false)
+          : const [],
+      restDays: rawRestDays is Iterable
+          ? rawRestDays.map((e) => (e as num).toInt()).toList(growable: false)
           : const [],
     );
   }
@@ -588,6 +617,29 @@ class PlanAccessController {
         notes: '',
         entries: entries,
         updatedAt: DateTime.now(),
+      );
+      await savePlanForEmail(email, newPlan);
+    }
+  }
+
+  Future<void> updateClientPlanRestDays(
+      String email, List<int> restDays) async {
+    final docId = _docIdFromEmail(email);
+    final doc = await _plansCollection.doc(docId).get();
+
+    if (doc.exists) {
+      final data = doc.data()!;
+      data['restDays'] = restDays;
+      data['updatedAt'] = DateTime.now().toIso8601String();
+      await _plansCollection.doc(docId).set(data);
+    } else {
+      // Create new plan with restDays
+      final newPlan = ClientPlan(
+        title: 'New Training Plan',
+        notes: '',
+        entries: [],
+        updatedAt: DateTime.now(),
+        restDays: restDays,
       );
       await savePlanForEmail(email, newPlan);
     }

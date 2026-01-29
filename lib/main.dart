@@ -594,6 +594,7 @@ const Map<String, List<String>> kDefaultExercises = {
     // Ściągania w pionie
     'Podciąganie na drążku nachwytem – Pull-ups',
     'Podciąganie na drążku podchwytem – Chin-ups',
+    'Podciąganie chwytem neutralnym – Neutral Grip Pull-ups',
     'Ściąganie drążka wyciągu górnego do klatki – Lat Pulldown',
     'Ściąganie drążka wyciągu górnego chwytem wąskim – Close-Grip Lat Pulldown',
     'Ściąganie drążka wyciągu górnego chwytem neutralnym – Neutral Grip Lat Pulldown',
@@ -932,6 +933,11 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Podciąganie na drążku podchwytem',
     'EN': 'Chin-ups',
     'NO': 'Chin-ups',
+  },
+  'Podciąganie chwytem neutralnym – Neutral Grip Pull-ups': {
+    'PL': 'Podciąganie chwytem neutralnym',
+    'EN': 'Neutral Grip Pull-ups',
+    'NO': 'Neutral Grip Pull-ups',
   },
   'Ściąganie drążka wyciągu górnego do klatki – Lat Pulldown': {
     'PL': 'Ściąganie drążka wyciągu górnego do klatki',

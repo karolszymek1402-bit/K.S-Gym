@@ -559,7 +559,6 @@ const Map<String, List<String>> kDefaultExercises = {
     'Wyciskanie sztangi wąskim chwytem – Close-Grip Bench Press',
     'Wyciskanie sztangi typu Gilotyna – Guillotine Press',
     'Wyciskanie z podłogi (sztanga) – Barbell Floor Press',
-    'Wyciskanie sztangi z łańcuchami – Chain Bench Press',
     'Wyciskanie ze Slingshotem – Slingshot Bench Press',
     'Wyciskanie z deską (klockiem) – Board Press',
     // Wyciskania – Hantle
@@ -783,11 +782,6 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Wyciskanie z podłogi (sztanga)',
     'EN': 'Barbell Floor Press',
     'NO': 'Barbell Floor Press',
-  },
-  'Wyciskanie sztangi z łańcuchami – Chain Bench Press': {
-    'PL': 'Wyciskanie sztangi z łańcuchami',
-    'EN': 'Chain Bench Press',
-    'NO': 'Chain Bench Press',
   },
   'Wyciskanie ze Slingshotem – Slingshot Bench Press': {
     'PL': 'Wyciskanie ze Slingshotem',

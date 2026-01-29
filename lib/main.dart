@@ -3999,6 +3999,26 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     }
   }
 
+  Future<void> _moveExercise(int fromIndex, int toIndex) async {
+    if (toIndex < 0 || toIndex >= (_plan?.entries.length ?? 0)) return;
+    try {
+      final entries = List<ClientPlanEntry>.from(_plan?.entries ?? []);
+      final item = entries.removeAt(fromIndex);
+      entries.insert(toIndex, item);
+      await PlanAccessController.instance.updateClientPlanEntries(
+        widget.clientEmail,
+        entries,
+      );
+      _loadPlan();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Błąd: $e')),
+        );
+      }
+    }
+  }
+
   Future<void> _deleteExercise(int index) async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -4838,6 +4858,47 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                       trailing: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
+                                          // Strzałka w górę
+                                          IconButton(
+                                            icon: Icon(Icons.arrow_upward,
+                                                color: entryIndex > 0
+                                                    ? accent.withValues(
+                                                        alpha: 0.7)
+                                                    : accent.withValues(
+                                                        alpha: 0.2),
+                                                size: 18),
+                                            onPressed: entryIndex > 0
+                                                ? () => _moveExercise(
+                                                    entryIndex, entryIndex - 1)
+                                                : null,
+                                            padding: EdgeInsets.zero,
+                                            constraints: const BoxConstraints(
+                                                minWidth: 28, minHeight: 28),
+                                          ),
+                                          // Strzałka w dół
+                                          IconButton(
+                                            icon: Icon(Icons.arrow_downward,
+                                                color: entryIndex <
+                                                        (_plan?.entries
+                                                                    .length ??
+                                                                0) -
+                                                            1
+                                                    ? accent.withValues(
+                                                        alpha: 0.7)
+                                                    : accent.withValues(
+                                                        alpha: 0.2),
+                                                size: 18),
+                                            onPressed: entryIndex <
+                                                    (_plan?.entries.length ??
+                                                            0) -
+                                                        1
+                                                ? () => _moveExercise(
+                                                    entryIndex, entryIndex + 1)
+                                                : null,
+                                            padding: EdgeInsets.zero,
+                                            constraints: const BoxConstraints(
+                                                minWidth: 28, minHeight: 28),
+                                          ),
                                           IconButton(
                                             icon: Icon(Icons.edit,
                                                 color: accent.withValues(
@@ -4847,7 +4908,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                                 _editExercise(entryIndex),
                                             padding: EdgeInsets.zero,
                                             constraints: const BoxConstraints(
-                                                minWidth: 32, minHeight: 32),
+                                                minWidth: 28, minHeight: 28),
                                           ),
                                           IconButton(
                                             icon: const Icon(Icons.delete,
@@ -4857,7 +4918,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                                 _deleteExercise(entryIndex),
                                             padding: EdgeInsets.zero,
                                             constraints: const BoxConstraints(
-                                                minWidth: 32, minHeight: 32),
+                                                minWidth: 28, minHeight: 28),
                                           ),
                                         ],
                                       ),

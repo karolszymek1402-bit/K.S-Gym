@@ -5099,10 +5099,14 @@ class _LineChartPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
-class CategoryScreen extends StatelessWidget {
+class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
 
-  static const Color _navy = Color(0xFF0B2E5A);
+  @override
+  State<CategoryScreen> createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
   static const Color _gold = Color(0xFFFFD700);
   static const List<Map<String, dynamic>> categories = [
     {'name': 'PLAN', 'isPlan': true},
@@ -5116,14 +5120,103 @@ class CategoryScreen extends StatelessWidget {
     {'name': 'FOREARMS'},
   ];
 
+  // Nazwy dni tygodnia
+  static const List<String> _dayNamesPL = [
+    'Poniedziałek',
+    'Wtorek',
+    'Środa',
+    'Czwartek',
+    'Piątek',
+    'Sobota',
+    'Niedziela'
+  ];
+  static const List<String> _dayNamesEN = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
+  static const List<String> _dayNamesNO = [
+    'Mandag',
+    'Tirsdag',
+    'Onsdag',
+    'Torsdag',
+    'Fredag',
+    'Lørdag',
+    'Søndag'
+  ];
+
+  List<String> _getDayNames(String lang) {
+    switch (lang) {
+      case 'NO':
+        return _dayNamesNO;
+      case 'EN':
+        return _dayNamesEN;
+      default:
+        return _dayNamesPL;
+    }
+  }
+
+  ClientPlan? _clientPlan;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadClientPlan();
+  }
+
+  Future<void> _loadClientPlan() async {
+    final state = PlanAccessController.instance.notifier.value;
+    if (state.isAuthenticated && state.role == PlanUserRole.client) {
+      final email = state.userEmail;
+      if (email != null) {
+        try {
+          final plan =
+              await PlanAccessController.instance.fetchPlanForEmail(email);
+          if (mounted) {
+            setState(() {
+              _clientPlan = plan;
+              _loading = false;
+            });
+          }
+        } catch (e) {
+          if (mounted) {
+            setState(() => _loading = false);
+          }
+        }
+      } else {
+        if (mounted) setState(() => _loading = false);
+      }
+    } else {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  // Pobierz ćwiczenia dla danego dnia
+  List<ClientPlanEntry> _getExercisesForDay(int dayIndex) {
+    if (_clientPlan == null) return [];
+    return _clientPlan!.entries.where((e) => e.dayOfWeek == dayIndex).toList();
+  }
+
+  // Sprawdź czy dzień jest dniem wolnym
+  bool _isRestDay(int dayIndex) {
+    return _clientPlan?.restDays.contains(dayIndex) ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
       valueListenable: globalLanguageNotifier,
       builder: (context, lang, _) {
-        const Color cardBlue1 = Color(0xFF0B2E5A);
-        const Color cardBlue2 = Color(0xFF0E3D8C);
         const Color gold = Color(0xFFFFD700);
+
+        final state = PlanAccessController.instance.notifier.value;
+        final isClient =
+            state.isAuthenticated && state.role == PlanUserRole.client;
 
         return Scaffold(
           appBar: buildCustomAppBar(context, accentColor: gold),
@@ -5143,81 +5236,9 @@ class CategoryScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: ListView.separated(
-                        itemCount: categories.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final cat = categories[index];
-                          final bool isPlan = (cat['isPlan'] as bool?) ?? false;
-                          final String name = cat['name'] as String;
-                          final displayName = localizedCategoryName(name, lang);
-
-                          void handleTap() {
-                            if (isPlan) {
-                              final state =
-                                  PlanAccessController.instance.notifier.value;
-                              if (state.isAuthenticated &&
-                                  state.role == PlanUserRole.client) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PlanOnlineScreen(
-                                              themeColor: gold,
-                                            )));
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PlanImportScreen(
-                                              themeColor: gold,
-                                            )));
-                              }
-                              return;
-                            }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ExerciseListScreen(
-                                  category: name,
-                                  themeColor: gold,
-                                ),
-                              ),
-                            );
-                          }
-
-                          return Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(14),
-                              onTap: handleTap,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 16),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  color: Colors.transparent,
-                                  border: Border.all(
-                                    color: gold,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    displayName,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: gold,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                      child: isClient
+                          ? _buildClientDaysView(lang, gold)
+                          : _buildDefaultCategoriesView(lang, gold),
                     ),
                   ],
                 ),
@@ -5226,6 +5247,542 @@ class CategoryScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  // Widok dla klienta - dni tygodnia
+  Widget _buildClientDaysView(String lang, Color gold) {
+    if (_loading) {
+      return const Center(
+          child: CircularProgressIndicator(color: Color(0xFFFFD700)));
+    }
+
+    if (_clientPlan == null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.fitness_center,
+                color: gold.withValues(alpha: 0.3), size: 48),
+            const SizedBox(height: 12),
+            Text(
+              lang == 'PL'
+                  ? 'Brak planu od trenera'
+                  : lang == 'NO'
+                      ? 'Ingen plan fra trener'
+                      : 'No plan from trainer',
+              style: TextStyle(color: gold.withValues(alpha: 0.6)),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () {
+                setState(() => _loading = true);
+                _loadClientPlan();
+              },
+              icon: const Icon(Icons.refresh, color: Colors.black),
+              label: Text(lang == 'PL'
+                  ? 'Odśwież'
+                  : lang == 'NO'
+                      ? 'Oppdater'
+                      : 'Refresh'),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: gold, foregroundColor: Colors.black),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final dayNames = _getDayNames(lang);
+
+    return ListView.separated(
+      itemCount: 7,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, dayIndex) {
+        final dayName = dayNames[dayIndex];
+        final exercises = _getExercisesForDay(dayIndex);
+        final isRest = _isRestDay(dayIndex);
+        final exerciseCount = exercises.length;
+
+        String subtitle;
+        if (isRest) {
+          subtitle = lang == 'PL'
+              ? 'Dzień wolny'
+              : lang == 'NO'
+                  ? 'Hviledag'
+                  : 'Rest day';
+        } else if (exerciseCount == 0) {
+          subtitle = lang == 'PL'
+              ? 'Brak ćwiczeń'
+              : lang == 'NO'
+                  ? 'Ingen øvelser'
+                  : 'No exercises';
+        } else {
+          subtitle = lang == 'PL'
+              ? '$exerciseCount ćwiczeń'
+              : lang == 'NO'
+                  ? '$exerciseCount øvelser'
+                  : '$exerciseCount exercises';
+        }
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ClientDayExercisesScreen(
+                    dayIndex: dayIndex,
+                    dayName: dayName,
+                    exercises: exercises,
+                    isRestDay: isRest,
+                    themeColor: gold,
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: isRest
+                    ? Colors.green.withValues(alpha: 0.1)
+                    : Colors.transparent,
+                border: Border.all(
+                  color: isRest ? Colors.green : gold,
+                  width: 1.5,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: isRest
+                          ? Colors.green.withValues(alpha: 0.2)
+                          : gold.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        isRest ? Icons.hotel : Icons.fitness_center,
+                        color: isRest ? Colors.green : gold,
+                        size: 22,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          dayName,
+                          style: TextStyle(
+                            color: isRest ? Colors.green : gold,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            color: (isRest ? Colors.green : gold)
+                                .withValues(alpha: 0.6),
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.chevron_right,
+                      color: isRest ? Colors.green : gold),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Widok domyślny - kategorie (dla niezalogowanych lub trenera)
+  Widget _buildDefaultCategoriesView(String lang, Color gold) {
+    return ListView.separated(
+      itemCount: categories.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        final cat = categories[index];
+        final bool isPlan = (cat['isPlan'] as bool?) ?? false;
+        final String name = cat['name'] as String;
+        final displayName = localizedCategoryName(name, lang);
+
+        void handleTap() {
+          if (isPlan) {
+            final state = PlanAccessController.instance.notifier.value;
+            if (state.isAuthenticated && state.role == PlanUserRole.client) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PlanOnlineScreen(themeColor: gold)),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PlanImportScreen(themeColor: gold)),
+              );
+            }
+            return;
+          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ExerciseListScreen(category: name, themeColor: gold),
+            ),
+          );
+        }
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: handleTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: Colors.transparent,
+                border: Border.all(color: gold, width: 1.5),
+              ),
+              child: Center(
+                child: Text(
+                  displayName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: _gold,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// Ekran ćwiczeń dla danego dnia (dla klienta)
+class ClientDayExercisesScreen extends StatelessWidget {
+  final int dayIndex;
+  final String dayName;
+  final List<ClientPlanEntry> exercises;
+  final bool isRestDay;
+  final Color themeColor;
+
+  const ClientDayExercisesScreen({
+    super.key,
+    required this.dayIndex,
+    required this.dayName,
+    required this.exercises,
+    required this.isRestDay,
+    this.themeColor = const Color(0xFFFFD700),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const accent = Color(0xFFFFD700);
+    return ValueListenableBuilder<String>(
+      valueListenable: globalLanguageNotifier,
+      builder: (context, lang, _) {
+        return Scaffold(
+          appBar: buildCustomAppBar(context, accentColor: accent),
+          body: GymBackgroundWithFitness(
+            backgroundImage: 'assets/moje_tlo.png',
+            backgroundImageOpacity: 0.32,
+            accentColor: accent,
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // Nagłówek dnia
+                  Container(
+                    margin: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          (isRestDay ? Colors.green : accent)
+                              .withValues(alpha: 0.2),
+                          (isRestDay ? Colors.green : accent)
+                              .withValues(alpha: 0.05),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                          color: (isRestDay ? Colors.green : accent)
+                              .withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: isRestDay ? Colors.green : accent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            isRestDay ? Icons.hotel : Icons.fitness_center,
+                            color: Colors.black,
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                dayName,
+                                style: TextStyle(
+                                  color: isRestDay ? Colors.green : accent,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 22,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                isRestDay
+                                    ? (lang == 'PL'
+                                        ? 'Dzień wolny od treningu'
+                                        : lang == 'NO'
+                                            ? 'Hviledag'
+                                            : 'Rest day')
+                                    : (lang == 'PL'
+                                        ? '${exercises.length} ćwiczeń do wykonania'
+                                        : lang == 'NO'
+                                            ? '${exercises.length} øvelser å gjøre'
+                                            : '${exercises.length} exercises to do'),
+                                style: TextStyle(
+                                  color: (isRestDay ? Colors.green : accent)
+                                      .withValues(alpha: 0.7),
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Lista ćwiczeń lub komunikat o dniu wolnym
+                  Expanded(
+                    child: isRestDay
+                        ? Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.self_improvement,
+                                    color: Colors.green.withValues(alpha: 0.5),
+                                    size: 64),
+                                const SizedBox(height: 16),
+                                Text(
+                                  lang == 'PL'
+                                      ? 'Odpoczywaj i regeneruj się!'
+                                      : lang == 'NO'
+                                          ? 'Hvil og kom deg!'
+                                          : 'Rest and recover!',
+                                  style: TextStyle(
+                                      color:
+                                          Colors.green.withValues(alpha: 0.8),
+                                      fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          )
+                        : exercises.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.fitness_center,
+                                        color: accent.withValues(alpha: 0.3),
+                                        size: 48),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      lang == 'PL'
+                                          ? 'Brak ćwiczeń na ten dzień'
+                                          : lang == 'NO'
+                                              ? 'Ingen øvelser for denne dagen'
+                                              : 'No exercises for this day',
+                                      style: TextStyle(
+                                          color: accent.withValues(alpha: 0.6)),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : ListView.builder(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                itemCount: exercises.length,
+                                itemBuilder: (context, index) {
+                                  final exercise = exercises[index];
+                                  final isTimeBased = exercise.timeSeconds > 0;
+
+                                  return Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          accent.withValues(alpha: 0.1),
+                                          Colors.black.withValues(alpha: 0.35),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                          color: accent.withValues(alpha: 0.2)),
+                                    ),
+                                    child: ListTile(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 14, vertical: 6),
+                                      leading: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              accent,
+                                              accent.withValues(alpha: 0.7)
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  accent.withValues(alpha: 0.3),
+                                              blurRadius: 6,
+                                              spreadRadius: 1,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '${index + 1}',
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        exercise.exercise.split(' – ').first,
+                                        style: const TextStyle(
+                                          color: accent,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 15,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      subtitle: Padding(
+                                        padding: const EdgeInsets.only(top: 6),
+                                        child: Wrap(
+                                          spacing: 8,
+                                          runSpacing: 4,
+                                          children: [
+                                            _buildInfoChip(
+                                              Icons.repeat,
+                                              '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}',
+                                              accent,
+                                            ),
+                                            _buildInfoChip(
+                                              Icons.timer_outlined,
+                                              '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}',
+                                              accent,
+                                            ),
+                                            if (isTimeBased)
+                                              _buildInfoChip(
+                                                Icons.hourglass_bottom,
+                                                '${exercise.timeSeconds}s',
+                                                const Color(0xFFFFD700),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ExerciseDetailScreen(
+                                              exerciseName: exercise.exercise,
+                                              themeColor: accent,
+                                              recommendedSets: exercise.sets,
+                                              recommendedRestSeconds:
+                                                  exercise.restSeconds,
+                                              recommendedTimeSeconds:
+                                                  exercise.timeSeconds > 0
+                                                      ? exercise.timeSeconds
+                                                      : null,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      trailing: const Icon(Icons.chevron_right,
+                                          color: accent, size: 22),
+                                    ),
+                                  );
+                                },
+                              ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildInfoChip(IconData icon, String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color.withValues(alpha: 0.9)),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: TextStyle(
+              color: color.withValues(alpha: 0.95),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

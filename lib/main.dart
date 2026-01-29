@@ -2889,25 +2889,6 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 18),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => ExerciseListScreen(
-                                        category: 'CHEST',
-                                        themeColor: accent)));
-                          },
-                          icon: const Icon(Icons.folder_copy,
-                              color: Colors.black),
-                          label: Text(Translations.get('exercise_database_btn',
-                              language: lang)),
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: accent,
-                              foregroundColor: Colors.black,
-                              minimumSize: const Size(double.infinity, 50)),
-                        ),
-                        const SizedBox(height: 10),
                         OutlinedButton.icon(
                             onPressed: () {
                               Navigator.push(

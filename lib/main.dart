@@ -1,7 +1,5 @@
 ﻿import 'dart:async';
 import 'dart:convert';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6903,7 +6901,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   Timer? _setTimer;
   DateTime? _setStart;
 
-  late final AudioPlayer _audioPlayer;
   Timer? _timer;
   DateTime? _endTime;
   int _secondsRemaining = 0;
@@ -6918,19 +6915,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   static const String _vibrationEnabledKey = 'vibration_enabled';
   Timer? _vibrationTimer; // Timer do ciągłych wibracji
 
-  bool _soundEnabled = true;
-  static const String _soundEnabledKey = 'sound_enabled';
-  Timer? _soundLoop; // Timer do pętli dźwięku
-
   @override
   void initState() {
     super.initState();
-    _audioPlayerInit();
     _animControllerInit();
     _loadHistory();
     _loadAutoStart();
     _loadVibrationEnabled();
-    _loadSoundEnabled();
 
     // Ustaw czas przerwy zalecony przez trenera (jeśli dostępny)
     if (widget.recommendedRestSeconds != null &&
@@ -6939,10 +6930,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       _secondsRemaining = _totalRestSeconds;
     }
     // Czas ćwiczenia od trenera jest ustawiany w _loadHistory()
-  }
-
-  void _audioPlayerInit() {
-    _audioPlayer = AudioPlayer();
   }
 
   void _animControllerInit() {
@@ -6955,13 +6942,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _timer?.cancel();
     _setTimer?.cancel();
     _vibrationTimer?.cancel();
-    _soundLoop?.cancel();
     try {
       Vibration.cancel();
-    } catch (_) {}
-    try {
-      _audioPlayer.stop();
-      _audioPlayer.dispose();
     } catch (_) {}
     _wController.dispose();
     _rController.dispose();
@@ -7011,53 +6993,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         _vibrationEnabled = v;
       });
     }
-  }
-
-  Future<void> _loadSoundEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    final val = prefs.getBool(_soundEnabledKey);
-    if (mounted) {
-      setState(() {
-        _soundEnabled = val ?? true;
-      });
-    }
-  }
-
-  Future<void> _setSoundEnabled(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_soundEnabledKey, v);
-    if (mounted) {
-      setState(() {
-        _soundEnabled = v;
-      });
-    }
-  }
-
-  void _stopSoundLoop() {
-    _soundLoop?.cancel();
-    _soundLoop = null;
-    try {
-      _audioPlayer.stop();
-    } catch (_) {}
-  }
-
-  Future<void> _startSoundLoop() async {
-    if (!_soundEnabled) return;
-    _soundLoop?.cancel();
-    // Odtwórz dźwięk natychmiast
-    try {
-      await _audioPlayer.play(AssetSource('sounds/alert.mp3'));
-    } catch (_) {}
-    // Powtarzaj co 2 sekundy
-    _soundLoop = Timer.periodic(const Duration(seconds: 2), (_) async {
-      if (!mounted) {
-        _stopSoundLoop();
-        return;
-      }
-      try {
-        await _audioPlayer.play(AssetSource('sounds/alert.mp3'));
-      } catch (_) {}
-    });
   }
 
   void _stopVibration() {
@@ -7136,7 +7071,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   void _stopSetStopwatch() {
     _setTimer?.cancel();
     _stopVibration(); // Zatrzymaj wibracje
-    _stopSoundLoop(); // Zatrzymaj dźwięk
     if (_setStart != null) {
       final secs = DateTime.now().difference(_setStart!).inSeconds;
       setState(() {
@@ -7149,7 +7083,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   void _resetSetStopwatch() {
     _setTimer?.cancel();
     _stopVibration(); // Zatrzymaj wibracje
-    _stopSoundLoop(); // Zatrzymaj dźwięk
     _exerciseTimeNotified = false;
     setState(() {
       _tController.clear();
@@ -7162,8 +7095,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
     // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
     _startContinuousVibration();
-    // Uruchom ciągły dźwięk (będzie trwać do wciśnięcia STOP)
-    await _startSoundLoop();
     try {
       HapticFeedback.heavyImpact();
     } catch (_) {}
@@ -7234,7 +7165,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   void _stopTimer() {
     _timer?.cancel();
     _stopVibration(); // Zatrzymaj ciągłe wibracje
-    _stopSoundLoop(); // Zatrzymaj ciągły dźwięk
     // Wyłącz wakelock
     try {
       WakelockPlus.disable();
@@ -7422,8 +7352,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
     // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
     _startContinuousVibration();
-    // Uruchom ciągły dźwięk (będzie trwać do wciśnięcia STOP)
-    await _startSoundLoop();
     try {
       HapticFeedback.heavyImpact();
     } catch (_) {}
@@ -8614,9 +8542,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _vibrationEnabled = true;
-  bool _soundEnabled = true;
   static const String _vibrationEnabledKey = 'vibration_enabled';
-  static const String _soundEnabledKey = 'sound_enabled';
 
   @override
   void initState() {
@@ -8629,7 +8555,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (mounted) {
       setState(() {
         _vibrationEnabled = prefs.getBool(_vibrationEnabledKey) ?? true;
-        _soundEnabled = prefs.getBool(_soundEnabledKey) ?? true;
       });
     }
   }
@@ -8640,16 +8565,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (mounted) {
       setState(() {
         _vibrationEnabled = v;
-      });
-    }
-  }
-
-  Future<void> _setSoundEnabled(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_soundEnabledKey, v);
-    if (mounted) {
-      setState(() {
-        _soundEnabled = v;
       });
     }
   }
@@ -8824,16 +8739,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 style: const TextStyle(color: gold)),
                             value: _vibrationEnabled,
                             onChanged: (v) => _setVibrationEnabled(v),
-                            activeColor: gold,
-                          ),
-                          SwitchListTile(
-                            secondary: const Icon(Icons.volume_up, color: gold),
-                            title: Text(
-                                Translations.get('sound_enabled',
-                                    language: lang),
-                                style: const TextStyle(color: gold)),
-                            value: _soundEnabled,
-                            onChanged: (v) => _setSoundEnabled(v),
                             activeColor: gold,
                           ),
                         ],

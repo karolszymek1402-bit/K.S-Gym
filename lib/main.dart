@@ -4323,329 +4323,345 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final lang = globalLanguage;
-    const accent = Color(0xFFFFD700);
-    const restDayColor = Color(0xFF4CAF50);
+    return ValueListenableBuilder<String>(
+      valueListenable: globalLanguageNotifier,
+      builder: (context, lang, _) {
+        const accent = Color(0xFFFFD700);
+        const restDayColor = Color(0xFF4CAF50);
 
-    return Scaffold(
-      appBar: buildCustomAppBar(context, accentColor: accent),
-      body: GymBackgroundWithFitness(
-        backgroundImage: 'assets/moje_tlo.png',
-        backgroundImageOpacity: 0.32,
-        accentColor: accent,
-        child: _loading
-            ? const Center(child: CircularProgressIndicator(color: accent))
-            : ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  // Header z emailem klienta
-                  Card(
-                    color: Colors.black.withValues(alpha: 0.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      side: BorderSide(color: accent.withValues(alpha: 0.4)),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+        return Scaffold(
+          appBar: buildCustomAppBar(context, accentColor: accent),
+          body: GymBackgroundWithFitness(
+            backgroundImage: 'assets/moje_tlo.png',
+            backgroundImageOpacity: 0.32,
+            accentColor: accent,
+            child: _loading
+                ? const Center(child: CircularProgressIndicator(color: accent))
+                : ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      // Header z emailem klienta
+                      Card(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          side:
+                              BorderSide(color: accent.withValues(alpha: 0.4)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CircleAvatar(
-                                backgroundColor: accent,
-                                radius: 28,
-                                child: const Icon(Icons.person,
-                                    color: Colors.black, size: 32),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(widget.clientEmail,
-                                        style: const TextStyle(
-                                            color: Color(0xFFFFD700),
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16)),
-                                    Text(
-                                        lang == 'PL'
-                                            ? 'Klient'
-                                            : lang == 'NO'
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: accent,
+                                    radius: 28,
+                                    child: const Icon(Icons.person,
+                                        color: Colors.black, size: 32),
+                                  ),
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(widget.clientEmail,
+                                            style: const TextStyle(
+                                                color: Color(0xFFFFD700),
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 16)),
+                                        Text(
+                                            lang == 'PL'
                                                 ? 'Klient'
-                                                : 'Client',
-                                        style: const TextStyle(
-                                            color: Color(0xFF2ECC71))),
-                                  ],
+                                                : lang == 'NO'
+                                                    ? 'Klient'
+                                                    : 'Client',
+                                            style: const TextStyle(
+                                                color: Color(0xFF2ECC71))),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  onPressed: () => _showClientProgress(context),
+                                  icon: const Icon(Icons.insights, size: 20),
+                                  label: Text(
+                                    lang == 'PL'
+                                        ? 'Pokaż postępy'
+                                        : lang == 'NO'
+                                            ? 'Vis fremgang'
+                                            : 'View Progress',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2ECC71),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              onPressed: () => _showClientProgress(context),
-                              icon: const Icon(Icons.insights, size: 20),
-                              label: Text(
-                                lang == 'PL'
-                                    ? 'Pokaż postępy'
-                                    : lang == 'NO'
-                                        ? 'Vis fremgang'
-                                        : 'View Progress',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2ECC71),
-                                foregroundColor: Colors.white,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Plan treningowy - nagłówek
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              _plan?.title ??
+                                  (lang == 'PL'
+                                      ? 'Plan treningowy'
+                                      : 'Training Plan'),
+                              style: const TextStyle(
+                                  color: accent,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 20)),
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: accent),
+                            onPressed: _editPlan,
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                      if (_plan != null && _plan!.notes.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(_plan!.notes,
+                              style: TextStyle(
+                                  color: accent.withValues(alpha: 0.9))),
+                        ),
+                      const SizedBox(height: 8),
 
-                  // Plan treningowy - nagłówek
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                          _plan?.title ??
-                              (lang == 'PL'
-                                  ? 'Plan treningowy'
-                                  : 'Training Plan'),
-                          style: const TextStyle(
-                              color: accent,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 20)),
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: accent),
-                        onPressed: _editPlan,
-                      ),
+                      // Dni tygodnia z ćwiczeniami
+                      ...List.generate(7, (dayIndex) {
+                        final isRestDay = _isRestDay(dayIndex);
+                        final exercisesForDay = _getExercisesForDay(dayIndex);
+                        final dayName = _dayNames[dayIndex];
+
+                        return Card(
+                          color: isRestDay
+                              ? restDayColor.withValues(alpha: 0.15)
+                              : Colors.black.withValues(alpha: 0.45),
+                          margin: const EdgeInsets.only(bottom: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                              color: isRestDay
+                                  ? restDayColor.withValues(alpha: 0.5)
+                                  : accent.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Theme(
+                            data: Theme.of(context)
+                                .copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              initiallyExpanded: exercisesForDay.isNotEmpty,
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: isRestDay ? restDayColor : accent,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  isRestDay
+                                      ? Icons.hotel
+                                      : Icons.fitness_center,
+                                  color: Colors.black,
+                                  size: 22,
+                                ),
+                              ),
+                              title: Text(
+                                dayName,
+                                style: TextStyle(
+                                  color: isRestDay ? restDayColor : accent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              subtitle: Text(
+                                isRestDay
+                                    ? (lang == 'PL'
+                                        ? 'Dzień wolny'
+                                        : lang == 'NO'
+                                            ? 'Hviledag'
+                                            : 'Rest day')
+                                    : (exercisesForDay.isEmpty
+                                        ? (lang == 'PL'
+                                            ? 'Brak ćwiczeń'
+                                            : lang == 'NO'
+                                                ? 'Ingen øvelser'
+                                                : 'No exercises')
+                                        : '${exercisesForDay.length} ${lang == 'PL' ? 'ćwiczeń' : lang == 'NO' ? 'øvelser' : 'exercises'}'),
+                                style: TextStyle(
+                                  color: isRestDay
+                                      ? restDayColor.withValues(alpha: 0.7)
+                                      : accent.withValues(alpha: 0.7),
+                                  fontSize: 12,
+                                ),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Przycisk oznacz jako dzień wolny
+                                  IconButton(
+                                    icon: Icon(
+                                      isRestDay
+                                          ? Icons.fitness_center
+                                          : Icons.hotel,
+                                      color: isRestDay ? accent : restDayColor,
+                                      size: 20,
+                                    ),
+                                    tooltip: isRestDay
+                                        ? (lang == 'PL'
+                                            ? 'Dzień treningowy'
+                                            : 'Training day')
+                                        : (lang == 'PL'
+                                            ? 'Dzień wolny'
+                                            : 'Rest day'),
+                                    onPressed: () => _toggleRestDay(dayIndex),
+                                  ),
+                                  // Przycisk dodaj ćwiczenie
+                                  if (!isRestDay)
+                                    IconButton(
+                                      icon: const Icon(Icons.add_circle,
+                                          color: accent, size: 24),
+                                      tooltip: lang == 'PL'
+                                          ? 'Dodaj ćwiczenie'
+                                          : 'Add exercise',
+                                      onPressed: () =>
+                                          _addExerciseForDay(dayIndex),
+                                    ),
+                                ],
+                              ),
+                              iconColor: accent,
+                              collapsedIconColor: accent.withValues(alpha: 0.5),
+                              children: [
+                                if (!isRestDay && exercisesForDay.isEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      children: [
+                                        Icon(Icons.add_circle_outline,
+                                            color:
+                                                accent.withValues(alpha: 0.4),
+                                            size: 32),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          lang == 'PL'
+                                              ? 'Kliknij + aby dodać ćwiczenie'
+                                              : 'Click + to add exercise',
+                                          style: TextStyle(
+                                              color: accent.withValues(
+                                                  alpha: 0.5)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ...exercisesForDay.map((exercise) {
+                                  final entryIndex =
+                                      _plan!.entries.indexOf(exercise);
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.3),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                          color:
+                                              accent.withValues(alpha: 0.15)),
+                                    ),
+                                    child: ListTile(
+                                      dense: true,
+                                      onTap: () => _editExercise(entryIndex),
+                                      leading: Container(
+                                        width: 32,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          color: accent.withValues(alpha: 0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: const Icon(Icons.fitness_center,
+                                            color: accent, size: 18),
+                                      ),
+                                      title: Text(
+                                        exercise.exercise.split(' – ').first,
+                                        style: const TextStyle(
+                                            color: accent,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      subtitle: Text(
+                                        '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${exercise.timeSeconds > 0 ? ' • ${exercise.timeSeconds}s' : ''}',
+                                        style: TextStyle(
+                                            color:
+                                                accent.withValues(alpha: 0.6),
+                                            fontSize: 11),
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(Icons.edit,
+                                                color: accent.withValues(
+                                                    alpha: 0.7),
+                                                size: 18),
+                                            onPressed: () =>
+                                                _editExercise(entryIndex),
+                                            padding: EdgeInsets.zero,
+                                            constraints: const BoxConstraints(
+                                                minWidth: 32, minHeight: 32),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete,
+                                                color: Color(0xFFFF5252),
+                                                size: 18),
+                                            onPressed: () =>
+                                                _deleteExercise(entryIndex),
+                                            padding: EdgeInsets.zero,
+                                            constraints: const BoxConstraints(
+                                                minWidth: 32, minHeight: 32),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                                if (exercisesForDay.isNotEmpty)
+                                  const SizedBox(height: 8),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                     ],
                   ),
-                  if (_plan != null && _plan!.notes.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(_plan!.notes,
-                          style:
-                              TextStyle(color: accent.withValues(alpha: 0.9))),
-                    ),
-                  const SizedBox(height: 8),
-
-                  // Dni tygodnia z ćwiczeniami
-                  ...List.generate(7, (dayIndex) {
-                    final isRestDay = _isRestDay(dayIndex);
-                    final exercisesForDay = _getExercisesForDay(dayIndex);
-                    final dayName = _dayNames[dayIndex];
-
-                    return Card(
-                      color: isRestDay
-                          ? restDayColor.withValues(alpha: 0.15)
-                          : Colors.black.withValues(alpha: 0.45),
-                      margin: const EdgeInsets.only(bottom: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(
-                          color: isRestDay
-                              ? restDayColor.withValues(alpha: 0.5)
-                              : accent.withValues(alpha: 0.3),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Theme(
-                        data: Theme.of(context)
-                            .copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          initiallyExpanded: exercisesForDay.isNotEmpty,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: isRestDay ? restDayColor : accent,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              isRestDay ? Icons.hotel : Icons.fitness_center,
-                              color: Colors.black,
-                              size: 22,
-                            ),
-                          ),
-                          title: Text(
-                            dayName,
-                            style: TextStyle(
-                              color: isRestDay ? restDayColor : accent,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          subtitle: Text(
-                            isRestDay
-                                ? (lang == 'PL'
-                                    ? 'Dzień wolny'
-                                    : lang == 'NO'
-                                        ? 'Hviledag'
-                                        : 'Rest day')
-                                : (exercisesForDay.isEmpty
-                                    ? (lang == 'PL'
-                                        ? 'Brak ćwiczeń'
-                                        : lang == 'NO'
-                                            ? 'Ingen øvelser'
-                                            : 'No exercises')
-                                    : '${exercisesForDay.length} ${lang == 'PL' ? 'ćwiczeń' : lang == 'NO' ? 'øvelser' : 'exercises'}'),
-                            style: TextStyle(
-                              color: isRestDay
-                                  ? restDayColor.withValues(alpha: 0.7)
-                                  : accent.withValues(alpha: 0.7),
-                              fontSize: 12,
-                            ),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Przycisk oznacz jako dzień wolny
-                              IconButton(
-                                icon: Icon(
-                                  isRestDay
-                                      ? Icons.fitness_center
-                                      : Icons.hotel,
-                                  color: isRestDay ? accent : restDayColor,
-                                  size: 20,
-                                ),
-                                tooltip: isRestDay
-                                    ? (lang == 'PL'
-                                        ? 'Dzień treningowy'
-                                        : 'Training day')
-                                    : (lang == 'PL'
-                                        ? 'Dzień wolny'
-                                        : 'Rest day'),
-                                onPressed: () => _toggleRestDay(dayIndex),
-                              ),
-                              // Przycisk dodaj ćwiczenie
-                              if (!isRestDay)
-                                IconButton(
-                                  icon: const Icon(Icons.add_circle,
-                                      color: accent, size: 24),
-                                  tooltip: lang == 'PL'
-                                      ? 'Dodaj ćwiczenie'
-                                      : 'Add exercise',
-                                  onPressed: () => _addExerciseForDay(dayIndex),
-                                ),
-                            ],
-                          ),
-                          iconColor: accent,
-                          collapsedIconColor: accent.withValues(alpha: 0.5),
-                          children: [
-                            if (!isRestDay && exercisesForDay.isEmpty)
-                              Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.add_circle_outline,
-                                        color: accent.withValues(alpha: 0.4),
-                                        size: 32),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      lang == 'PL'
-                                          ? 'Kliknij + aby dodać ćwiczenie'
-                                          : 'Click + to add exercise',
-                                      style: TextStyle(
-                                          color: accent.withValues(alpha: 0.5)),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ...exercisesForDay.map((exercise) {
-                              final entryIndex =
-                                  _plan!.entries.indexOf(exercise);
-                              return Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.3),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: accent.withValues(alpha: 0.15)),
-                                ),
-                                child: ListTile(
-                                  dense: true,
-                                  onTap: () => _editExercise(entryIndex),
-                                  leading: Container(
-                                    width: 32,
-                                    height: 32,
-                                    decoration: BoxDecoration(
-                                      color: accent.withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: const Icon(Icons.fitness_center,
-                                        color: accent, size: 18),
-                                  ),
-                                  title: Text(
-                                    exercise.exercise.split(' – ').first,
-                                    style: const TextStyle(
-                                        color: accent,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  subtitle: Text(
-                                    '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${exercise.timeSeconds > 0 ? ' • ${exercise.timeSeconds}s' : ''}',
-                                    style: TextStyle(
-                                        color: accent.withValues(alpha: 0.6),
-                                        fontSize: 11),
-                                  ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.edit,
-                                            color:
-                                                accent.withValues(alpha: 0.7),
-                                            size: 18),
-                                        onPressed: () =>
-                                            _editExercise(entryIndex),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(
-                                            minWidth: 32, minHeight: 32),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.delete,
-                                            color: Color(0xFFFF5252), size: 18),
-                                        onPressed: () =>
-                                            _deleteExercise(entryIndex),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(
-                                            minWidth: 32, minHeight: 32),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
-                            if (exercisesForDay.isNotEmpty)
-                              const SizedBox(height: 8),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-                ],
-              ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

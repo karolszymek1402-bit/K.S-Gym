@@ -5639,10 +5639,99 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     final dayNames = _getDayNames(lang);
 
+    // 8 elementów: 1 kafelek PLAN + 7 dni tygodnia
     return ListView.separated(
-      itemCount: 7,
+      itemCount: 8,
       separatorBuilder: (_, __) => const SizedBox(height: 12),
-      itemBuilder: (context, dayIndex) {
+      itemBuilder: (context, index) {
+        // Pierwszy element - kafelek PLAN
+        if (index == 0) {
+          final planLabel = lang == 'PL'
+              ? 'Plan'
+              : lang == 'NO'
+                  ? 'Plan'
+                  : 'Plan';
+          final planSubtitle = lang == 'PL'
+              ? 'Twój plan treningowy'
+              : lang == 'NO'
+                  ? 'Din treningsplan'
+                  : 'Your training plan';
+
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlanOnlineScreen(themeColor: gold),
+                  ),
+                );
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  color: gold.withValues(alpha: 0.1),
+                  border: Border.all(
+                    color: gold,
+                    width: 2,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: gold.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.calendar_month,
+                          color: gold,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            planLabel,
+                            style: TextStyle(
+                              color: gold,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            planSubtitle,
+                            style: TextStyle(
+                              color: gold.withValues(alpha: 0.6),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.chevron_right, color: gold),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        // Pozostałe elementy - dni tygodnia (index - 1 bo pierwszy to PLAN)
+        final dayIndex = index - 1;
         final dayName = dayNames[dayIndex];
         final exercises = _getExercisesForDay(dayIndex);
         final isRest = _isRestDay(dayIndex);

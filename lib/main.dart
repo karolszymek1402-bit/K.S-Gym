@@ -697,6 +697,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Uginanie na wyciągu dolnym – Cable Curl',
     'Uginanie ramienia jednorącz w podporze – Single Arm Incline Curl',
     'Face Away Curl jednorącz na bramie – Single Arm Face Away Cable Curl',
+    'Face Away Curl oburącz na bramie – Double Arm Face Away Cable Curl',
     'Podciąganie podchwytem (wąsko) – Chin-ups',
   ],
   'TRICEPS': [
@@ -1505,6 +1506,11 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Face Away Curl jednorącz na bramie',
     'EN': 'Single Arm Face Away Cable Curl',
     'NO': 'Single Arm Face Away Cable Curl',
+  },
+  'Face Away Curl oburącz na bramie – Double Arm Face Away Cable Curl': {
+    'PL': 'Face Away Curl oburącz na bramie',
+    'EN': 'Double Arm Face Away Cable Curl',
+    'NO': 'Double Arm Face Away Cable Curl',
   },
   'Podciąganie podchwytem (wąsko) – Chin-ups': {
     'PL': 'Podciąganie podchwytem (wąsko)',

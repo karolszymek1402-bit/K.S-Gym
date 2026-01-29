@@ -737,6 +737,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Dead Bug – Dead Bug',
     'Woodchopper (Drwal) – Cable Woodchopper',
     'Pallof Press – Pallof Press',
+    'Rowerek leżąc na plecach – Bicycle Crunches',
   ],
 };
 
@@ -1426,6 +1427,11 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Pallof Press',
     'EN': 'Pallof Press',
     'NO': 'Pallof Press',
+  },
+  'Rowerek leżąc na plecach – Bicycle Crunches': {
+    'PL': 'Rowerek leżąc na plecach',
+    'EN': 'Bicycle Crunches',
+    'NO': 'Bicycle Crunches',
   },
 
   // BICEPS

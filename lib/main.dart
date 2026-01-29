@@ -660,6 +660,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Wspięcia na palce stojąc – Standing Calf Raise',
     'Wspięcia na palce siedząc – Seated Calf Raise',
     'Wspięcia na suwnicy (ośle wspięcia) – Donkey Calf Raise / Leg Press Calf Raise',
+    'Wspięcia na palce na podwyższeniu – Elevated Calf Raise',
   ],
   'SHOULDERS': [
     // Wyciskania
@@ -1228,6 +1229,11 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Wspięcia na suwnicy (ośle wspięcia)',
     'EN': 'Donkey Calf Raise / Leg Press Calf Raise',
     'NO': 'Donkey Calf Raise / Leg Press Calf Raise',
+  },
+  'Wspięcia na palce na podwyższeniu – Elevated Calf Raise': {
+    'PL': 'Wspięcia na palce na podwyższeniu',
+    'EN': 'Elevated Calf Raise',
+    'NO': 'Elevated Calf Raise',
   },
 
   // SHOULDERS

@@ -1794,15 +1794,6 @@ Future<bool> _assetExists(String path) async {
   }
 }
 
-Future<String?> _findExistingAsset(List<String> paths) async {
-  for (final p in paths) {
-    if (await _assetExists(p) == true) {
-      return p;
-    }
-  }
-  return null;
-}
-
 Widget buildLogo(BuildContext context, Color accentColor, {double size = 34}) {
   // Używamy PNG - SVG z embedded image nie działa na web
   return SizedBox(
@@ -2427,29 +2418,6 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
     }
   }
 
-  Future<void> _pasteFromClipboard() async {
-    try {
-      final data = await Clipboard.getData('text/plain');
-      if (data?.text != null && data!.text!.isNotEmpty) {
-        setState(() {
-          _planController.text = data.text!;
-        });
-      }
-    } catch (_) {}
-  }
-
-  Future<void> _copyToClipboard() async {
-    try {
-      await Clipboard.setData(ClipboardData(text: _planController.text));
-      if (mounted) {
-        setState(() {
-          _statusKey = 'copied_to_clipboard';
-          _statusSuccess = true;
-        });
-      }
-    } catch (_) {}
-  }
-
   @override
   Widget build(BuildContext context) {
     const accent = Color(0xFFFFD700);
@@ -2644,10 +2612,6 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     }
-  }
-
-  Future<void> _signOut() async {
-    await PlanAccessController.instance.signOut();
   }
 
   @override
@@ -5418,73 +5382,6 @@ class ProgressChart extends StatelessWidget {
   }
 }
 
-class _LineChartPainter extends CustomPainter {
-  final List<double> values;
-  final Color accent;
-  final double maxVal;
-
-  _LineChartPainter(
-      {required this.values, required this.accent, required this.maxVal});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (values.isEmpty) return;
-    final double maxValue = maxVal == 0.0 ? 1.0 : maxVal;
-    final double h = size.height - 12; // padding top/bottom
-    final double w = size.width;
-    final int n = values.length;
-
-    // Szerokość słupka i odstęp
-    final double barWidth = n == 1 ? 40.0 : (w / n) * 0.7;
-    final double spacing = n == 1 ? 0 : (w / n) * 0.3;
-    final double totalBarSpace = barWidth + spacing;
-
-    final barPaint = Paint()
-      ..color = accent
-      ..style = PaintingStyle.fill;
-
-    final barBorderPaint = Paint()
-      ..color = accent.withOpacity(0.8)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
-    final basePaint = Paint()
-      ..color = accent.withOpacity(0.15)
-      ..strokeWidth = 1.2;
-    canvas.drawLine(Offset(0, h), Offset(w, h), basePaint);
-
-    for (int i = 0; i < n; i++) {
-      final double barHeight = (values[i] / maxValue) * h;
-      final double x = (totalBarSpace * i) + (spacing / 2);
-      final double y = h - barHeight;
-
-      // Rysuj słupek z zaokrąglonymi rogami na górze
-      final RRect barRect = RRect.fromRectAndCorners(
-        Rect.fromLTWH(x, y, barWidth, barHeight),
-        topLeft: const Radius.circular(4),
-        topRight: const Radius.circular(4),
-      );
-
-      // Gradient dla słupka
-      final gradient = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [accent, accent.withOpacity(0.6)],
-      );
-
-      final gradientPaint = Paint()
-        ..shader =
-            gradient.createShader(Rect.fromLTWH(x, y, barWidth, barHeight));
-
-      canvas.drawRRect(barRect, gradientPaint);
-      canvas.drawRRect(barRect, barBorderPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
 
@@ -7025,16 +6922,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     if (mounted) {
       setState(() {
         _vibrationEnabled = val ?? true;
-      });
-    }
-  }
-
-  Future<void> _setVibrationEnabled(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_vibrationEnabledKey, v);
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = v;
       });
     }
   }

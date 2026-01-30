@@ -3630,6 +3630,7 @@ class ClientDetailScreen extends StatefulWidget {
 class _ClientDetailScreenState extends State<ClientDetailScreen> {
   ClientPlan? _plan;
   bool _loading = true;
+  final ScrollController _scrollController = ScrollController();
 
   // Nazwy dni tygodnia
   static const List<String> _dayNamesPL = [
@@ -3677,6 +3678,12 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     _loadPlan();
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadPlan() async {
     setState(() => _loading = true);
     try {
@@ -3693,6 +3700,19 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         setState(() => _loading = false);
       }
     }
+  }
+
+  // Odświeża plan bez pokazywania loadera - zachowuje pozycję scrollowania
+  Future<void> _refreshPlan() async {
+    try {
+      final plan = await PlanAccessController.instance
+          .fetchPlanForEmail(widget.clientEmail);
+      if (mounted) {
+        setState(() {
+          _plan = plan;
+        });
+      }
+    } catch (_) {}
   }
 
   // Sprawdź czy dzień jest dniem wolnym
@@ -3725,7 +3745,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       widget.clientEmail,
       currentRestDays,
     );
-    _loadPlan();
+    _refreshPlan();
   }
 
   Future<void> _editPlan() async {
@@ -3792,7 +3812,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           title: titleCtrl.text.trim(),
           notes: notesCtrl.text.trim(),
         );
-        _loadPlan();
+        _refreshPlan();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Plan zaktualizowany')),
@@ -4241,7 +4261,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           widget.clientEmail,
           [...currentEntries, newEntry],
         );
-        _loadPlan();
+        _refreshPlan();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -4271,7 +4291,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         widget.clientEmail,
         entries,
       );
-      _loadPlan();
+      _refreshPlan();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -4315,7 +4335,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           widget.clientEmail,
           entries,
         );
-        _loadPlan();
+        _refreshPlan();
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -4639,7 +4659,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           widget.clientEmail,
           entries,
         );
-        _loadPlan();
+        _refreshPlan();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -4856,6 +4876,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
             child: _loading
                 ? const Center(child: CircularProgressIndicator(color: accent))
                 : ListView(
+                    controller: _scrollController,
                     padding: const EdgeInsets.all(16),
                     children: [
                       // Header z emailem klienta

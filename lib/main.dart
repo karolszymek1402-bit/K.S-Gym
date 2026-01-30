@@ -4831,6 +4831,95 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                   ),
           ),
           actions: [
+            // Przycisk resetu progresu
+            if (allProgress.isNotEmpty)
+              TextButton(
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: ctx,
+                    builder: (c) => AlertDialog(
+                      backgroundColor: const Color(0xFF0E1117),
+                      title: Text(
+                        lang == 'PL'
+                            ? 'Resetuj progres?'
+                            : lang == 'NO'
+                                ? 'Tilbakestill fremgang?'
+                                : 'Reset progress?',
+                        style: const TextStyle(color: Color(0xFFFF5252)),
+                      ),
+                      content: Text(
+                        lang == 'PL'
+                            ? 'Czy na pewno chcesz usunąć całą historię ćwiczeń tego klienta? Tej operacji nie można cofnąć.'
+                            : lang == 'NO'
+                                ? 'Er du sikker på at du vil slette all treningshistorikk for denne klienten? Denne handlingen kan ikke angres.'
+                                : 'Are you sure you want to delete all exercise history for this client? This action cannot be undone.',
+                        style: const TextStyle(color: Colors.white70),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(c, false),
+                          child: Text(
+                            lang == 'PL'
+                                ? 'Anuluj'
+                                : lang == 'NO'
+                                    ? 'Avbryt'
+                                    : 'Cancel',
+                            style: const TextStyle(color: Colors.white70),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(c, true),
+                          child: Text(
+                            lang == 'PL'
+                                ? 'Usuń'
+                                : lang == 'NO'
+                                    ? 'Slett'
+                                    : 'Delete',
+                            style: const TextStyle(color: Color(0xFFFF5252)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirm == true) {
+                    try {
+                      await PlanAccessController.instance
+                          .resetClientProgress(widget.clientEmail);
+                      if (ctx.mounted) {
+                        Navigator.pop(ctx);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(lang == 'PL'
+                                ? 'Progres został zresetowany'
+                                : lang == 'NO'
+                                    ? 'Fremgang ble tilbakestilt'
+                                    : 'Progress has been reset'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      if (ctx.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:
+                                Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+                  }
+                },
+                child: Text(
+                  lang == 'PL'
+                      ? 'Resetuj'
+                      : lang == 'NO'
+                          ? 'Tilbakestill'
+                          : 'Reset',
+                  style: const TextStyle(color: Color(0xFFFF5252)),
+                ),
+              ),
             TextButton(
               onPressed: () => Navigator.pop(ctx),
               child: Text(

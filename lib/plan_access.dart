@@ -651,6 +651,26 @@ class PlanAccessController {
     }
   }
 
+  /// Resetuje cały progres (historię ćwiczeń) dla danego klienta
+  Future<void> resetClientProgress(String clientEmail) async {
+    final docId = _docIdFromEmail(clientEmail);
+
+    // Pobierz wszystkie dokumenty ćwiczeń z historii klienta
+    final exercisesCollection = FirebaseFirestore.instance
+        .collection('clientHistory')
+        .doc(docId)
+        .collection('exercises');
+
+    final snapshot = await exercisesCollection.get();
+
+    // Usuń każdy dokument ćwiczenia
+    final batch = FirebaseFirestore.instance.batch();
+    for (final doc in snapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
+  }
+
   Future<void> savePlanForEmail(String email, ClientPlan plan) async {
     final planData = plan.toMap();
     planData['email'] = email.trim(); // Always include email field

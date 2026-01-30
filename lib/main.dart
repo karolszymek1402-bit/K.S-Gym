@@ -712,6 +712,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Pompki na poręczach (pionowo) – Triceps Dips',
     'Pompki w podporze tyłem – Bench Dips',
     'Wyciskanie francuskie sztangi do czoła – Skullcrushers / Lying Triceps Extension',
+    'Wyciskanie francuskie sztanga za głowę – Overhead Barbell Triceps Extension',
     'Wyciskanie francuskie hantla oburącz (siedząc) – Overhead Dumbbell Triceps Extension',
     'Prostowanie ramion na wyciągu (sznur) – Rope Pushdown',
     'Prostowanie ramion na wyciągu (drążek) – Bar Pushdown / Triceps Pressdown',

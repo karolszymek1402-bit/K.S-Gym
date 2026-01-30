@@ -1,11 +1,15 @@
 ﻿import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
-    show rootBundle, HapticFeedback, Clipboard, ClipboardData;
+    show HapticFeedback, Clipboard, ClipboardData;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'js_bridge.dart' as js_bridge;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -602,6 +606,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Wiosłowanie sztangą w opadzie – Bent Over Barbell Row',
     'Wiosłowanie sztangą chwytem neutralnym – Neutral Grip Barbell Row',
     'Wiosłowanie półsztangą (T-sztanga) – T-Bar Row',
+    'T-Row – T-Row',
     'Wiosłowanie Pendlay (z martwego punktu) – Pendlay Row',
     'Wiosłowanie hantlem jednorącz – One Arm Dumbbell Row',
     'Wiosłowanie na wyciągu dolnym siedząc – Seated Cable Row',
@@ -1792,15 +1797,6 @@ Widget _logoPlaceholder(Color accentColor, double size) {
   return SizedBox(width: size, height: size);
 }
 
-Future<bool> _assetExists(String path) async {
-  try {
-    await rootBundle.load(path);
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-
 Widget buildLogo(BuildContext context, Color accentColor, {double size = 34}) {
   // Używamy PNG - SVG z embedded image nie działa na web
   return SizedBox(
@@ -2888,22 +2884,6 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                           style: TextStyle(color: Color(0xB3FFD700)),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 18),
-                        OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const CategoryScreen()));
-                            },
-                            icon: Icon(Icons.apps, color: accent),
-                            label: Text(Translations.get('all_categories_btn',
-                                language: lang)),
-                            style: OutlinedButton.styleFrom(
-                                side: BorderSide(
-                                    color: accent.withValues(alpha: 0.6)),
-                                minimumSize: const Size(double.infinity, 50),
-                                foregroundColor: Color(0xFFFFD700))),
                       ],
                     ),
                   );
@@ -3283,38 +3263,6 @@ class CoachDashboardScreen extends StatelessWidget {
                             color: Colors.black, size: 28),
                         label: Text(
                           Translations.get('add_client', language: lang),
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w700),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: accent,
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const CategoryScreen()),
-                          );
-                        },
-                        icon: const Icon(Icons.fitness_center,
-                            color: Colors.black, size: 28),
-                        label: Text(
-                          lang == 'PL'
-                              ? 'Baza ćwiczeń'
-                              : lang == 'NO'
-                                  ? 'Øvelsesdatabase'
-                                  : 'Exercise Database',
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w700),
                         ),
@@ -3882,6 +3830,14 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     String? selectedExercise =
         exercisesForCategory.isNotEmpty ? exercisesForCategory.first : null;
 
+    // Mapa ćwiczenie -> kategoria dla wyświetlania kategorii przy wyszukiwaniu
+    final Map<String, String> exerciseToCategoryMap = {};
+    for (final cat in categories) {
+      for (final ex in kDefaultExercises[cat] ?? []) {
+        exerciseToCategoryMap[ex] = cat;
+      }
+    }
+
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => StatefulBuilder(
@@ -4035,19 +3991,23 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         labelStyle: TextStyle(color: Color(0xFF2ECC71)),
                         border: OutlineInputBorder(),
                       ),
-                      items: filteredExercises
-                          .map((ex) => DropdownMenuItem(
-                                value: ex,
-                                child: Text(
-                                  ex
-                                      .split(' – ')
-                                      .first, // Pokaż tylko polską nazwę
-                                  style:
-                                      const TextStyle(color: Color(0xFF2ECC71)),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ))
-                          .toList(),
+                      items: filteredExercises.map((ex) {
+                        // Pobierz kategorię dla ćwiczenia
+                        final category = exerciseToCategoryMap[ex] ?? '';
+                        final categoryLabel = searchQuery.isNotEmpty &&
+                                category.isNotEmpty
+                            ? ' [${localizedCategoryName(category, globalLanguage)}]'
+                            : '';
+                        final exerciseName = ex.split(' – ').first;
+                        return DropdownMenuItem(
+                          value: ex,
+                          child: Text(
+                            '$exerciseName$categoryLabel',
+                            style: const TextStyle(color: Color(0xFF2ECC71)),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
                       onChanged: (val) {
                         if (val != null) {
                           setDialogState(() {
@@ -4743,6 +4703,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       navigator.pop();
 
       // Show progress dialog
+      if (!context.mounted) return;
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -4866,6 +4827,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     } catch (e) {
       if (!mounted) return;
       navigator.pop();
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(lang == 'PL'
@@ -6951,7 +6913,11 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _setTimer?.cancel();
     _vibrationTimer?.cancel();
     try {
-      Vibration.cancel();
+      if (kIsWeb) {
+        js_bridge.evalJs('if(navigator.vibrate){navigator.vibrate(0);}');
+      } else {
+        Vibration.cancel();
+      }
     } catch (_) {}
     _wController.dispose();
     _rController.dispose();
@@ -6997,7 +6963,11 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _vibrationTimer?.cancel();
     _vibrationTimer = null;
     try {
-      Vibration.cancel();
+      if (kIsWeb) {
+        js_bridge.evalJs('if(navigator.vibrate){navigator.vibrate(0);}');
+      } else {
+        Vibration.cancel();
+      }
     } catch (_) {}
   }
 
@@ -7012,11 +6982,25 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         return;
       }
       try {
-        if (await Vibration.hasVibrator() == true) {
-          if (await Vibration.hasCustomVibrationsSupport() == true) {
-            Vibration.vibrate(pattern: [0, 300, 150, 300, 150, 300]);
-          } else {
-            await Vibration.vibrate(duration: 500);
+        if (kIsWeb) {
+          // Web Vibration API
+          js_bridge.evalJs(
+              'if(navigator.vibrate){navigator.vibrate([300,150,300,150,300]);}');
+        } else if (!kIsWeb && Platform.isIOS) {
+          // iOS - użyj HapticFeedback (wielokrotnie dla silniejszego efektu)
+          await HapticFeedback.heavyImpact();
+          await Future.delayed(const Duration(milliseconds: 150));
+          await HapticFeedback.heavyImpact();
+          await Future.delayed(const Duration(milliseconds: 150));
+          await HapticFeedback.heavyImpact();
+        } else {
+          // Android i inne platformy
+          if (await Vibration.hasVibrator() == true) {
+            if (await Vibration.hasCustomVibrationsSupport() == true) {
+              Vibration.vibrate(pattern: [0, 300, 150, 300, 150, 300]);
+            } else {
+              await Vibration.vibrate(duration: 500);
+            }
           }
         }
       } catch (_) {}
@@ -7028,11 +7012,25 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   Future<void> _vibrateOnce() async {
     if (!_vibrationEnabled) return;
     try {
-      if (await Vibration.hasVibrator() == true) {
-        if (await Vibration.hasCustomVibrationsSupport() == true) {
-          Vibration.vibrate(pattern: [0, 300, 150, 300, 150, 300]);
-        } else {
-          await Vibration.vibrate(duration: 500);
+      if (kIsWeb) {
+        // Web Vibration API
+        js_bridge.evalJs(
+            'if(navigator.vibrate){navigator.vibrate([300,150,300,150,300]);}');
+      } else if (!kIsWeb && Platform.isIOS) {
+        // iOS - użyj HapticFeedback (wielokrotnie dla silniejszego efektu)
+        await HapticFeedback.heavyImpact();
+        await Future.delayed(const Duration(milliseconds: 150));
+        await HapticFeedback.heavyImpact();
+        await Future.delayed(const Duration(milliseconds: 150));
+        await HapticFeedback.heavyImpact();
+      } else {
+        // Android i inne platformy
+        if (await Vibration.hasVibrator() == true) {
+          if (await Vibration.hasCustomVibrationsSupport() == true) {
+            Vibration.vibrate(pattern: [0, 300, 150, 300, 150, 300]);
+          } else {
+            await Vibration.vibrate(duration: 500);
+          }
         }
       }
     } catch (_) {}

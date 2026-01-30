@@ -1,7 +1,3 @@
-import 'dart:io';
-import 'dart:convert';
-import 'package:image/image.dart' as img;
-
 /// Ten skrypt wymaga ręcznej konwersji SVG na PNG
 /// Ponieważ Dart nie obsługuje natywnie renderowania SVG do PNG,
 /// użyj jednego z poniższych sposobów:

@@ -44,7 +44,7 @@ class Translations {
     'app_title': {'EN': 'K.S-GYM', 'PL': 'K.S-GYM', 'NO': 'K.S-GYM'},
     'login_for_online_plan': {
       'EN': 'Log in for online plan',
-      'PL': 'Zaloguj sie po plan online',
+      'PL': 'Zaloguj się po plan online',
       'NO': 'Logg inn for onlineplan'
     },
     'continue_without_login': {
@@ -62,7 +62,7 @@ class Translations {
     'no_data': {
       'EN': 'No data yet',
       'PL': 'Brak danych',
-      'NO': 'Ingen data enn�'
+      'NO': 'Ingen data ennå'
     },
     'sets_label': {
       'EN': 'Sets: {count}',
@@ -71,59 +71,59 @@ class Translations {
     },
     'set_label': {'EN': 'Set', 'PL': 'Seria', 'NO': 'Sett'},
     'kg_label': {'EN': 'KG', 'PL': 'KG', 'NO': 'KG'},
-    'reps_label': {'EN': 'Reps', 'PL': 'Powt�rzenia', 'NO': 'Reps'},
-    'save_set': {'EN': 'Save set', 'PL': 'Zapisz serie', 'NO': 'Lagre sett'},
+    'reps_label': {'EN': 'Reps', 'PL': 'Powtórzenia', 'NO': 'Reps'},
+    'save_set': {'EN': 'Save set', 'PL': 'Zapisz serię', 'NO': 'Lagre sett'},
     'history': {'EN': 'History', 'PL': 'Historia', 'NO': 'Historikk'},
     'no_history': {
       'EN': 'No logs yet. Add your first set.',
-      'PL': 'Brak zapis�w. Dodaj pierwsza serie.',
-      'NO': 'Ingen logger enn�. Legg til ditt f�rste sett.'
+      'PL': 'Brak zapisów. Dodaj pierwszą serię.',
+      'NO': 'Ingen logger ennå. Legg til ditt første sett.'
     },
     'latest': {'EN': 'Latest', 'PL': 'Ostatnie', 'NO': 'Siste'},
     'no_exercises_yet': {
       'EN': 'No exercises yet. Add one to start.',
-      'PL': 'Brak cwiczen. Dodaj, aby zaczac.',
-      'NO': 'Ingen �velser enn�. Legg til for � starte.'
+      'PL': 'Brak ćwiczeń. Dodaj, aby zacząć.',
+      'NO': 'Ingen øvelser ennå. Legg til for å starte.'
     },
     'exercise_db': {
       'EN': 'Exercise library',
-      'PL': 'Baza cwiczen',
-      'NO': '�velsesbibliotek'
+      'PL': 'Baza ćwiczeń',
+      'NO': 'Øvelsesbibliotek'
     },
     'search_hint': {
       'EN': 'Search exercise...',
-      'PL': 'Szukaj cwiczenia...',
-      'NO': 'S�k �velse...'
+      'PL': 'Szukaj ćwiczenia...',
+      'NO': 'Søk øvelse...'
     },
     'no_results': {
       'EN': 'No results',
-      'PL': 'Brak wynik�w',
+      'PL': 'Brak wyników',
       'NO': 'Ingen treff'
     },
     'add_custom': {
       'EN': 'Add custom exercise',
-      'PL': 'Dodaj wlasne cwiczenie',
-      'NO': 'Legg til egen �velse'
+      'PL': 'Dodaj własne ćwiczenie',
+      'NO': 'Legg til egen øvelse'
     },
     'add': {'EN': 'Add', 'PL': 'Dodaj', 'NO': 'Legg til'},
     'add_exercise_title': {
       'EN': 'Add exercise',
-      'PL': 'Dodaj cwiczenie',
-      'NO': 'Legg til �velse'
+      'PL': 'Dodaj ćwiczenie',
+      'NO': 'Legg til øvelse'
     },
     'add_exercise_button': {
       'EN': 'Add exercise',
-      'PL': 'Dodaj cwiczenie',
-      'NO': 'Legg til �velse'
+      'PL': 'Dodaj ćwiczenie',
+      'NO': 'Legg til øvelse'
     },
     'base_exercises_title': {
       'EN': 'Base exercises in this category',
-      'PL': 'Baza cwiczen w tej kategorii',
-      'NO': 'Grunn�velser i denne kategorien'
+      'PL': 'Baza ćwiczeń w tej kategorii',
+      'NO': 'Grunnøvelser i denne kategorien'
     },
     'stop': {'EN': 'Stop', 'PL': 'Stop', 'NO': 'Stopp'},
     'timer_pause': {'EN': 'Pause', 'PL': 'Pauza', 'NO': 'Pause'},
-    'timer_resume': {'EN': 'Resume', 'PL': 'Wzn�w', 'NO': 'Fortsett'},
+    'timer_resume': {'EN': 'Resume', 'PL': 'Wznów', 'NO': 'Fortsett'},
     'import_or_view_plan': {
       'EN': 'Import or view plan',
       'PL': 'Importuj lub zobacz plan',
@@ -131,35 +131,35 @@ class Translations {
     },
     'search_filter_current': {
       'EN': 'Current category',
-      'PL': 'Biezaca kategoria',
+      'PL': 'Bieżąca kategoria',
       'NO': 'Gjeldende kategori'
     },
     'search_filter_all': {'EN': 'All', 'PL': 'Wszystkie', 'NO': 'Alle'},
     'rename_exercise': {
       'EN': 'Rename Exercise',
-      'PL': 'Zmien nazwe cwiczenia',
-      'NO': 'Gi nytt navn til �velse'
+      'PL': 'Zmień nazwę ćwiczenia',
+      'NO': 'Gi nytt navn til øvelse'
     },
     'delete_exercise': {
       'EN': 'Delete Exercise',
-      'PL': 'Usun cwiczenie',
-      'NO': 'Slett �velse'
+      'PL': 'Usuń ćwiczenie',
+      'NO': 'Slett øvelse'
     },
-    'delete_question': {'EN': 'Delete?', 'PL': 'Usunac?', 'NO': 'Slette?'},
+    'delete_question': {'EN': 'Delete?', 'PL': 'Usunąć?', 'NO': 'Slette?'},
     'delete_exercise_and_history': {
       'EN': "Delete '{name}' and all its history?",
-      'PL': "Usunac '{name}' i cala historie?",
+      'PL': "Usunąć '{name}' i całą historię?",
       'NO': "Slett '{name}' og all historikk?"
     },
-    'delete': {'EN': 'Delete', 'PL': 'Usun', 'NO': 'Slett'},
+    'delete': {'EN': 'Delete', 'PL': 'Usuń', 'NO': 'Slett'},
     'cancel': {'EN': 'Cancel', 'PL': 'Anuluj', 'NO': 'Avbryt'},
     'save': {'EN': 'Save', 'PL': 'Zapisz', 'NO': 'Lagre'},
     'exercise_exists': {
       'EN': 'Exercise with that name already exists',
-      'PL': 'Cwiczenie o tej nazwie juz istnieje',
-      'NO': 'En �velse med dette navnet finnes allerede'
+      'PL': 'Ćwiczenie o tej nazwie już istnieje',
+      'NO': 'En øvelse med dette navnet finnes allerede'
     },
-    'running': {'EN': 'Running', 'PL': 'Dziala', 'NO': 'Kj�rer'},
+    'running': {'EN': 'Running', 'PL': 'Działa', 'NO': 'Kjører'},
     'paused': {'EN': 'Paused', 'PL': 'Wstrzymane', 'NO': 'Pauset'},
     'stopped': {'EN': 'Stopped', 'PL': 'Zatrzymane', 'NO': 'Stoppet'},
     'rest_label': {'EN': 'Rest:', 'PL': 'Przerwa:', 'NO': 'Pause:'},
@@ -171,7 +171,7 @@ class Translations {
     },
     'auto_start': {
       'EN': 'Auto-start next set',
-      'PL': 'Automatycznie rozpocznij serie',
+      'PL': 'Automatycznie rozpocznij serię',
       'NO': 'Auto-start neste sett'
     },
     'prompt_next_set': {
@@ -186,7 +186,7 @@ class Translations {
     },
     'rest_finished_title': {
       'EN': 'Rest finished',
-      'PL': 'Przerwa zakonczona',
+      'PL': 'Przerwa zakończona',
       'NO': 'Pause ferdig'
     },
     'rest_finished_body': {
@@ -202,12 +202,12 @@ class Translations {
     'measured_time': {
       'EN': 'Measured time',
       'PL': 'Zmierzony czas',
-      'NO': 'M�lt tid'
+      'NO': 'Målt tid'
     },
     'logged_in_as': {
       'EN': 'Signed in as',
       'PL': 'Zalogowano jako',
-      'NO': 'P�logget som'
+      'NO': 'Pålogget som'
     },
     'role_label': {
       'EN': 'Role: {role}',
@@ -216,8 +216,8 @@ class Translations {
     },
     'open_online_plan': {
       'EN': 'Open online plan',
-      'PL': 'Otw�rz plan online',
-      'NO': '�pne nettplan'
+      'PL': 'Otwórz plan online',
+      'NO': 'Åpne nettplan'
     },
     'logout': {'EN': 'Log out', 'PL': 'Wyloguj', 'NO': 'Logg ut'},
     'login_title': {
@@ -226,7 +226,7 @@ class Translations {
       'NO': 'Planinnlogging'
     },
     'email': {'EN': 'Email', 'PL': 'Email', 'NO': 'E-post'},
-    'password': {'EN': 'Password', 'PL': 'Haslo', 'NO': 'Passord'},
+    'password': {'EN': 'Password', 'PL': 'Hasło', 'NO': 'Passord'},
     'logging_in': {
       'EN': 'Signing in...',
       'PL': 'Logowanie...',
@@ -235,31 +235,31 @@ class Translations {
     'login_action': {'EN': 'Sign in', 'PL': 'Zaloguj', 'NO': 'Logg inn'},
     'remember_me': {
       'EN': 'Remember me',
-      'PL': 'Zapamietaj mnie',
+      'PL': 'Zapamiętaj mnie',
       'NO': 'Husk meg'
     },
     'login_required': {
       'EN': 'Log in to see the plan',
-      'PL': 'Zaloguj sie, aby zobaczyc plan',
-      'NO': 'Logg inn for � se planen'
+      'PL': 'Zaloguj się, aby zobaczyć plan',
+      'NO': 'Logg inn for å se planen'
     },
     'coach_mode_title': {
       'EN': 'Coach mode: full access',
-      'PL': 'Tryb trenera: pelny dostep',
+      'PL': 'Tryb trenera: pełny dostęp',
       'NO': 'Trenermodus: full tilgang'
     },
     'coach_mode_hint': {
       'EN':
           'You have access to all categories and exercise database. Open the base to browse and edit exercises.',
       'PL':
-          'Masz dostep do wszystkich kategorii i bazy cwiczen. Otw�rz baze, aby przegladac i edytowac cwiczenia.',
+          'Masz dostęp do wszystkich kategorii i bazy ćwiczeń. Otwórz bazę, aby przeglądać i edytować ćwiczenia.',
       'NO':
-          'Du har tilgang til alle kategorier og �velsesbasen. �pne basen for � bla og redigere �velser.'
+          'Du har tilgang til alle kategorier og øvelsesbasen. Åpne basen for å bla og redigere øvelser.'
     },
     'exercise_database_btn': {
       'EN': 'Exercise database',
-      'PL': 'Baza cwiczen',
-      'NO': '�velsesbase'
+      'PL': 'Baza ćwiczeń',
+      'NO': 'Øvelsesbase'
     },
     'all_categories_btn': {
       'EN': 'All categories',
@@ -271,15 +271,15 @@ class Translations {
       'PL': 'Brak planu online',
       'NO': 'Ingen nettplan'
     },
-    'refresh': {'EN': 'Refresh', 'PL': 'Odswiez', 'NO': 'Oppdater'},
+    'refresh': {'EN': 'Refresh', 'PL': 'Odśwież', 'NO': 'Oppdater'},
     'no_active_user': {
       'EN': 'No active user',
-      'PL': 'Brak aktywnego uzytkownika',
+      'PL': 'Brak aktywnego użytkownika',
       'NO': 'Ingen aktiv bruker'
     },
     'plan_fetch_failed': {
       'EN': 'Could not fetch plan',
-      'PL': 'Nie udalo sie pobrac planu',
+      'PL': 'Nie udało się pobrać planu',
       'NO': 'Kunne ikke hente planen'
     },
     'plan_updated_at': {
@@ -288,14 +288,14 @@ class Translations {
       'NO': 'Oppdatert: {date}'
     },
     'plan_entry_core': {
-      'EN': '{sets} sets � rest {rest}s',
-      'PL': '{sets} serii � przerwa {rest}s',
-      'NO': '{sets} sett � pause {rest}s'
+      'EN': '{sets} sets • rest {rest}s',
+      'PL': '{sets} serii • przerwa {rest}s',
+      'NO': '{sets} sett • pause {rest}s'
     },
     'plan_entry_time': {
-      'EN': ' � time {time}s',
-      'PL': ' � czas {time}s',
-      'NO': ' � tid {time}s'
+      'EN': ' • time {time}s',
+      'PL': ' • czas {time}s',
+      'NO': ' • tid {time}s'
     },
     'test_version_hint': {
       'EN':
@@ -320,16 +320,16 @@ class Translations {
     },
     'exercise_name_hint': {
       'EN': 'Exercise name',
-      'PL': 'Nazwa cwiczenia',
-      'NO': '�velsesnavn'
+      'PL': 'Nazwa ćwiczenia',
+      'NO': 'Øvelsesnavn'
     },
     'kind_label': {'EN': 'Type', 'PL': 'Rodzaj', 'NO': 'Typ'},
-    'weight_based': {'EN': 'With weight', 'PL': 'Z ciezarem', 'NO': 'Med vekt'},
-    'time_based': {'EN': 'For time', 'PL': 'Na czas', 'NO': 'P� tid'},
+    'weight_based': {'EN': 'With weight', 'PL': 'Z ciężarem', 'NO': 'Med vekt'},
+    'time_based': {'EN': 'For time', 'PL': 'Na czas', 'NO': 'På tid'},
     'plan_local_desc': {
       'EN': 'Paste or write your plan. It stays on this device.',
-      'PL': 'Wklej lub wpisz plan. Zostaje na tym urzadzeniu.',
-      'NO': 'Lim inn eller skriv planen. Det blir p� denne enheten.'
+      'PL': 'Wklej lub wpisz plan. Zostaje na tym urządzeniu.',
+      'NO': 'Lim inn eller skriv planen. Det blir på denne enheten.'
     },
     'plan_saved_local': {
       'EN': 'Plan saved locally',
@@ -338,7 +338,7 @@ class Translations {
     },
     'plan_save_failed': {
       'EN': 'Could not save plan',
-      'PL': 'Nie udalo sie zapisac planu',
+      'PL': 'Nie udało się zapisać planu',
       'NO': 'Kunne ikke lagre planen'
     },
     'plan_save': {'EN': 'Save plan', 'PL': 'Zapisz plan', 'NO': 'Lagre plan'},
@@ -357,8 +357,8 @@ class Translations {
       'PL': 'Wibracje',
       'NO': 'Vibrasjon'
     },
-    'sound_enabled': {'EN': 'Sound', 'PL': 'Dzwiek', 'NO': 'Lyd'},
-    // Dodatkowe tlumaczenia dla trenera
+    'sound_enabled': {'EN': 'Sound', 'PL': 'Dźwięk', 'NO': 'Lyd'},
+    // Dodatkowe tłumaczenia dla trenera
     'add_client': {
       'EN': 'Add client',
       'PL': 'Dodaj klienta',
@@ -366,60 +366,60 @@ class Translations {
     },
     'delete_client': {
       'EN': 'Delete client',
-      'PL': 'Usun klienta',
+      'PL': 'Usuń klienta',
       'NO': 'Slett klient'
     },
     'delete_client_confirm': {
       'EN': 'Are you sure you want to delete this client?',
-      'PL': 'Czy na pewno chcesz usunac tego klienta?',
-      'NO': 'Er du sikker p� at du vil slette denne klienten?'
+      'PL': 'Czy na pewno chcesz usunąć tego klienta?',
+      'NO': 'Er du sikker på at du vil slette denne klienten?'
     },
     'no_clients': {
       'EN': 'No clients',
-      'PL': 'Brak klient�w',
+      'PL': 'Brak klientów',
       'NO': 'Ingen klienter'
     },
     'edit_plan': {'EN': 'Edit plan', 'PL': 'Edytuj plan', 'NO': 'Rediger plan'},
     'add_exercise': {
       'EN': 'Add exercise',
-      'PL': 'Dodaj cwiczenie',
-      'NO': 'Legg til �velse'
+      'PL': 'Dodaj ćwiczenie',
+      'NO': 'Legg til øvelse'
     },
     'delete_exercise_title': {
       'EN': 'Delete exercise',
-      'PL': 'Usun cwiczenie',
-      'NO': 'Slett �velse'
+      'PL': 'Usuń ćwiczenie',
+      'NO': 'Slett øvelse'
     },
     'delete_exercise_confirm': {
       'EN': 'Are you sure you want to delete this exercise?',
-      'PL': 'Czy na pewno chcesz usunac to cwiczenie?',
-      'NO': 'Er du sikker p� at du vil slette denne �velsen?'
+      'PL': 'Czy na pewno chcesz usunąć to ćwiczenie?',
+      'NO': 'Er du sikker på at du vil slette denne øvelsen?'
     },
     'edit_exercise': {
       'EN': 'Edit exercise',
-      'PL': 'Edytuj cwiczenie',
-      'NO': 'Rediger �velse'
+      'PL': 'Edytuj ćwiczenie',
+      'NO': 'Rediger øvelse'
     },
     'exercise_added': {
       'EN': 'Exercise added',
-      'PL': 'Cwiczenie dodane',
-      'NO': '�velse lagt til'
+      'PL': 'Ćwiczenie dodane',
+      'NO': 'Øvelse lagt til'
     },
-    'error': {'EN': 'Error', 'PL': 'Blad', 'NO': 'Feil'},
+    'error': {'EN': 'Error', 'PL': 'Błąd', 'NO': 'Feil'},
     'no_exercises_in_plan': {
       'EN': 'No exercises in plan',
-      'PL': 'Brak cwiczen w planie',
-      'NO': 'Ingen �velser i planen'
+      'PL': 'Brak ćwiczeń w planie',
+      'NO': 'Ingen øvelser i planen'
     },
     'no_exercises': {
       'EN': 'No exercises',
-      'PL': 'Brak cwiczen',
-      'NO': 'Ingen �velser'
+      'PL': 'Brak ćwiczeń',
+      'NO': 'Ingen øvelser'
     },
     'no_exercises_for_day': {
       'EN': 'No exercises for this day',
-      'PL': 'Brak cwiczen na ten dzien',
-      'NO': 'Ingen �velser for denne dagen'
+      'PL': 'Brak ćwiczeń na ten dzień',
+      'NO': 'Ingen øvelser for denne dagen'
     },
     'no_plan_from_trainer': {
       'EN': 'No plan from trainer',
@@ -428,61 +428,61 @@ class Translations {
     },
     'no_saved_progress': {
       'EN': 'No saved progress',
-      'PL': 'Brak zapisanych postep�w',
+      'PL': 'Brak zapisanych postępów',
       'NO': 'Ingen lagret fremgang'
     },
     'error_loading_progress': {
       'EN': 'Error loading progress',
-      'PL': 'Blad ladowania postep�w',
+      'PL': 'Błąd ładowania postępów',
       'NO': 'Feil ved lasting av fremgang'
     },
     'edit_entry': {
       'EN': 'Edit entry',
       'PL': 'Edytuj wpis',
-      'NO': 'Rediger oppf�ring'
+      'NO': 'Rediger oppføring'
     },
     'entry_updated': {
       'EN': 'Entry updated',
       'PL': 'Wpis zaktualizowany',
-      'NO': 'Oppf�ring oppdatert'
+      'NO': 'Oppføring oppdatert'
     },
     'time_s': {'EN': 'TIME (s)', 'PL': 'CZAS (s)', 'NO': 'TID (s)'},
     'sets': {'EN': 'sets', 'PL': 'serii', 'NO': 'sett'},
     'rest': {'EN': 'rest', 'PL': 'przerwy', 'NO': 'pause'},
     'last': {'EN': 'Last', 'PL': 'Ostatni', 'NO': 'Siste'},
-    'exercises_count': {'EN': 'exercises', 'PL': 'cwiczen', 'NO': '�velser'},
-    'rest_day': {'EN': 'Rest day', 'PL': 'Dzien wolny', 'NO': 'Hviledag'},
+    'exercises_count': {'EN': 'exercises', 'PL': 'ćwiczeń', 'NO': 'øvelser'},
+    'rest_day': {'EN': 'Rest day', 'PL': 'Dzień wolny', 'NO': 'Hviledag'},
     'rest_day_message': {
       'EN': 'Rest and recover!',
-      'PL': 'Odpoczywaj i regeneruj sie!',
+      'PL': 'Odpoczywaj i regeneruj się!',
       'NO': 'Hvil og kom deg!'
     },
     'exercises_to_do': {
       'EN': 'exercises to do',
-      'PL': 'cwiczen do wykonania',
-      'NO': '�velser � gj�re'
+      'PL': 'ćwiczeń do wykonania',
+      'NO': 'øvelser å gjøre'
     },
     'rest_day_training': {
       'EN': 'Rest day from training',
-      'PL': 'Dzien wolny od treningu',
+      'PL': 'Dzień wolny od treningu',
       'NO': 'Hviledag fra trening'
     },
     'category': {'EN': 'Category', 'PL': 'Kategoria', 'NO': 'Kategori'},
-    'exercise': {'EN': 'Exercise', 'PL': 'Cwiczenie', 'NO': '�velse'},
+    'exercise': {'EN': 'Exercise', 'PL': 'Ćwiczenie', 'NO': 'Øvelse'},
     'time_based_exercise': {
       'EN': 'Time-based exercise',
-      'PL': 'Cwiczenie na czas',
-      'NO': 'Tidsbasert �velse'
+      'PL': 'Ćwiczenie na czas',
+      'NO': 'Tidsbasert øvelse'
     },
     'sets_count': {
       'EN': 'Number of sets',
-      'PL': 'Ilosc serii',
+      'PL': 'Ilość serii',
       'NO': 'Antall sett'
     },
     'exercise_duration': {
       'EN': 'Exercise duration',
-      'PL': 'Czas trwania cwiczenia',
-      'NO': 'Varighet av �velse'
+      'PL': 'Czas trwania ćwiczenia',
+      'NO': 'Varighet av øvelse'
     },
     'rest_time_label': {
       'EN': 'Rest time',
@@ -496,13 +496,13 @@ class Translations {
     },
     'note_hint': {
       'EN': 'e.g. Remember proper technique...',
-      'PL': 'np. Pamietaj o poprawnej technice...',
+      'PL': 'np. Pamiętaj o poprawnej technice...',
       'NO': 'f.eks. Husk riktig teknikk...'
     },
     'exercise_time_finished': {
       'EN': 'Exercise time finished!',
-      'PL': 'Czas cwiczenia minal!',
-      'NO': '�velsestiden er over!'
+      'PL': 'Czas ćwiczenia minął!',
+      'NO': 'Øvelsestiden er over!'
     },
   };
 
@@ -528,7 +528,7 @@ String localizedExerciseName(String rawName, String language) {
   if (translation != null) {
     return translation[language] ?? translation['EN'] ?? trimmed;
   }
-  final separators = [' � ', ' - '];
+  final separators = [' – ', ' - '];
   for (final sep in separators) {
     if (trimmed.contains(sep)) {
       final parts = trimmed.split(sep);
@@ -563,1070 +563,1070 @@ String localizedCategoryName(String key, String language) {
 // Seed exercises to restore the user-provided base if a category is empty.
 const Map<String, List<String>> kDefaultExercises = {
   'CHEST': [
-    // Wyciskania � Sztanga
-    'Wyciskanie sztangi na lawce poziomej � Barbell Bench Press',
-    'Wyciskanie sztangi na skosie dodatnim � Incline Barbell Bench Press',
-    'Wyciskanie sztangi na skosie ujemnym � Decline Barbell Bench Press',
-    'Wyciskanie sztangi waskim chwytem � Close-Grip Bench Press',
-    'Wyciskanie sztangi typu Gilotyna � Guillotine Press',
-    'Wyciskanie z podlogi (sztanga) � Barbell Floor Press',
-    'Wyciskanie ze Slingshotem � Slingshot Bench Press',
-    // Wyciskania � Hantle
-    'Wyciskanie hantli na lawce poziomej � Dumbbell Bench Press',
-    'Wyciskanie hantli na skosie dodatnim � Incline Dumbbell Press',
-    'Wyciskanie hantli na skosie ujemnym � Decline Dumbbell Press',
-    'Wyciskanie hantli z rotacja (korkociagowe) � Twisting Dumbbell Press',
-    'Wyciskanie hantli chwytem neutralnym (mlotkowym) � Neutral Grip Dumbbell Press',
-    'Wyciskanie hantli z podlogi � Dumbbell Floor Press',
+    // Wyciskania – Sztanga
+    'Wyciskanie sztangi na ławce poziomej – Barbell Bench Press',
+    'Wyciskanie sztangi na skosie dodatnim – Incline Barbell Bench Press',
+    'Wyciskanie sztangi na skosie ujemnym – Decline Barbell Bench Press',
+    'Wyciskanie sztangi wąskim chwytem – Close-Grip Bench Press',
+    'Wyciskanie sztangi typu Gilotyna – Guillotine Press',
+    'Wyciskanie z podłogi (sztanga) – Barbell Floor Press',
+    'Wyciskanie ze Slingshotem – Slingshot Bench Press',
+    // Wyciskania – Hantle
+    'Wyciskanie hantli na ławce poziomej – Dumbbell Bench Press',
+    'Wyciskanie hantli na skosie dodatnim – Incline Dumbbell Press',
+    'Wyciskanie hantli na skosie ujemnym – Decline Dumbbell Press',
+    'Wyciskanie hantli z rotacją (korkociągowe) – Twisting Dumbbell Press',
+    'Wyciskanie hantli chwytem neutralnym (młotkowym) – Neutral Grip Dumbbell Press',
+    'Wyciskanie hantli z podłogi – Dumbbell Floor Press',
     // Maszyny
-    'Wyciskanie na maszynie Smitha � Smith Machine Bench Press',
-    'Wyciskanie na maszynie typu Hammer (siedzac) � Hammer Strength Chest Press',
-    'Wyciskanie na maszynie stosowej � Seated Chest Press Machine',
-    // Rozpietki i Izolacje
-    'Rozpietki z hantlami na lawce poziomej � Flat Dumbbell Flys',
-    'Rozpietki z hantlami na skosie dodatnim � Incline Dumbbell Flys',
-    'Rozpietki na maszynie Butterfly � Pec Deck Fly / Machine Fly',
-    'Krzyzowanie linek wyciagu g�rnego (Brama) � Cable Crossover / High Cable Fly',
-    'Rozpietki z linkami wyciagu dolnego � Low Cable Crossover',
-    'Rozpietki jednoracz na wyciagu � Single Arm Cable Fly',
-    'Landmine Press (wyciskanie p�lsztangi) � Landmine Press',
+    'Wyciskanie na maszynie Smitha – Smith Machine Bench Press',
+    'Wyciskanie na maszynie typu Hammer (siedząc) – Hammer Strength Chest Press',
+    'Wyciskanie na maszynie stosowej – Seated Chest Press Machine',
+    // Rozpiętki i Izolacje
+    'Rozpiętki z hantlami na ławce poziomej – Flat Dumbbell Flys',
+    'Rozpiętki z hantlami na skosie dodatnim – Incline Dumbbell Flys',
+    'Rozpiętki na maszynie Butterfly – Pec Deck Fly / Machine Fly',
+    'Krzyżowanie linek wyciągu górnego (Brama) – Cable Crossover / High Cable Fly',
+    'Rozpiętki z linkami wyciągu dolnego – Low Cable Crossover',
+    'Rozpiętki jednorącz na wyciągu – Single Arm Cable Fly',
+    'Landmine Press (wyciskanie półsztangi) – Landmine Press',
     // Kalistenika
-    'Pompki klasyczne � Push-ups',
-    'Pompki szerokie � Wide Grip Push-ups',
-    'Pompki diamentowe (waskie) � Diamond Push-ups',
-    'Pompki na podwyzszeniu (glowa wyzej) � Incline Push-ups',
-    'Pompki z nogami na podwyzszeniu (glowa nizej) � Decline Push-ups',
-    'Pompki lucznicze � Archer Push-ups',
-    'Pompki plyometryczne (z klasnieciem) � Plyometric / Clap Push-ups',
-    'Pompki na k�lkach gimnastycznych � Ring Push-ups',
-    'Dipy (Pompki na poreczach, tul�w pochylony) � Chest Dips',
+    'Pompki klasyczne – Push-ups',
+    'Pompki szerokie – Wide Grip Push-ups',
+    'Pompki diamentowe (wąskie) – Diamond Push-ups',
+    'Pompki na podwyższeniu (głowa wyżej) – Incline Push-ups',
+    'Pompki z nogami na podwyższeniu (głowa niżej) – Decline Push-ups',
+    'Pompki łucznicze – Archer Push-ups',
+    'Pompki plyometryczne (z klaśnięciem) – Plyometric / Clap Push-ups',
+    'Pompki na kółkach gimnastycznych – Ring Push-ups',
+    'Dipy (Pompki na poręczach, tułów pochylony) – Chest Dips',
   ],
   'BACK': [
-    // Sciagania w pionie
-    'Podciaganie na drazku nachwytem � Pull-ups',
-    'Podciaganie na drazku podchwytem � Chin-ups',
-    'Podciaganie chwytem neutralnym � Neutral Grip Pull-ups',
-    'Sciaganie drazka wyciagu g�rnego do klatki � Lat Pulldown',
-    'Sciaganie drazka wyciagu g�rnego chwytem waskim � Close-Grip Lat Pulldown',
-    'Sciaganie drazka wyciagu g�rnego chwytem neutralnym � Neutral Grip Lat Pulldown',
-    'Sciaganie jednoracz na wyciagu � Single Arm Lat Pulldown',
-    'Sciaganie na maszynie Hammer (g�ra-d�l) � Hammer Strength High Row / Pulldown',
-    // Wioslowania w poziomie
-    'Wioslowanie sztanga w opadzie � Bent Over Barbell Row',
-    'Wioslowanie sztanga chwytem neutralnym � Neutral Grip Barbell Row',
-    'Wioslowanie p�lsztanga (T-sztanga) � T-Bar Row',
-    'T-Row � T-Row',
-    'Wioslowanie Pendlay (z martwego punktu) � Pendlay Row',
-    'Wioslowanie hantlem jednoracz � One Arm Dumbbell Row',
-    'Wioslowanie na wyciagu dolnym siedzac � Seated Cable Row',
-    'Wioslowanie na maszynie siedzac � Seated Machine Row',
-    'Wioslowanie na lawce skosnej (przodem do oparcia) � Chest Supported Row / Incline Bench Row',
-    'Wioslowanie sznurem wyciagu � Cable Rope Row',
-    // Martwe Ciagi
-    'Martwy ciag klasyczny � Conventional Deadlift',
-    'Martwy ciag Sumo � Sumo Deadlift',
-    'Martwy ciag Rumunski � Romanian Deadlift (RDL)',
-    'Martwy ciag z deficytu � Deficit Deadlift',
-    'Martwy ciag ze stopu (Rack Pull) � Rack Pull',
-    'Martwy ciag z Trap Bar (sztanga heksagonalna) � Trap Bar Deadlift',
-    'Martwy ciag na maszynie Smitha � Smith Machine Deadlift',
-    'Power Clean (Zarzut) � Power Clean',
+    // Ściągania w pionie
+    'Podciąganie na drążku nachwytem – Pull-ups',
+    'Podciąganie na drążku podchwytem – Chin-ups',
+    'Podciąganie chwytem neutralnym – Neutral Grip Pull-ups',
+    'Ściąganie drążka wyciągu górnego do klatki – Lat Pulldown',
+    'Ściąganie drążka wyciągu górnego chwytem wąskim – Close-Grip Lat Pulldown',
+    'Ściąganie drążka wyciągu górnego chwytem neutralnym – Neutral Grip Lat Pulldown',
+    'Ściąganie jednorącz na wyciągu – Single Arm Lat Pulldown',
+    'Ściąganie na maszynie Hammer (góra-dół) – Hammer Strength High Row / Pulldown',
+    // Wiosłowania w poziomie
+    'Wiosłowanie sztangą w opadzie – Bent Over Barbell Row',
+    'Wiosłowanie sztangą chwytem neutralnym – Neutral Grip Barbell Row',
+    'Wiosłowanie półsztangą (T-sztanga) – T-Bar Row',
+    'T-Row – T-Row',
+    'Wiosłowanie Pendlay (z martwego punktu) – Pendlay Row',
+    'Wiosłowanie hantlem jednorącz – One Arm Dumbbell Row',
+    'Wiosłowanie na wyciągu dolnym siedząc – Seated Cable Row',
+    'Wiosłowanie na maszynie siedząc – Seated Machine Row',
+    'Wiosłowanie na ławce skośnej (przodem do oparcia) – Chest Supported Row / Incline Bench Row',
+    'Wiosłowanie sznurem wyciągu – Cable Rope Row',
+    // Martwe Ciągi
+    'Martwy ciąg klasyczny – Conventional Deadlift',
+    'Martwy ciąg Sumo – Sumo Deadlift',
+    'Martwy ciąg Rumuński – Romanian Deadlift (RDL)',
+    'Martwy ciąg z deficytu – Deficit Deadlift',
+    'Martwy ciąg ze stopu (Rack Pull) – Rack Pull',
+    'Martwy ciąg z Trap Bar (sztanga heksagonalna) – Trap Bar Deadlift',
+    'Martwy ciąg na maszynie Smitha – Smith Machine Deadlift',
+    'Power Clean (Zarzut) – Power Clean',
     // Prostowniki i inne
-    'Wyprosty tulowia na lawce rzymskiej � Back Extension / Hyperextension',
-    'Odwrotne wyprosty (nogi w g�re) � Reverse Hyperextension',
-    'Face Pull (przyciaganie liny do twarzy) � Face Pull',
-    'Przenoszenie hantla za glowe � Dumbbell Pullover',
+    'Wyprosty tułowia na ławce rzymskiej – Back Extension / Hyperextension',
+    'Odwrotne wyprosty (nogi w górę) – Reverse Hyperextension',
+    'Face Pull (przyciąganie liny do twarzy) – Face Pull',
+    'Przenoszenie hantla za głowę – Dumbbell Pullover',
   ],
   'LEGS': [
-    // Czworoglowe
-    'Przysiad ze sztanga na karku (High Bar) � High Bar Squat',
-    'Przysiad ze sztanga (Low Bar) � Low Bar Squat',
-    'Przysiad przedni � Front Squat',
-    'Przysiad ze sztanga trzymana skrzyznie � Cross Grip Front Squat',
-    'Przysiad typu Goblet � Goblet Squat',
-    'Przysiad na maszynie Smitha � Smith Machine Squat',
-    'Przysiad Hack � Hack Squat',
-    'Przysiad wahadlowy (maszyna) � Pendulum Squat',
-    'Przysiad Bulgarski � Bulgarian Split Squat',
-    'Wypychanie ciezaru na suwnicy � Leg Press',
-    'Wypychanie jednon�z na suwnicy � Single Leg Press',
-    'Wyprost n�g siedzac na maszynie � Leg Extension',
-    'Przysiad Sissy � Sissy Squat',
-    'Wykroki � Lunges',
-    'Zakroki � Reverse Lunges',
-    'Wejscia na podwyzszenie � Step-ups',
-    // Dwuglowe i Posladki
-    'Martwy ciag klasyczny � Conventional Deadlift',
-    'Martwy ciag na prostych nogach � Stiff Leg Deadlift',
-    'Uginanie n�g lezac � Lying Leg Curl',
-    'Uginanie n�g siedzac � Seated Leg Curl',
-    'Uginanie n�g stojac (jednon�z) � Standing Leg Curl',
-    'Zuraw � Nordic Hamstring Curl',
-    'Hip Thrust (Wznosy bioder ze sztanga) � Hip Thrust',
-    'Glute Bridge (Mostek) � Glute Bridge',
-    'Glute Ham Raise � Glute Ham Raise (GHR)',
-    'Kettlebell Swing � Kettlebell Swing',
-    'Przyciaganie linki wyciagu miedzy nogami � Cable Pull-Through',
-    'Przywodzenie n�g na maszynie � Hip Adduction Machine',
-    'Odwodzenie n�g na maszynie � Hip Abduction Machine',
-    'Spacer z guma (Monster Walk) � Monster Walk / Banded Side Steps',
-    // Lydki
-    'Wspiecia na palce stojac � Standing Calf Raise',
-    'Wspiecia na palce siedzac � Seated Calf Raise',
-    'Wspiecia na suwnicy (osle wspiecia) � Donkey Calf Raise / Leg Press Calf Raise',
-    'Wspiecia na palce na podwyzszeniu � Elevated Calf Raise',
+    // Czworogłowe
+    'Przysiad ze sztangą na karku (High Bar) – High Bar Squat',
+    'Przysiad ze sztangą (Low Bar) – Low Bar Squat',
+    'Przysiad przedni – Front Squat',
+    'Przysiad ze sztangą trzymaną skrzyżnie – Cross Grip Front Squat',
+    'Przysiad typu Goblet – Goblet Squat',
+    'Przysiad na maszynie Smitha – Smith Machine Squat',
+    'Przysiad Hack – Hack Squat',
+    'Przysiad wahadłowy (maszyna) – Pendulum Squat',
+    'Przysiad Bułgarski – Bulgarian Split Squat',
+    'Wypychanie ciężaru na suwnicy – Leg Press',
+    'Wypychanie jednonóż na suwnicy – Single Leg Press',
+    'Wyprost nóg siedząc na maszynie – Leg Extension',
+    'Przysiad Sissy – Sissy Squat',
+    'Wykroki – Lunges',
+    'Zakroki – Reverse Lunges',
+    'Wejścia na podwyższenie – Step-ups',
+    // Dwugłowe i Pośladki
+    'Martwy ciąg klasyczny – Conventional Deadlift',
+    'Martwy ciąg na prostych nogach – Stiff Leg Deadlift',
+    'Uginanie nóg leżąc – Lying Leg Curl',
+    'Uginanie nóg siedząc – Seated Leg Curl',
+    'Uginanie nóg stojąc (jednonóż) – Standing Leg Curl',
+    'Żuraw – Nordic Hamstring Curl',
+    'Hip Thrust (Wznosy bioder ze sztangą) – Hip Thrust',
+    'Glute Bridge (Mostek) – Glute Bridge',
+    'Glute Ham Raise – Glute Ham Raise (GHR)',
+    'Kettlebell Swing – Kettlebell Swing',
+    'Przyciąganie linki wyciągu między nogami – Cable Pull-Through',
+    'Przywodzenie nóg na maszynie – Hip Adduction Machine',
+    'Odwodzenie nóg na maszynie – Hip Abduction Machine',
+    'Spacer z gumą (Monster Walk) – Monster Walk / Banded Side Steps',
+    // Łydki
+    'Wspięcia na palce stojąc – Standing Calf Raise',
+    'Wspięcia na palce siedząc – Seated Calf Raise',
+    'Wspięcia na suwnicy (ośle wspięcia) – Donkey Calf Raise / Leg Press Calf Raise',
+    'Wspięcia na palce na podwyższeniu – Elevated Calf Raise',
   ],
   'SHOULDERS': [
     // Wyciskania
-    'Wyciskanie zolnierskie (stojac) � Overhead Press (OHP) / Military Press',
-    'Wyciskanie sztangi siedzac � Seated Barbell Overhead Press',
-    'Wyciskanie hantli siedzac � Seated Dumbbell Press',
-    'Wyciskanie Arnolda � Arnold Press',
-    'Landmine Press jednoracz � Single Arm Landmine Press',
-    'Wyciskanie na maszynie barkowej � Shoulder Press Machine',
+    'Wyciskanie żołnierskie (stojąc) – Overhead Press (OHP) / Military Press',
+    'Wyciskanie sztangi siedząc – Seated Barbell Overhead Press',
+    'Wyciskanie hantli siedząc – Seated Dumbbell Press',
+    'Wyciskanie Arnolda – Arnold Press',
+    'Landmine Press jednorącz – Single Arm Landmine Press',
+    'Wyciskanie na maszynie barkowej – Shoulder Press Machine',
     // Wznosy
-    'Wznosy hantli bokiem � Dumbbell Lateral Raises',
-    'Wznosy bokiem na wyciagu � Cable Lateral Raises',
-    'Wznosy bokiem na maszynie � Machine Lateral Raise',
-    'Podciaganie sztangi wzdluz tulowia � Barbell Upright Row',
-    'Wznosy hantli przed siebie � Dumbbell Front Raises',
-    'Wznosy talerza przed siebie � Plate Front Raise',
+    'Wznosy hantli bokiem – Dumbbell Lateral Raises',
+    'Wznosy bokiem na wyciągu – Cable Lateral Raises',
+    'Wznosy bokiem na maszynie – Machine Lateral Raise',
+    'Podciąganie sztangi wzdłuż tułowia – Barbell Upright Row',
+    'Wznosy hantli przed siebie – Dumbbell Front Raises',
+    'Wznosy talerza przed siebie – Plate Front Raise',
     // Tylny akton
-    'Odwrotne rozpietki w opadzie tulowia � Bent Over Dumbbell Reverse Fly',
-    'Odwrotne rozpietki na maszynie � Reverse Pec Deck',
-    'Krzyzowanie linek wyciagu (odwrotne) � Reverse Cable Crossover',
+    'Odwrotne rozpiętki w opadzie tułowia – Bent Over Dumbbell Reverse Fly',
+    'Odwrotne rozpiętki na maszynie – Reverse Pec Deck',
+    'Krzyżowanie linek wyciągu (odwrotne) – Reverse Cable Crossover',
     // Kaptury
-    'Szrugsy z hantlami � Dumbbell Shrugs',
-    'Szrugsy ze sztanga � Barbell Shrugs',
-    'Odwrotne rozpietki lezac na lawce � Prone Dumbbell Reverse Fly',
+    'Szrugsy z hantlami – Dumbbell Shrugs',
+    'Szrugsy ze sztangą – Barbell Shrugs',
+    'Odwrotne rozpiętki leżąc na ławce – Prone Dumbbell Reverse Fly',
   ],
   'BICEPS': [
-    'Uginanie ramion ze sztanga stojac � Barbell Curl',
-    'Uginanie ramion ze sztanga lamana � EZ-Bar Curl',
-    'Uginanie ramion z hantlami (z supinacja) � Dumbbell Curl',
-    'Uginanie ramion chwytem mlotkowym � Hammer Curl',
-    'Uginanie ramion na modlitewniku � Preacher Curl',
-    'Uginanie skoncentrowane � Concentration Curl',
-    'Uginanie Zottman Curl � Zottman Curl',
-    'Spider Curl ze sztanga � Barbell Spider Curl',
-    'Spider Curl z hantlami � Dumbbell Spider Curl',
-    'Uginanie na wyciagu dolnym � Cable Curl',
-    'Uginanie ramienia jednoracz w podporze � Single Arm Incline Curl',
-    'Face Away Curl jednoracz na bramie � Single Arm Face Away Cable Curl',
-    'Face Away Curl oburacz na bramie � Double Arm Face Away Cable Curl',
-    'Podciaganie podchwytem (wasko) � Chin-ups',
+    'Uginanie ramion ze sztangą stojąc – Barbell Curl',
+    'Uginanie ramion ze sztangą łamaną – EZ-Bar Curl',
+    'Uginanie ramion z hantlami (z supinacją) – Dumbbell Curl',
+    'Uginanie ramion chwytem młotkowym – Hammer Curl',
+    'Uginanie ramion na modlitewniku – Preacher Curl',
+    'Uginanie skoncentrowane – Concentration Curl',
+    'Uginanie Zottman Curl – Zottman Curl',
+    'Spider Curl ze sztangą – Barbell Spider Curl',
+    'Spider Curl z hantlami – Dumbbell Spider Curl',
+    'Uginanie na wyciągu dolnym – Cable Curl',
+    'Uginanie ramienia jednorącz w podporze – Single Arm Incline Curl',
+    'Face Away Curl jednorącz na bramie – Single Arm Face Away Cable Curl',
+    'Face Away Curl oburącz na bramie – Double Arm Face Away Cable Curl',
+    'Podciąganie podchwytem (wąsko) – Chin-ups',
   ],
   'TRICEPS': [
-    'Wyciskanie sztangi waskim chwytem � Close-Grip Bench Press',
-    'Pompki na poreczach (pionowo) � Triceps Dips',
-    'Pompki w podporze tylem � Bench Dips',
-    'Wyciskanie francuskie sztangi do czola � Skullcrushers / Lying Triceps Extension',
-    'Wyciskanie francuskie sztanga za glowe � Overhead Barbell Triceps Extension',
-    'Wyciskanie francuskie hantla oburacz (siedzac) � Overhead Dumbbell Triceps Extension',
-    'Prostowanie ramion na wyciagu (sznur) � Rope Pushdown',
-    'Prostowanie ramion na wyciagu (drazek) � Bar Pushdown / Triceps Pressdown',
-    'JM Press � JM Press',
-    'Tate Press � Tate Press',
-    'Dipy na poreczach � Dips',
-    'Catana Extension jednoracz � Single Arm Catana Extension',
-    'Catana Extension oburacz � Double Arm Catana Extension',
+    'Wyciskanie sztangi wąskim chwytem – Close-Grip Bench Press',
+    'Pompki na poręczach (pionowo) – Triceps Dips',
+    'Pompki w podporze tyłem – Bench Dips',
+    'Wyciskanie francuskie sztangi do czoła – Skullcrushers / Lying Triceps Extension',
+    'Wyciskanie francuskie sztanga za głowę – Overhead Barbell Triceps Extension',
+    'Wyciskanie francuskie hantla oburącz (siedząc) – Overhead Dumbbell Triceps Extension',
+    'Prostowanie ramion na wyciągu (sznur) – Rope Pushdown',
+    'Prostowanie ramion na wyciągu (drążek) – Bar Pushdown / Triceps Pressdown',
+    'JM Press – JM Press',
+    'Tate Press – Tate Press',
+    'Dipy na poręczach – Dips',
+    'Catana Extension jednorącz – Single Arm Catana Extension',
+    'Catana Extension oburącz – Double Arm Catana Extension',
   ],
   'FOREARMS': [
-    'Uginanie nadgarstk�w podchwytem � Wrist Curl',
-    'Prostowanie nadgarstk�w nachwytem � Reverse Wrist Curl',
-    'Uginanie ramion nachwytem � Reverse Curl',
-    "Spacer Farmera � Farmer's Carry / Farmer's Walk",
-    'Zwis na drazku � Dead Hang',
+    'Uginanie nadgarstków podchwytem – Wrist Curl',
+    'Prostowanie nadgarstków nachwytem – Reverse Wrist Curl',
+    'Uginanie ramion nachwytem – Reverse Curl',
+    "Spacer Farmera – Farmer's Carry / Farmer's Walk",
+    'Zwis na drążku – Dead Hang',
   ],
   'ABS': [
-    'Plank (Deska) � Plank',
-    'Plank boczny � Side Plank',
-    'Allahy (Spiecia na wyciagu kleczac) � Cable Crunch',
-    'Spiecia brzucha (lezac) � Crunches',
-    'Brzuszki (pelne) � Sit-ups',
-    'Unoszenie n�g w zwisie na drazku � Hanging Leg Raise',
-    'Unoszenie kolan w zwisie � Hanging Knee Raise',
-    'Scyzoryki � V-ups',
-    'Nozyce � Flutter Kicks',
-    'L-sit � L-Sit',
-    'Russian Twist � Russian Twist',
-    'Mountain Climbers � Mountain Climbers',
-    'Spacer z hantlem jednoracz � Suitcase Carry',
-    'K�lko ab wheel � Ab Wheel Rollout',
-    'Dead Bug � Dead Bug',
-    'Woodchopper (Drwal) � Cable Woodchopper',
-    'Pallof Press � Pallof Press',
-    'Rowerek lezac na plecach � Bicycle Crunches',
+    'Plank (Deska) – Plank',
+    'Plank boczny – Side Plank',
+    'Allahy (Spięcia na wyciągu klęcząc) – Cable Crunch',
+    'Spięcia brzucha (leżąc) – Crunches',
+    'Brzuszki (pełne) – Sit-ups',
+    'Unoszenie nóg w zwisie na drążku – Hanging Leg Raise',
+    'Unoszenie kolan w zwisie – Hanging Knee Raise',
+    'Scyzoryki – V-ups',
+    'Nożyce – Flutter Kicks',
+    'L-sit – L-Sit',
+    'Russian Twist – Russian Twist',
+    'Mountain Climbers – Mountain Climbers',
+    'Spacer z hantlem jednorącz – Suitcase Carry',
+    'Kółko ab wheel – Ab Wheel Rollout',
+    'Dead Bug – Dead Bug',
+    'Woodchopper (Drwal) – Cable Woodchopper',
+    'Pallof Press – Pallof Press',
+    'Rowerek leżąc na plecach – Bicycle Crunches',
   ],
 };
 
 // Exercises that are performed for time; auto-tag as time-based.
 const Set<String> kTimeBasedExercises = {
-  'Plank (Deska) � Plank',
-  'Plank boczny � Side Plank',
-  'L-sit � L-Sit',
-  'Zwis na drazku � Dead Hang',
-  "Spacer Farmera � Farmer's Carry / Farmer's Walk",
-  'Spacer z hantlem jednoracz � Suitcase Carry',
-  'Spacer z guma (Monster Walk) � Monster Walk / Banded Side Steps',
-  'Mountain Climbers � Mountain Climbers',
-  'Nozyce � Flutter Kicks',
-  'Kettlebell Swing � Kettlebell Swing',
-  'Russian Twist � Russian Twist',
-  'Pallof Press � Pallof Press',
-  'Glute Bridge (Mostek) � Glute Bridge',
-  'Dead Bug � Dead Bug',
+  'Plank (Deska) – Plank',
+  'Plank boczny – Side Plank',
+  'L-sit – L-Sit',
+  'Zwis na drążku – Dead Hang',
+  "Spacer Farmera – Farmer's Carry / Farmer's Walk",
+  'Spacer z hantlem jednorącz – Suitcase Carry',
+  'Spacer z gumą (Monster Walk) – Monster Walk / Banded Side Steps',
+  'Mountain Climbers – Mountain Climbers',
+  'Nożyce – Flutter Kicks',
+  'Kettlebell Swing – Kettlebell Swing',
+  'Russian Twist – Russian Twist',
+  'Pallof Press – Pallof Press',
+  'Glute Bridge (Mostek) – Glute Bridge',
+  'Dead Bug – Dead Bug',
 };
 
 // Translations for seeded exercises across languages.
 const Map<String, Map<String, String>> kExerciseTranslations = {
   // CHEST
-  'Wyciskanie sztangi na lawce poziomej � Barbell Bench Press': {
-    'PL': 'Wyciskanie sztangi na lawce poziomej',
+  'Wyciskanie sztangi na ławce poziomej – Barbell Bench Press': {
+    'PL': 'Wyciskanie sztangi na ławce poziomej',
     'EN': 'Barbell Bench Press',
     'NO': 'Barbell Bench Press',
   },
-  'Wyciskanie sztangi na skosie dodatnim � Incline Barbell Bench Press': {
+  'Wyciskanie sztangi na skosie dodatnim – Incline Barbell Bench Press': {
     'PL': 'Wyciskanie sztangi na skosie dodatnim',
     'EN': 'Incline Barbell Bench Press',
     'NO': 'Incline Barbell Bench Press',
   },
-  'Wyciskanie sztangi na skosie ujemnym � Decline Barbell Bench Press': {
+  'Wyciskanie sztangi na skosie ujemnym – Decline Barbell Bench Press': {
     'PL': 'Wyciskanie sztangi na skosie ujemnym',
     'EN': 'Decline Barbell Bench Press',
     'NO': 'Decline Barbell Bench Press',
   },
-  'Wyciskanie sztangi typu Gilotyna � Guillotine Press': {
+  'Wyciskanie sztangi typu Gilotyna – Guillotine Press': {
     'PL': 'Wyciskanie sztangi typu Gilotyna',
     'EN': 'Guillotine Press',
     'NO': 'Guillotine Press',
   },
-  'Wyciskanie z podlogi (sztanga) � Barbell Floor Press': {
-    'PL': 'Wyciskanie z podlogi (sztanga)',
+  'Wyciskanie z podłogi (sztanga) – Barbell Floor Press': {
+    'PL': 'Wyciskanie z podłogi (sztanga)',
     'EN': 'Barbell Floor Press',
     'NO': 'Barbell Floor Press',
   },
-  'Wyciskanie ze Slingshotem � Slingshot Bench Press': {
+  'Wyciskanie ze Slingshotem – Slingshot Bench Press': {
     'PL': 'Wyciskanie ze Slingshotem',
     'EN': 'Slingshot Bench Press',
     'NO': 'Slingshot Bench Press',
   },
-  'Wyciskanie hantli na lawce poziomej � Dumbbell Bench Press': {
-    'PL': 'Wyciskanie hantli na lawce poziomej',
+  'Wyciskanie hantli na ławce poziomej – Dumbbell Bench Press': {
+    'PL': 'Wyciskanie hantli na ławce poziomej',
     'EN': 'Dumbbell Bench Press',
     'NO': 'Dumbbell Bench Press',
   },
-  'Wyciskanie hantli na skosie dodatnim � Incline Dumbbell Press': {
+  'Wyciskanie hantli na skosie dodatnim – Incline Dumbbell Press': {
     'PL': 'Wyciskanie hantli na skosie dodatnim',
     'EN': 'Incline Dumbbell Press',
     'NO': 'Incline Dumbbell Press',
   },
-  'Wyciskanie hantli na skosie ujemnym � Decline Dumbbell Press': {
+  'Wyciskanie hantli na skosie ujemnym – Decline Dumbbell Press': {
     'PL': 'Wyciskanie hantli na skosie ujemnym',
     'EN': 'Decline Dumbbell Press',
     'NO': 'Decline Dumbbell Press',
   },
-  'Wyciskanie hantli z rotacja (korkociagowe) � Twisting Dumbbell Press': {
-    'PL': 'Wyciskanie hantli z rotacja (korkociagowe)',
+  'Wyciskanie hantli z rotacją (korkociągowe) – Twisting Dumbbell Press': {
+    'PL': 'Wyciskanie hantli z rotacją (korkociągowe)',
     'EN': 'Twisting Dumbbell Press',
     'NO': 'Twisting Dumbbell Press',
   },
-  'Wyciskanie hantli chwytem neutralnym (mlotkowym) � Neutral Grip Dumbbell Press':
+  'Wyciskanie hantli chwytem neutralnym (młotkowym) – Neutral Grip Dumbbell Press':
       {
-    'PL': 'Wyciskanie hantli chwytem neutralnym (mlotkowym)',
+    'PL': 'Wyciskanie hantli chwytem neutralnym (młotkowym)',
     'EN': 'Neutral Grip Dumbbell Press',
     'NO': 'Neutral Grip Dumbbell Press',
   },
-  'Wyciskanie hantli z podlogi � Dumbbell Floor Press': {
-    'PL': 'Wyciskanie hantli z podlogi',
+  'Wyciskanie hantli z podłogi – Dumbbell Floor Press': {
+    'PL': 'Wyciskanie hantli z podłogi',
     'EN': 'Dumbbell Floor Press',
     'NO': 'Dumbbell Floor Press',
   },
-  'Wyciskanie na maszynie Smitha � Smith Machine Bench Press': {
+  'Wyciskanie na maszynie Smitha – Smith Machine Bench Press': {
     'PL': 'Wyciskanie na maszynie Smitha',
     'EN': 'Smith Machine Bench Press',
     'NO': 'Smith Machine Bench Press',
   },
-  'Wyciskanie na maszynie typu Hammer (siedzac) � Hammer Strength Chest Press':
+  'Wyciskanie na maszynie typu Hammer (siedząc) – Hammer Strength Chest Press':
       {
-    'PL': 'Wyciskanie na maszynie typu Hammer (siedzac)',
+    'PL': 'Wyciskanie na maszynie typu Hammer (siedząc)',
     'EN': 'Hammer Strength Chest Press',
     'NO': 'Hammer Strength Chest Press',
   },
-  'Wyciskanie na maszynie stosowej � Seated Chest Press Machine': {
+  'Wyciskanie na maszynie stosowej – Seated Chest Press Machine': {
     'PL': 'Wyciskanie na maszynie stosowej',
     'EN': 'Seated Chest Press Machine',
     'NO': 'Seated Chest Press Machine',
   },
-  'Rozpietki z hantlami na lawce poziomej � Flat Dumbbell Flys': {
-    'PL': 'Rozpietki z hantlami na lawce poziomej',
+  'Rozpiętki z hantlami na ławce poziomej – Flat Dumbbell Flys': {
+    'PL': 'Rozpiętki z hantlami na ławce poziomej',
     'EN': 'Flat Dumbbell Flys',
     'NO': 'Flat Dumbbell Flys',
   },
-  'Rozpietki z hantlami na skosie dodatnim � Incline Dumbbell Flys': {
-    'PL': 'Rozpietki z hantlami na skosie dodatnim',
+  'Rozpiętki z hantlami na skosie dodatnim – Incline Dumbbell Flys': {
+    'PL': 'Rozpiętki z hantlami na skosie dodatnim',
     'EN': 'Incline Dumbbell Flys',
     'NO': 'Incline Dumbbell Flys',
   },
-  'Rozpietki na maszynie Butterfly � Pec Deck Fly / Machine Fly': {
-    'PL': 'Rozpietki na maszynie Butterfly',
+  'Rozpiętki na maszynie Butterfly – Pec Deck Fly / Machine Fly': {
+    'PL': 'Rozpiętki na maszynie Butterfly',
     'EN': 'Pec Deck Fly / Machine Fly',
     'NO': 'Pec Deck Fly / Machine Fly',
   },
-  'Krzyzowanie linek wyciagu g�rnego (Brama) � Cable Crossover / High Cable Fly':
+  'Krzyżowanie linek wyciągu górnego (Brama) – Cable Crossover / High Cable Fly':
       {
-    'PL': 'Krzyzowanie linek wyciagu g�rnego (Brama)',
+    'PL': 'Krzyżowanie linek wyciągu górnego (Brama)',
     'EN': 'Cable Crossover / High Cable Fly',
     'NO': 'Cable Crossover / High Cable Fly',
   },
-  'Rozpietki z linkami wyciagu dolnego � Low Cable Crossover': {
-    'PL': 'Rozpietki z linkami wyciagu dolnego',
+  'Rozpiętki z linkami wyciągu dolnego – Low Cable Crossover': {
+    'PL': 'Rozpiętki z linkami wyciągu dolnego',
     'EN': 'Low Cable Crossover',
     'NO': 'Low Cable Crossover',
   },
-  'Rozpietki jednoracz na wyciagu � Single Arm Cable Fly': {
-    'PL': 'Rozpietki jednoracz na wyciagu',
+  'Rozpiętki jednorącz na wyciągu – Single Arm Cable Fly': {
+    'PL': 'Rozpiętki jednorącz na wyciągu',
     'EN': 'Single Arm Cable Fly',
     'NO': 'Single Arm Cable Fly',
   },
-  'Landmine Press (wyciskanie p�lsztangi) � Landmine Press': {
-    'PL': 'Landmine Press (wyciskanie p�lsztangi)',
+  'Landmine Press (wyciskanie półsztangi) – Landmine Press': {
+    'PL': 'Landmine Press (wyciskanie półsztangi)',
     'EN': 'Landmine Press',
     'NO': 'Landmine Press',
   },
-  'Pompki klasyczne � Push-ups': {
+  'Pompki klasyczne – Push-ups': {
     'PL': 'Pompki klasyczne',
     'EN': 'Push-ups',
     'NO': 'Push-ups',
   },
-  'Pompki szerokie � Wide Grip Push-ups': {
+  'Pompki szerokie – Wide Grip Push-ups': {
     'PL': 'Pompki szerokie',
     'EN': 'Wide Grip Push-ups',
     'NO': 'Wide Grip Push-ups',
   },
-  'Pompki diamentowe (waskie) � Diamond Push-ups': {
-    'PL': 'Pompki diamentowe (waskie)',
+  'Pompki diamentowe (wąskie) – Diamond Push-ups': {
+    'PL': 'Pompki diamentowe (wąskie)',
     'EN': 'Diamond Push-ups',
     'NO': 'Diamond Push-ups',
   },
-  'Pompki na podwyzszeniu (glowa wyzej) � Incline Push-ups': {
-    'PL': 'Pompki na podwyzszeniu (glowa wyzej)',
+  'Pompki na podwyższeniu (głowa wyżej) – Incline Push-ups': {
+    'PL': 'Pompki na podwyższeniu (głowa wyżej)',
     'EN': 'Incline Push-ups',
     'NO': 'Incline Push-ups',
   },
-  'Pompki z nogami na podwyzszeniu (glowa nizej) � Decline Push-ups': {
-    'PL': 'Pompki z nogami na podwyzszeniu (glowa nizej)',
+  'Pompki z nogami na podwyższeniu (głowa niżej) – Decline Push-ups': {
+    'PL': 'Pompki z nogami na podwyższeniu (głowa niżej)',
     'EN': 'Decline Push-ups',
     'NO': 'Decline Push-ups',
   },
-  'Pompki lucznicze � Archer Push-ups': {
-    'PL': 'Pompki lucznicze',
+  'Pompki łucznicze – Archer Push-ups': {
+    'PL': 'Pompki łucznicze',
     'EN': 'Archer Push-ups',
     'NO': 'Archer Push-ups',
   },
-  'Pompki plyometryczne (z klasnieciem) � Plyometric / Clap Push-ups': {
-    'PL': 'Pompki plyometryczne (z klasnieciem)',
+  'Pompki plyometryczne (z klaśnięciem) – Plyometric / Clap Push-ups': {
+    'PL': 'Pompki plyometryczne (z klaśnięciem)',
     'EN': 'Plyometric / Clap Push-ups',
     'NO': 'Plyometric / Clap Push-ups',
   },
-  'Pompki na k�lkach gimnastycznych � Ring Push-ups': {
-    'PL': 'Pompki na k�lkach gimnastycznych',
+  'Pompki na kółkach gimnastycznych – Ring Push-ups': {
+    'PL': 'Pompki na kółkach gimnastycznych',
     'EN': 'Ring Push-ups',
     'NO': 'Ring Push-ups',
   },
-  'Dipy (Pompki na poreczach, tul�w pochylony) � Chest Dips': {
-    'PL': 'Dipy (Pompki na poreczach, tul�w pochylony)',
+  'Dipy (Pompki na poręczach, tułów pochylony) – Chest Dips': {
+    'PL': 'Dipy (Pompki na poręczach, tułów pochylony)',
     'EN': 'Chest Dips',
     'NO': 'Chest Dips',
   },
 
   // BACK
-  'Podciaganie na drazku nachwytem � Pull-ups': {
-    'PL': 'Podciaganie na drazku nachwytem',
+  'Podciąganie na drążku nachwytem – Pull-ups': {
+    'PL': 'Podciąganie na drążku nachwytem',
     'EN': 'Pull-ups',
     'NO': 'Pull-ups',
   },
-  'Podciaganie na drazku podchwytem � Chin-ups': {
-    'PL': 'Podciaganie na drazku podchwytem',
+  'Podciąganie na drążku podchwytem – Chin-ups': {
+    'PL': 'Podciąganie na drążku podchwytem',
     'EN': 'Chin-ups',
     'NO': 'Chin-ups',
   },
-  'Podciaganie chwytem neutralnym � Neutral Grip Pull-ups': {
-    'PL': 'Podciaganie chwytem neutralnym',
+  'Podciąganie chwytem neutralnym – Neutral Grip Pull-ups': {
+    'PL': 'Podciąganie chwytem neutralnym',
     'EN': 'Neutral Grip Pull-ups',
     'NO': 'Neutral Grip Pull-ups',
   },
-  'Sciaganie drazka wyciagu g�rnego do klatki � Lat Pulldown': {
-    'PL': 'Sciaganie drazka wyciagu g�rnego do klatki',
+  'Ściąganie drążka wyciągu górnego do klatki – Lat Pulldown': {
+    'PL': 'Ściąganie drążka wyciągu górnego do klatki',
     'EN': 'Lat Pulldown',
     'NO': 'Lat Pulldown',
   },
-  'Sciaganie drazka wyciagu g�rnego chwytem waskim � Close-Grip Lat Pulldown': {
-    'PL': 'Sciaganie drazka wyciagu g�rnego chwytem waskim',
+  'Ściąganie drążka wyciągu górnego chwytem wąskim – Close-Grip Lat Pulldown': {
+    'PL': 'Ściąganie drążka wyciągu górnego chwytem wąskim',
     'EN': 'Close-Grip Lat Pulldown',
     'NO': 'Close-Grip Lat Pulldown',
   },
-  'Sciaganie drazka wyciagu g�rnego chwytem neutralnym � Neutral Grip Lat Pulldown':
+  'Ściąganie drążka wyciągu górnego chwytem neutralnym – Neutral Grip Lat Pulldown':
       {
-    'PL': 'Sciaganie drazka wyciagu g�rnego chwytem neutralnym',
+    'PL': 'Ściąganie drążka wyciągu górnego chwytem neutralnym',
     'EN': 'Neutral Grip Lat Pulldown',
     'NO': 'Neutral Grip Lat Pulldown',
   },
-  'Sciaganie jednoracz na wyciagu � Single Arm Lat Pulldown': {
-    'PL': 'Sciaganie jednoracz na wyciagu',
+  'Ściąganie jednorącz na wyciągu – Single Arm Lat Pulldown': {
+    'PL': 'Ściąganie jednorącz na wyciągu',
     'EN': 'Single Arm Lat Pulldown',
     'NO': 'Single Arm Lat Pulldown',
   },
-  'Sciaganie na maszynie Hammer (g�ra-d�l) � Hammer Strength High Row / Pulldown':
+  'Ściąganie na maszynie Hammer (góra-dół) – Hammer Strength High Row / Pulldown':
       {
-    'PL': 'Sciaganie na maszynie Hammer (g�ra-d�l)',
+    'PL': 'Ściąganie na maszynie Hammer (góra-dół)',
     'EN': 'Hammer Strength High Row / Pulldown',
     'NO': 'Hammer Strength High Row / Pulldown',
   },
-  'Wioslowanie sztanga w opadzie � Bent Over Barbell Row': {
-    'PL': 'Wioslowanie sztanga w opadzie',
+  'Wiosłowanie sztangą w opadzie – Bent Over Barbell Row': {
+    'PL': 'Wiosłowanie sztangą w opadzie',
     'EN': 'Bent Over Barbell Row',
     'NO': 'Bent Over Barbell Row',
   },
-  'Wioslowanie sztanga chwytem neutralnym � Neutral Grip Barbell Row': {
-    'PL': 'Wioslowanie sztanga chwytem neutralnym',
+  'Wiosłowanie sztangą chwytem neutralnym – Neutral Grip Barbell Row': {
+    'PL': 'Wiosłowanie sztangą chwytem neutralnym',
     'EN': 'Neutral Grip Barbell Row',
     'NO': 'Neutral Grip Barbell Row',
   },
-  'Wioslowanie p�lsztanga (T-sztanga) � T-Bar Row': {
-    'PL': 'Wioslowanie p�lsztanga (T-sztanga)',
+  'Wiosłowanie półsztangą (T-sztanga) – T-Bar Row': {
+    'PL': 'Wiosłowanie półsztangą (T-sztanga)',
     'EN': 'T-Bar Row',
     'NO': 'T-Bar Row',
   },
-  'Wioslowanie Pendlay (z martwego punktu) � Pendlay Row': {
-    'PL': 'Wioslowanie Pendlay (z martwego punktu)',
+  'Wiosłowanie Pendlay (z martwego punktu) – Pendlay Row': {
+    'PL': 'Wiosłowanie Pendlay (z martwego punktu)',
     'EN': 'Pendlay Row',
     'NO': 'Pendlay Row',
   },
-  'Wioslowanie hantlem jednoracz � One Arm Dumbbell Row': {
-    'PL': 'Wioslowanie hantlem jednoracz',
+  'Wiosłowanie hantlem jednorącz – One Arm Dumbbell Row': {
+    'PL': 'Wiosłowanie hantlem jednorącz',
     'EN': 'One Arm Dumbbell Row',
     'NO': 'One Arm Dumbbell Row',
   },
-  'Wioslowanie na wyciagu dolnym siedzac � Seated Cable Row': {
-    'PL': 'Wioslowanie na wyciagu dolnym siedzac',
+  'Wiosłowanie na wyciągu dolnym siedząc – Seated Cable Row': {
+    'PL': 'Wiosłowanie na wyciągu dolnym siedząc',
     'EN': 'Seated Cable Row',
     'NO': 'Seated Cable Row',
   },
-  'Wioslowanie na maszynie siedzac � Seated Machine Row': {
-    'PL': 'Wioslowanie na maszynie siedzac',
+  'Wiosłowanie na maszynie siedząc – Seated Machine Row': {
+    'PL': 'Wiosłowanie na maszynie siedząc',
     'EN': 'Seated Machine Row',
     'NO': 'Seated Machine Row',
   },
-  'Wioslowanie na lawce skosnej (przodem do oparcia) � Chest Supported Row / Incline Bench Row':
+  'Wiosłowanie na ławce skośnej (przodem do oparcia) – Chest Supported Row / Incline Bench Row':
       {
-    'PL': 'Wioslowanie na lawce skosnej (przodem do oparcia)',
+    'PL': 'Wiosłowanie na ławce skośnej (przodem do oparcia)',
     'EN': 'Chest Supported Row / Incline Bench Row',
     'NO': 'Chest Supported Row / Incline Bench Row',
   },
-  'Wioslowanie sznurem wyciagu � Cable Rope Row': {
-    'PL': 'Wioslowanie sznurem wyciagu',
+  'Wiosłowanie sznurem wyciągu – Cable Rope Row': {
+    'PL': 'Wiosłowanie sznurem wyciągu',
     'EN': 'Cable Rope Row',
     'NO': 'Cable Rope Row',
   },
-  'Martwy ciag klasyczny � Conventional Deadlift': {
-    'PL': 'Martwy ciag klasyczny',
+  'Martwy ciąg klasyczny – Conventional Deadlift': {
+    'PL': 'Martwy ciąg klasyczny',
     'EN': 'Conventional Deadlift',
     'NO': 'Conventional Deadlift',
   },
-  'Martwy ciag Sumo � Sumo Deadlift': {
-    'PL': 'Martwy ciag Sumo',
+  'Martwy ciąg Sumo – Sumo Deadlift': {
+    'PL': 'Martwy ciąg Sumo',
     'EN': 'Sumo Deadlift',
     'NO': 'Sumo Deadlift',
   },
-  'Martwy ciag Rumunski � Romanian Deadlift (RDL)': {
-    'PL': 'Martwy ciag Rumunski',
+  'Martwy ciąg Rumuński – Romanian Deadlift (RDL)': {
+    'PL': 'Martwy ciąg Rumuński',
     'EN': 'Romanian Deadlift (RDL)',
     'NO': 'Romanian Deadlift (RDL)',
   },
-  'Martwy ciag z deficytu � Deficit Deadlift': {
-    'PL': 'Martwy ciag z deficytu',
+  'Martwy ciąg z deficytu – Deficit Deadlift': {
+    'PL': 'Martwy ciąg z deficytu',
     'EN': 'Deficit Deadlift',
     'NO': 'Deficit Deadlift',
   },
-  'Martwy ciag ze stopu (Rack Pull) � Rack Pull': {
-    'PL': 'Martwy ciag ze stopu (Rack Pull)',
+  'Martwy ciąg ze stopu (Rack Pull) – Rack Pull': {
+    'PL': 'Martwy ciąg ze stopu (Rack Pull)',
     'EN': 'Rack Pull',
     'NO': 'Rack Pull',
   },
-  'Martwy ciag z Trap Bar (sztanga heksagonalna) � Trap Bar Deadlift': {
-    'PL': 'Martwy ciag z Trap Bar (sztanga heksagonalna)',
+  'Martwy ciąg z Trap Bar (sztanga heksagonalna) – Trap Bar Deadlift': {
+    'PL': 'Martwy ciąg z Trap Bar (sztanga heksagonalna)',
     'EN': 'Trap Bar Deadlift',
     'NO': 'Trap Bar Deadlift',
   },
-  'Martwy ciag na maszynie Smitha � Smith Machine Deadlift': {
-    'PL': 'Martwy ciag na maszynie Smitha',
+  'Martwy ciąg na maszynie Smitha – Smith Machine Deadlift': {
+    'PL': 'Martwy ciąg na maszynie Smitha',
     'EN': 'Smith Machine Deadlift',
     'NO': 'Smith Machine Deadlift',
   },
-  'Power Clean (Zarzut) � Power Clean': {
+  'Power Clean (Zarzut) – Power Clean': {
     'PL': 'Power Clean (Zarzut)',
     'EN': 'Power Clean',
     'NO': 'Power Clean',
   },
-  'Wyprosty tulowia na lawce rzymskiej � Back Extension / Hyperextension': {
-    'PL': 'Wyprosty tulowia na lawce rzymskiej',
+  'Wyprosty tułowia na ławce rzymskiej – Back Extension / Hyperextension': {
+    'PL': 'Wyprosty tułowia na ławce rzymskiej',
     'EN': 'Back Extension / Hyperextension',
     'NO': 'Back Extension / Hyperextension',
   },
-  'Odwrotne wyprosty (nogi w g�re) � Reverse Hyperextension': {
-    'PL': 'Odwrotne wyprosty (nogi w g�re)',
+  'Odwrotne wyprosty (nogi w górę) – Reverse Hyperextension': {
+    'PL': 'Odwrotne wyprosty (nogi w górę)',
     'EN': 'Reverse Hyperextension',
     'NO': 'Reverse Hyperextension',
   },
-  'Face Pull (przyciaganie liny do twarzy) � Face Pull': {
-    'PL': 'Face Pull (przyciaganie liny do twarzy)',
+  'Face Pull (przyciąganie liny do twarzy) – Face Pull': {
+    'PL': 'Face Pull (przyciąganie liny do twarzy)',
     'EN': 'Face Pull',
     'NO': 'Face Pull',
   },
-  'Przenoszenie hantla za glowe � Dumbbell Pullover': {
-    'PL': 'Przenoszenie hantla za glowe',
+  'Przenoszenie hantla za głowę – Dumbbell Pullover': {
+    'PL': 'Przenoszenie hantla za głowę',
     'EN': 'Dumbbell Pullover',
     'NO': 'Dumbbell Pullover',
   },
 
   // LEGS
-  'Przysiad ze sztanga na karku (High Bar) � High Bar Squat': {
-    'PL': 'Przysiad ze sztanga na karku (High Bar)',
+  'Przysiad ze sztangą na karku (High Bar) – High Bar Squat': {
+    'PL': 'Przysiad ze sztangą na karku (High Bar)',
     'EN': 'High Bar Squat',
     'NO': 'High Bar Squat',
   },
-  'Przysiad ze sztanga (Low Bar) � Low Bar Squat': {
-    'PL': 'Przysiad ze sztanga (Low Bar)',
+  'Przysiad ze sztangą (Low Bar) – Low Bar Squat': {
+    'PL': 'Przysiad ze sztangą (Low Bar)',
     'EN': 'Low Bar Squat',
     'NO': 'Low Bar Squat',
   },
-  'Przysiad przedni � Front Squat': {
+  'Przysiad przedni – Front Squat': {
     'PL': 'Przysiad przedni',
     'EN': 'Front Squat',
     'NO': 'Front Squat',
   },
-  'Przysiad ze sztanga trzymana skrzyznie (stary styl) � Cross Grip Front Squat':
+  'Przysiad ze sztangą trzymaną skrzyżnie (stary styl) – Cross Grip Front Squat':
       {
-    'PL': 'Przysiad ze sztanga trzymana skrzyznie (stary styl)',
+    'PL': 'Przysiad ze sztangą trzymaną skrzyżnie (stary styl)',
     'EN': 'Cross Grip Front Squat',
     'NO': 'Cross Grip Front Squat',
   },
-  'Przysiad typu Goblet � Goblet Squat': {
+  'Przysiad typu Goblet – Goblet Squat': {
     'PL': 'Przysiad typu Goblet',
     'EN': 'Goblet Squat',
     'NO': 'Goblet Squat',
   },
-  'Przysiad na maszynie Smitha � Smith Machine Squat': {
+  'Przysiad na maszynie Smitha – Smith Machine Squat': {
     'PL': 'Przysiad na maszynie Smitha',
     'EN': 'Smith Machine Squat',
     'NO': 'Smith Machine Squat',
   },
-  'Przysiad Hack � Hack Squat': {
+  'Przysiad Hack – Hack Squat': {
     'PL': 'Przysiad Hack',
     'EN': 'Hack Squat',
     'NO': 'Hack Squat',
   },
-  'Przysiad wahadlowy (maszyna) � Pendulum Squat': {
-    'PL': 'Przysiad wahadlowy (maszyna)',
+  'Przysiad wahadłowy (maszyna) – Pendulum Squat': {
+    'PL': 'Przysiad wahadłowy (maszyna)',
     'EN': 'Pendulum Squat',
     'NO': 'Pendulum Squat',
   },
-  'Przysiad Bulgarski � Bulgarian Split Squat': {
-    'PL': 'Przysiad Bulgarski',
+  'Przysiad Bułgarski – Bulgarian Split Squat': {
+    'PL': 'Przysiad Bułgarski',
     'EN': 'Bulgarian Split Squat',
     'NO': 'Bulgarian Split Squat',
   },
-  'Wypychanie ciezaru na suwnicy � Leg Press': {
-    'PL': 'Wypychanie ciezaru na suwnicy',
+  'Wypychanie ciężaru na suwnicy – Leg Press': {
+    'PL': 'Wypychanie ciężaru na suwnicy',
     'EN': 'Leg Press',
     'NO': 'Leg Press',
   },
-  'Wypychanie jednon�z na suwnicy � Single Leg Press': {
-    'PL': 'Wypychanie jednon�z na suwnicy',
+  'Wypychanie jednonóż na suwnicy – Single Leg Press': {
+    'PL': 'Wypychanie jednonóż na suwnicy',
     'EN': 'Single Leg Press',
     'NO': 'Single Leg Press',
   },
-  'Wyprost n�g siedzac na maszynie � Leg Extension': {
-    'PL': 'Wyprost n�g siedzac na maszynie',
+  'Wyprost nóg siedząc na maszynie – Leg Extension': {
+    'PL': 'Wyprost nóg siedząc na maszynie',
     'EN': 'Leg Extension',
     'NO': 'Leg Extension',
   },
-  'Przysiad Sissy � Sissy Squat': {
+  'Przysiad Sissy – Sissy Squat': {
     'PL': 'Przysiad Sissy',
     'EN': 'Sissy Squat',
     'NO': 'Sissy Squat',
   },
-  'Wykroki � Lunges': {
+  'Wykroki – Lunges': {
     'PL': 'Wykroki',
     'EN': 'Lunges',
     'NO': 'Lunges',
   },
-  'Zakroki � Reverse Lunges': {
+  'Zakroki – Reverse Lunges': {
     'PL': 'Zakroki',
     'EN': 'Reverse Lunges',
     'NO': 'Reverse Lunges',
   },
-  'Wejscia na podwyzszenie � Step-ups': {
-    'PL': 'Wejscia na podwyzszenie',
+  'Wejścia na podwyższenie – Step-ups': {
+    'PL': 'Wejścia na podwyższenie',
     'EN': 'Step-ups',
     'NO': 'Step-ups',
   },
-  'Martwy ciag na prostych nogach � Stiff Leg Deadlift': {
-    'PL': 'Martwy ciag na prostych nogach',
+  'Martwy ciąg na prostych nogach – Stiff Leg Deadlift': {
+    'PL': 'Martwy ciąg na prostych nogach',
     'EN': 'Stiff Leg Deadlift',
     'NO': 'Stiff Leg Deadlift',
   },
-  'Uginanie n�g lezac � Lying Leg Curl': {
-    'PL': 'Uginanie n�g lezac',
+  'Uginanie nóg leżąc – Lying Leg Curl': {
+    'PL': 'Uginanie nóg leżąc',
     'EN': 'Lying Leg Curl',
     'NO': 'Lying Leg Curl',
   },
-  'Uginanie n�g siedzac � Seated Leg Curl': {
-    'PL': 'Uginanie n�g siedzac',
+  'Uginanie nóg siedząc – Seated Leg Curl': {
+    'PL': 'Uginanie nóg siedząc',
     'EN': 'Seated Leg Curl',
     'NO': 'Seated Leg Curl',
   },
-  'Uginanie n�g stojac (jednon�z) � Standing Leg Curl': {
-    'PL': 'Uginanie n�g stojac (jednon�z)',
+  'Uginanie nóg stojąc (jednonóż) – Standing Leg Curl': {
+    'PL': 'Uginanie nóg stojąc (jednonóż)',
     'EN': 'Standing Leg Curl',
     'NO': 'Standing Leg Curl',
   },
-  'Zuraw � Nordic Hamstring Curl': {
-    'PL': 'Zuraw',
+  'Żuraw – Nordic Hamstring Curl': {
+    'PL': 'Żuraw',
     'EN': 'Nordic Hamstring Curl',
     'NO': 'Nordic Hamstring Curl',
   },
-  'Hip Thrust (Wznosy bioder ze sztanga) � Hip Thrust': {
-    'PL': 'Hip Thrust (Wznosy bioder ze sztanga)',
+  'Hip Thrust (Wznosy bioder ze sztangą) – Hip Thrust': {
+    'PL': 'Hip Thrust (Wznosy bioder ze sztangą)',
     'EN': 'Hip Thrust',
     'NO': 'Hip Thrust',
   },
-  'Glute Bridge (Mostek) � Glute Bridge': {
+  'Glute Bridge (Mostek) – Glute Bridge': {
     'PL': 'Glute Bridge (Mostek)',
     'EN': 'Glute Bridge',
     'NO': 'Glute Bridge',
   },
-  'Glute Ham Raise � Glute Ham Raise (GHR)': {
+  'Glute Ham Raise – Glute Ham Raise (GHR)': {
     'PL': 'Glute Ham Raise',
     'EN': 'Glute Ham Raise (GHR)',
     'NO': 'Glute Ham Raise (GHR)',
   },
-  'Kettlebell Swing � Kettlebell Swing': {
+  'Kettlebell Swing – Kettlebell Swing': {
     'PL': 'Kettlebell Swing',
     'EN': 'Kettlebell Swing',
     'NO': 'Kettlebell Swing',
   },
-  'Przyciaganie linki wyciagu miedzy nogami � Cable Pull-Through': {
-    'PL': 'Przyciaganie linki wyciagu miedzy nogami',
+  'Przyciąganie linki wyciągu między nogami – Cable Pull-Through': {
+    'PL': 'Przyciąganie linki wyciągu między nogami',
     'EN': 'Cable Pull-Through',
     'NO': 'Cable Pull-Through',
   },
-  'Przywodzenie n�g na maszynie � Hip Adduction Machine': {
-    'PL': 'Przywodzenie n�g na maszynie',
+  'Przywodzenie nóg na maszynie – Hip Adduction Machine': {
+    'PL': 'Przywodzenie nóg na maszynie',
     'EN': 'Hip Adduction Machine',
     'NO': 'Hip Adduction Machine',
   },
-  'Odwodzenie n�g na maszynie � Hip Abduction Machine': {
-    'PL': 'Odwodzenie n�g na maszynie',
+  'Odwodzenie nóg na maszynie – Hip Abduction Machine': {
+    'PL': 'Odwodzenie nóg na maszynie',
     'EN': 'Hip Abduction Machine',
     'NO': 'Hip Abduction Machine',
   },
-  'Spacer z guma (Monster Walk) � Monster Walk / Banded Side Steps': {
-    'PL': 'Spacer z guma (Monster Walk)',
+  'Spacer z gumą (Monster Walk) – Monster Walk / Banded Side Steps': {
+    'PL': 'Spacer z gumą (Monster Walk)',
     'EN': 'Monster Walk / Banded Side Steps',
     'NO': 'Monster Walk / Banded Side Steps',
   },
-  'Wspiecia na palce stojac � Standing Calf Raise': {
-    'PL': 'Wspiecia na palce stojac',
+  'Wspięcia na palce stojąc – Standing Calf Raise': {
+    'PL': 'Wspięcia na palce stojąc',
     'EN': 'Standing Calf Raise',
     'NO': 'Standing Calf Raise',
   },
-  'Wspiecia na palce siedzac � Seated Calf Raise': {
-    'PL': 'Wspiecia na palce siedzac',
+  'Wspięcia na palce siedząc – Seated Calf Raise': {
+    'PL': 'Wspięcia na palce siedząc',
     'EN': 'Seated Calf Raise',
     'NO': 'Seated Calf Raise',
   },
-  'Wspiecia na suwnicy (osle wspiecia) � Donkey Calf Raise / Leg Press Calf Raise':
+  'Wspięcia na suwnicy (ośle wspięcia) – Donkey Calf Raise / Leg Press Calf Raise':
       {
-    'PL': 'Wspiecia na suwnicy (osle wspiecia)',
+    'PL': 'Wspięcia na suwnicy (ośle wspięcia)',
     'EN': 'Donkey Calf Raise / Leg Press Calf Raise',
     'NO': 'Donkey Calf Raise / Leg Press Calf Raise',
   },
-  'Wspiecia na palce na podwyzszeniu � Elevated Calf Raise': {
-    'PL': 'Wspiecia na palce na podwyzszeniu',
+  'Wspięcia na palce na podwyższeniu – Elevated Calf Raise': {
+    'PL': 'Wspięcia na palce na podwyższeniu',
     'EN': 'Elevated Calf Raise',
     'NO': 'Elevated Calf Raise',
   },
 
   // SHOULDERS
-  'Wyciskanie zolnierskie (stojac) � Overhead Press (OHP) / Military Press': {
-    'PL': 'Wyciskanie zolnierskie (stojac)',
+  'Wyciskanie żołnierskie (stojąc) – Overhead Press (OHP) / Military Press': {
+    'PL': 'Wyciskanie żołnierskie (stojąc)',
     'EN': 'Overhead Press (OHP) / Military Press',
     'NO': 'Overhead Press (OHP) / Military Press',
   },
-  'Wyciskanie sztangi siedzac � Seated Barbell Overhead Press': {
-    'PL': 'Wyciskanie sztangi siedzac',
+  'Wyciskanie sztangi siedząc – Seated Barbell Overhead Press': {
+    'PL': 'Wyciskanie sztangi siedząc',
     'EN': 'Seated Barbell Overhead Press',
     'NO': 'Seated Barbell Overhead Press',
   },
-  'Wyciskanie hantli siedzac � Seated Dumbbell Press': {
-    'PL': 'Wyciskanie hantli siedzac',
+  'Wyciskanie hantli siedząc – Seated Dumbbell Press': {
+    'PL': 'Wyciskanie hantli siedząc',
     'EN': 'Seated Dumbbell Press',
     'NO': 'Seated Dumbbell Press',
   },
-  'Wyciskanie Arnolda � Arnold Press': {
+  'Wyciskanie Arnolda – Arnold Press': {
     'PL': 'Wyciskanie Arnolda',
     'EN': 'Arnold Press',
     'NO': 'Arnold Press',
   },
-  'Landmine Press jednoracz � Single Arm Landmine Press': {
-    'PL': 'Landmine Press jednoracz',
+  'Landmine Press jednorącz – Single Arm Landmine Press': {
+    'PL': 'Landmine Press jednorącz',
     'EN': 'Single Arm Landmine Press',
     'NO': 'Single Arm Landmine Press',
   },
-  'Wyciskanie na maszynie barkowej � Shoulder Press Machine': {
+  'Wyciskanie na maszynie barkowej – Shoulder Press Machine': {
     'PL': 'Wyciskanie na maszynie barkowej',
     'EN': 'Shoulder Press Machine',
     'NO': 'Shoulder Press Machine',
   },
-  'Wznosy hantli bokiem � Dumbbell Lateral Raises': {
+  'Wznosy hantli bokiem – Dumbbell Lateral Raises': {
     'PL': 'Wznosy hantli bokiem',
     'EN': 'Dumbbell Lateral Raises',
     'NO': 'Dumbbell Lateral Raises',
   },
-  'Wznosy bokiem na wyciagu � Cable Lateral Raises': {
-    'PL': 'Wznosy bokiem na wyciagu',
+  'Wznosy bokiem na wyciągu – Cable Lateral Raises': {
+    'PL': 'Wznosy bokiem na wyciągu',
     'EN': 'Cable Lateral Raises',
     'NO': 'Cable Lateral Raises',
   },
-  'Wznosy bokiem na maszynie � Machine Lateral Raise': {
+  'Wznosy bokiem na maszynie – Machine Lateral Raise': {
     'PL': 'Wznosy bokiem na maszynie',
     'EN': 'Machine Lateral Raise',
     'NO': 'Machine Lateral Raise',
   },
-  'Podciaganie sztangi wzdluz tulowia � Barbell Upright Row': {
-    'PL': 'Podciaganie sztangi wzdluz tulowia',
+  'Podciąganie sztangi wzdłuż tułowia – Barbell Upright Row': {
+    'PL': 'Podciąganie sztangi wzdłuż tułowia',
     'EN': 'Barbell Upright Row',
     'NO': 'Barbell Upright Row',
   },
-  'Wznosy hantli przed siebie � Dumbbell Front Raises': {
+  'Wznosy hantli przed siebie – Dumbbell Front Raises': {
     'PL': 'Wznosy hantli przed siebie',
     'EN': 'Dumbbell Front Raises',
     'NO': 'Dumbbell Front Raises',
   },
-  'Wznosy talerza przed siebie � Plate Front Raise': {
+  'Wznosy talerza przed siebie – Plate Front Raise': {
     'PL': 'Wznosy talerza przed siebie',
     'EN': 'Plate Front Raise',
     'NO': 'Plate Front Raise',
   },
-  'Odwrotne rozpietki w opadzie tulowia � Bent Over Dumbbell Reverse Fly': {
-    'PL': 'Odwrotne rozpietki w opadzie tulowia',
+  'Odwrotne rozpiętki w opadzie tułowia – Bent Over Dumbbell Reverse Fly': {
+    'PL': 'Odwrotne rozpiętki w opadzie tułowia',
     'EN': 'Bent Over Dumbbell Reverse Fly',
     'NO': 'Bent Over Dumbbell Reverse Fly',
   },
-  'Odwrotne rozpietki na maszynie � Reverse Pec Deck': {
-    'PL': 'Odwrotne rozpietki na maszynie',
+  'Odwrotne rozpiętki na maszynie – Reverse Pec Deck': {
+    'PL': 'Odwrotne rozpiętki na maszynie',
     'EN': 'Reverse Pec Deck',
     'NO': 'Reverse Pec Deck',
   },
-  'Krzyzowanie linek wyciagu (odwrotne) � Reverse Cable Crossover': {
-    'PL': 'Krzyzowanie linek wyciagu (odwrotne)',
+  'Krzyżowanie linek wyciągu (odwrotne) – Reverse Cable Crossover': {
+    'PL': 'Krzyżowanie linek wyciągu (odwrotne)',
     'EN': 'Reverse Cable Crossover',
     'NO': 'Reverse Cable Crossover',
   },
-  'Szrugsy z hantlami � Dumbbell Shrugs': {
+  'Szrugsy z hantlami – Dumbbell Shrugs': {
     'PL': 'Szrugsy z hantlami',
     'EN': 'Dumbbell Shrugs',
     'NO': 'Dumbbell Shrugs',
   },
-  'Szrugsy ze sztanga � Barbell Shrugs': {
-    'PL': 'Szrugsy ze sztanga',
+  'Szrugsy ze sztangą – Barbell Shrugs': {
+    'PL': 'Szrugsy ze sztangą',
     'EN': 'Barbell Shrugs',
     'NO': 'Barbell Shrugs',
   },
-  'Odwrotne rozpietki lezac na lawce � Prone Dumbbell Reverse Fly': {
-    'PL': 'Odwrotne rozpietki lezac na lawce',
+  'Odwrotne rozpiętki leżąc na ławce – Prone Dumbbell Reverse Fly': {
+    'PL': 'Odwrotne rozpiętki leżąc na ławce',
     'EN': 'Prone Dumbbell Reverse Fly',
     'NO': 'Prone Dumbbell Reverse Fly',
   },
-  'Szrugsy na maszynie Smitha � Smith Machine Shrugs': {
+  'Szrugsy na maszynie Smitha – Smith Machine Shrugs': {
     'PL': 'Szrugsy na maszynie Smitha',
     'EN': 'Smith Machine Shrugs',
     'NO': 'Smith Machine Shrugs',
   },
-  'Szrugsy na maszynie typu Trap Bar � Trap Bar Shrugs': {
+  'Szrugsy na maszynie typu Trap Bar – Trap Bar Shrugs': {
     'PL': 'Szrugsy na maszynie typu Trap Bar',
     'EN': 'Trap Bar Shrugs',
     'NO': 'Trap Bar Shrugs',
   },
-  'Szrugsy na wyciagu dolnym � Cable Shrugs': {
-    'PL': 'Szrugsy na wyciagu dolnym',
+  'Szrugsy na wyciągu dolnym – Cable Shrugs': {
+    'PL': 'Szrugsy na wyciągu dolnym',
     'EN': 'Cable Shrugs',
     'NO': 'Cable Shrugs',
   },
-  'Szrugsy jednoracz z hantlem � Single Arm Dumbbell Shrug': {
-    'PL': 'Szrugsy jednoracz z hantlem',
+  'Szrugsy jednorącz z hantlem – Single Arm Dumbbell Shrug': {
+    'PL': 'Szrugsy jednorącz z hantlem',
     'EN': 'Single Arm Dumbbell Shrug',
     'NO': 'Single Arm Dumbbell Shrug',
   },
-  'Szrugsy z Kettlebell � Kettlebell Shrugs': {
+  'Szrugsy z Kettlebell – Kettlebell Shrugs': {
     'PL': 'Szrugsy z Kettlebell',
     'EN': 'Kettlebell Shrugs',
     'NO': 'Kettlebell Shrugs',
   },
 
   // ABS
-  'Plank (Deska) � Plank': {
+  'Plank (Deska) – Plank': {
     'PL': 'Plank (Deska)',
     'EN': 'Plank',
     'NO': 'Plank',
   },
-  'Plank boczny � Side Plank': {
+  'Plank boczny – Side Plank': {
     'PL': 'Plank boczny',
     'EN': 'Side Plank',
     'NO': 'Side Plank',
   },
-  'Allahy (Spiecia na wyciagu kleczac) � Cable Crunch': {
-    'PL': 'Allahy (Spiecia na wyciagu kleczac)',
+  'Allahy (Spięcia na wyciągu klęcząc) – Cable Crunch': {
+    'PL': 'Allahy (Spięcia na wyciągu klęcząc)',
     'EN': 'Cable Crunch',
     'NO': 'Cable Crunch',
   },
-  'Spiecia brzucha (lezac) � Crunches': {
-    'PL': 'Spiecia brzucha (lezac)',
+  'Spięcia brzucha (leżąc) – Crunches': {
+    'PL': 'Spięcia brzucha (leżąc)',
     'EN': 'Crunches',
     'NO': 'Crunches',
   },
-  'Brzuszki (pelne) � Sit-ups': {
-    'PL': 'Brzuszki (pelne)',
+  'Brzuszki (pełne) – Sit-ups': {
+    'PL': 'Brzuszki (pełne)',
     'EN': 'Sit-ups',
     'NO': 'Sit-ups',
   },
-  'Unoszenie n�g w zwisie na drazku � Hanging Leg Raise': {
-    'PL': 'Unoszenie n�g w zwisie na drazku',
+  'Unoszenie nóg w zwisie na drążku – Hanging Leg Raise': {
+    'PL': 'Unoszenie nóg w zwisie na drążku',
     'EN': 'Hanging Leg Raise',
     'NO': 'Hanging Leg Raise',
   },
-  'Unoszenie kolan w zwisie � Hanging Knee Raise': {
+  'Unoszenie kolan w zwisie – Hanging Knee Raise': {
     'PL': 'Unoszenie kolan w zwisie',
     'EN': 'Hanging Knee Raise',
     'NO': 'Hanging Knee Raise',
   },
-  'Scyzoryki � V-ups': {
+  'Scyzoryki – V-ups': {
     'PL': 'Scyzoryki',
     'EN': 'V-ups',
     'NO': 'V-ups',
   },
-  'Nozyce � Flutter Kicks': {
-    'PL': 'Nozyce',
+  'Nożyce – Flutter Kicks': {
+    'PL': 'Nożyce',
     'EN': 'Flutter Kicks',
     'NO': 'Flutter Kicks',
   },
-  'L-sit � L-Sit': {
+  'L-sit – L-Sit': {
     'PL': 'L-sit',
     'EN': 'L-Sit',
     'NO': 'L-Sit',
   },
-  'Russian Twist � Russian Twist': {
+  'Russian Twist – Russian Twist': {
     'PL': 'Russian Twist',
     'EN': 'Russian Twist',
     'NO': 'Russian Twist',
   },
-  'Mountain Climbers � Mountain Climbers': {
+  'Mountain Climbers – Mountain Climbers': {
     'PL': 'Mountain Climbers',
     'EN': 'Mountain Climbers',
     'NO': 'Mountain Climbers',
   },
-  'Spacer z hantlem jednoracz � Suitcase Carry': {
-    'PL': 'Spacer z hantlem jednoracz',
+  'Spacer z hantlem jednorącz – Suitcase Carry': {
+    'PL': 'Spacer z hantlem jednorącz',
     'EN': 'Suitcase Carry',
     'NO': 'Suitcase Carry',
   },
-  'K�lko ab wheel � Ab Wheel Rollout': {
-    'PL': 'K�lko ab wheel',
+  'Kółko ab wheel – Ab Wheel Rollout': {
+    'PL': 'Kółko ab wheel',
     'EN': 'Ab Wheel Rollout',
     'NO': 'Ab Wheel Rollout',
   },
-  'Dead Bug � Dead Bug': {
+  'Dead Bug – Dead Bug': {
     'PL': 'Dead Bug',
     'EN': 'Dead Bug',
     'NO': 'Dead Bug',
   },
-  'Woodchopper (Drwal) � Cable Woodchopper': {
+  'Woodchopper (Drwal) – Cable Woodchopper': {
     'PL': 'Woodchopper (Drwal)',
     'EN': 'Cable Woodchopper',
     'NO': 'Cable Woodchopper',
   },
-  'Pallof Press � Pallof Press': {
+  'Pallof Press – Pallof Press': {
     'PL': 'Pallof Press',
     'EN': 'Pallof Press',
     'NO': 'Pallof Press',
   },
-  'Rowerek lezac na plecach � Bicycle Crunches': {
-    'PL': 'Rowerek lezac na plecach',
+  'Rowerek leżąc na plecach – Bicycle Crunches': {
+    'PL': 'Rowerek leżąc na plecach',
     'EN': 'Bicycle Crunches',
     'NO': 'Bicycle Crunches',
   },
 
   // BICEPS
-  'Uginanie ramion ze sztanga stojac � Barbell Curl': {
-    'PL': 'Uginanie ramion ze sztanga stojac',
+  'Uginanie ramion ze sztangą stojąc – Barbell Curl': {
+    'PL': 'Uginanie ramion ze sztangą stojąc',
     'EN': 'Barbell Curl',
     'NO': 'Barbell Curl',
   },
-  'Uginanie ramion ze sztanga lamana � EZ-Bar Curl': {
-    'PL': 'Uginanie ramion ze sztanga lamana',
+  'Uginanie ramion ze sztangą łamaną – EZ-Bar Curl': {
+    'PL': 'Uginanie ramion ze sztangą łamaną',
     'EN': 'EZ-Bar Curl',
     'NO': 'EZ-Bar Curl',
   },
-  'Uginanie ramion z hantlami (z supinacja) � Dumbbell Curl': {
-    'PL': 'Uginanie ramion z hantlami (z supinacja)',
+  'Uginanie ramion z hantlami (z supinacją) – Dumbbell Curl': {
+    'PL': 'Uginanie ramion z hantlami (z supinacją)',
     'EN': 'Dumbbell Curl',
     'NO': 'Dumbbell Curl',
   },
-  'Uginanie ramion chwytem mlotkowym � Hammer Curl': {
-    'PL': 'Uginanie ramion chwytem mlotkowym',
+  'Uginanie ramion chwytem młotkowym – Hammer Curl': {
+    'PL': 'Uginanie ramion chwytem młotkowym',
     'EN': 'Hammer Curl',
     'NO': 'Hammer Curl',
   },
-  'Uginanie ramion na modlitewniku � Preacher Curl': {
+  'Uginanie ramion na modlitewniku – Preacher Curl': {
     'PL': 'Uginanie ramion na modlitewniku',
     'EN': 'Preacher Curl',
     'NO': 'Preacher Curl',
   },
-  'Uginanie skoncentrowane � Concentration Curl': {
+  'Uginanie skoncentrowane – Concentration Curl': {
     'PL': 'Uginanie skoncentrowane',
     'EN': 'Concentration Curl',
     'NO': 'Concentration Curl',
   },
-  'Uginanie Zottman Curl � Zottman Curl': {
+  'Uginanie Zottman Curl – Zottman Curl': {
     'PL': 'Uginanie Zottman Curl',
     'EN': 'Zottman Curl',
     'NO': 'Zottman Curl',
   },
-  'Spider Curl ze sztanga � Barbell Spider Curl': {
-    'PL': 'Spider Curl ze sztanga',
+  'Spider Curl ze sztangą – Barbell Spider Curl': {
+    'PL': 'Spider Curl ze sztangą',
     'EN': 'Barbell Spider Curl',
     'NO': 'Barbell Spider Curl',
   },
-  'Spider Curl z hantlami � Dumbbell Spider Curl': {
+  'Spider Curl z hantlami – Dumbbell Spider Curl': {
     'PL': 'Spider Curl z hantlami',
     'EN': 'Dumbbell Spider Curl',
     'NO': 'Dumbbell Spider Curl',
   },
-  'Uginanie na wyciagu dolnym � Cable Curl': {
-    'PL': 'Uginanie na wyciagu dolnym',
+  'Uginanie na wyciągu dolnym – Cable Curl': {
+    'PL': 'Uginanie na wyciągu dolnym',
     'EN': 'Cable Curl',
     'NO': 'Cable Curl',
   },
-  'Uginanie ramienia jednoracz w podporze � Single Arm Incline Curl': {
-    'PL': 'Uginanie ramienia jednoracz w podporze',
+  'Uginanie ramienia jednorącz w podporze – Single Arm Incline Curl': {
+    'PL': 'Uginanie ramienia jednorącz w podporze',
     'EN': 'Single Arm Incline Curl',
     'NO': 'Single Arm Incline Curl',
   },
-  'Face Away Curl jednoracz na bramie � Single Arm Face Away Cable Curl': {
-    'PL': 'Face Away Curl jednoracz na bramie',
+  'Face Away Curl jednorącz na bramie – Single Arm Face Away Cable Curl': {
+    'PL': 'Face Away Curl jednorącz na bramie',
     'EN': 'Single Arm Face Away Cable Curl',
     'NO': 'Single Arm Face Away Cable Curl',
   },
-  'Face Away Curl oburacz na bramie � Double Arm Face Away Cable Curl': {
-    'PL': 'Face Away Curl oburacz na bramie',
+  'Face Away Curl oburącz na bramie – Double Arm Face Away Cable Curl': {
+    'PL': 'Face Away Curl oburącz na bramie',
     'EN': 'Double Arm Face Away Cable Curl',
     'NO': 'Double Arm Face Away Cable Curl',
   },
-  'Podciaganie podchwytem (wasko) � Chin-ups': {
-    'PL': 'Podciaganie podchwytem (wasko)',
+  'Podciąganie podchwytem (wąsko) – Chin-ups': {
+    'PL': 'Podciąganie podchwytem (wąsko)',
     'EN': 'Chin-ups',
     'NO': 'Chin-ups',
   },
 
   // TRICEPS
-  'Wyciskanie sztangi waskim chwytem � Close-Grip Bench Press': {
-    'PL': 'Wyciskanie sztangi waskim chwytem',
+  'Wyciskanie sztangi wąskim chwytem – Close-Grip Bench Press': {
+    'PL': 'Wyciskanie sztangi wąskim chwytem',
     'EN': 'Close-Grip Bench Press',
     'NO': 'Close-Grip Bench Press',
   },
-  'Pompki na poreczach (pionowo) � Triceps Dips': {
-    'PL': 'Pompki na poreczach (pionowo)',
+  'Pompki na poręczach (pionowo) – Triceps Dips': {
+    'PL': 'Pompki na poręczach (pionowo)',
     'EN': 'Triceps Dips',
     'NO': 'Triceps Dips',
   },
-  'Pompki w podporze tylem � Bench Dips': {
-    'PL': 'Pompki w podporze tylem',
+  'Pompki w podporze tyłem – Bench Dips': {
+    'PL': 'Pompki w podporze tyłem',
     'EN': 'Bench Dips',
     'NO': 'Bench Dips',
   },
-  'Wyciskanie francuskie sztangi do czola � Skullcrushers / Lying Triceps Extension':
+  'Wyciskanie francuskie sztangi do czoła – Skullcrushers / Lying Triceps Extension':
       {
-    'PL': 'Wyciskanie francuskie sztangi do czola',
+    'PL': 'Wyciskanie francuskie sztangi do czoła',
     'EN': 'Skullcrushers / Lying Triceps Extension',
     'NO': 'Skullcrushers / Lying Triceps Extension',
   },
-  'Wyciskanie francuskie hantla oburacz (siedzac) � Overhead Dumbbell Triceps Extension':
+  'Wyciskanie francuskie hantla oburącz (siedząc) – Overhead Dumbbell Triceps Extension':
       {
-    'PL': 'Wyciskanie francuskie hantla oburacz (siedzac)',
+    'PL': 'Wyciskanie francuskie hantla oburącz (siedząc)',
     'EN': 'Overhead Dumbbell Triceps Extension',
     'NO': 'Overhead Dumbbell Triceps Extension',
   },
-  'Prostowanie ramion na wyciagu (sznur) � Rope Pushdown': {
-    'PL': 'Prostowanie ramion na wyciagu (sznur)',
+  'Prostowanie ramion na wyciągu (sznur) – Rope Pushdown': {
+    'PL': 'Prostowanie ramion na wyciągu (sznur)',
     'EN': 'Rope Pushdown',
     'NO': 'Rope Pushdown',
   },
-  'Prostowanie ramion na wyciagu (drazek) � Bar Pushdown / Triceps Pressdown': {
-    'PL': 'Prostowanie ramion na wyciagu (drazek)',
+  'Prostowanie ramion na wyciągu (drążek) – Bar Pushdown / Triceps Pressdown': {
+    'PL': 'Prostowanie ramion na wyciągu (drążek)',
     'EN': 'Bar Pushdown / Triceps Pressdown',
     'NO': 'Bar Pushdown / Triceps Pressdown',
   },
-  'JM Press � JM Press': {
+  'JM Press – JM Press': {
     'PL': 'JM Press',
     'EN': 'JM Press',
     'NO': 'JM Press',
   },
-  'Tate Press � Tate Press': {
+  'Tate Press – Tate Press': {
     'PL': 'Tate Press',
     'EN': 'Tate Press',
     'NO': 'Tate Press',
   },
-  'Dipy na poreczach � Dips': {
-    'PL': 'Dipy na poreczach',
+  'Dipy na poręczach – Dips': {
+    'PL': 'Dipy na poręczach',
     'EN': 'Dips',
     'NO': 'Dips',
   },
-  'Catana Extension jednoracz � Single Arm Catana Extension': {
-    'PL': 'Catana Extension jednoracz',
+  'Catana Extension jednorącz – Single Arm Catana Extension': {
+    'PL': 'Catana Extension jednorącz',
     'EN': 'Single Arm Catana Extension',
     'NO': 'Single Arm Catana Extension',
   },
-  'Catana Extension oburacz � Double Arm Catana Extension': {
-    'PL': 'Catana Extension oburacz',
+  'Catana Extension oburącz – Double Arm Catana Extension': {
+    'PL': 'Catana Extension oburącz',
     'EN': 'Double Arm Catana Extension',
     'NO': 'Double Arm Catana Extension',
   },
 
   // FOREARMS
-  'Uginanie nadgarstk�w podchwytem � Wrist Curl': {
-    'PL': 'Uginanie nadgarstk�w podchwytem',
+  'Uginanie nadgarstków podchwytem – Wrist Curl': {
+    'PL': 'Uginanie nadgarstków podchwytem',
     'EN': 'Wrist Curl',
     'NO': 'Wrist Curl',
   },
-  'Prostowanie nadgarstk�w nachwytem � Reverse Wrist Curl': {
-    'PL': 'Prostowanie nadgarstk�w nachwytem',
+  'Prostowanie nadgarstków nachwytem – Reverse Wrist Curl': {
+    'PL': 'Prostowanie nadgarstków nachwytem',
     'EN': 'Reverse Wrist Curl',
     'NO': 'Reverse Wrist Curl',
   },
-  'Uginanie ramion nachwytem � Reverse Curl': {
+  'Uginanie ramion nachwytem – Reverse Curl': {
     'PL': 'Uginanie ramion nachwytem',
     'EN': 'Reverse Curl',
     'NO': 'Reverse Curl',
   },
-  "Spacer Farmera � Farmer's Carry / Farmer's Walk": {
+  "Spacer Farmera – Farmer's Carry / Farmer's Walk": {
     'PL': 'Spacer Farmera',
     'EN': "Farmer's Carry / Farmer's Walk",
     'NO': "Farmer's Carry / Farmer's Walk",
   },
-  'Zwis na drazku � Dead Hang': {
-    'PL': 'Zwis na drazku',
+  'Zwis na drążku – Dead Hang': {
+    'PL': 'Zwis na drążku',
     'EN': 'Dead Hang',
     'NO': 'Dead Hang',
   },
@@ -1719,19 +1719,24 @@ class NotificationService {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // R�wnolegle inicjalizacje dla szybszego startu
+  // Równoległa inicjalizacja dla szybszego startu
   await Future.wait([
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-        .catchError((_) => Firebase.app()),
+    _initFirebase(),
     NotificationService.instance.init(),
     _initLanguageFromPrefs(),
-    PlanAccessController.instance.initialize().catchError((_) {}),
+    _initPlanAccess(),
   ]);
 
   runApp(const KsGymApp());
 }
 
-/// Inicjalizacja jezyka z SharedPreferences
+Future<void> _initFirebase() async {
+  try {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+  } catch (_) {}
+}
+
 Future<void> _initLanguageFromPrefs() async {
   try {
     final prefs = await getPrefs();
@@ -1739,6 +1744,12 @@ Future<void> _initLanguageFromPrefs() async {
     if (savedLang != null && savedLang.isNotEmpty) {
       updateGlobalLanguage(savedLang);
     }
+  } catch (_) {}
+}
+
+Future<void> _initPlanAccess() async {
+  try {
+    await PlanAccessController.instance.initialize();
   } catch (_) {}
 }
 
@@ -1753,32 +1764,32 @@ class _KsGymAppState extends State<KsGymApp> {
   @override
   void initState() {
     super.initState();
-    // Precache SVG assets w tle
     _precacheAssets();
   }
 
+  /// Precache SVG assets dla szybszego renderowania
   Future<void> _precacheAssets() async {
-    // Lista wszystkich SVG do wstepnego zaladowania
-    const svgAssets = [
-      'assets/mojelogo.svg',
-      'assets/barki.svg',
-      'assets/biceps.svg',
-      'assets/brzuch.svg',
-      'assets/klata.svg',
-      'assets/plecy.svg',
-      'assets/nogi.svg',
-      'assets/notatnik.svg',
-      'assets/plan.svg',
-      'assets/przedramie.svg',
-      'assets/triceps.svg',
+    final svgAssets = [
+      'assets/images/logo.svg',
+      'assets/images/chest.svg',
+      'assets/images/back.svg',
+      'assets/images/legs.svg',
+      'assets/images/shoulders.svg',
+      'assets/images/biceps.svg',
+      'assets/images/triceps.svg',
+      'assets/images/abs.svg',
+      'assets/images/forearms.svg',
+      'assets/images/plan.svg',
+      'assets/images/exercise.svg',
     ];
 
-    // Precache SVG w tle (nie blokuje UI)
     for (final asset in svgAssets) {
       try {
         final loader = SvgAssetLoader(asset);
-        await svg.cache
-            .putIfAbsent(loader.cacheKey(null), () => loader.loadBytes(null));
+        await svg.cache.putIfAbsent(
+          loader.cacheKey(null),
+          () => loader.loadBytes(null),
+        );
       } catch (_) {}
     }
   }
@@ -1852,7 +1863,7 @@ Widget _logoPlaceholder(Color accentColor, double size) {
 }
 
 Widget buildLogo(BuildContext context, Color accentColor, {double size = 34}) {
-  // Uzywamy PNG - SVG z embedded image nie dziala na web
+  // Używamy PNG - SVG z embedded image nie działa na web
   return SizedBox(
     height: size,
     width: size,
@@ -2284,7 +2295,7 @@ class StartChoiceScreen extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      // Wyswietl imie uzytkownika lub "Trener"
+                      // Wyświetl imię użytkownika lub "Trener"
                       ValueListenableBuilder<PlanAccessState>(
                         valueListenable: PlanAccessController.instance.notifier,
                         builder: (context, state, _) {
@@ -2299,11 +2310,11 @@ class StartChoiceScreen extends StatelessWidget {
                                     ? 'Trener'
                                     : 'Coach';
                           } else {
-                            // Pobierz imie z emaila (czesc przed @)
+                            // Pobierz imię z emaila (część przed @)
                             final email =
                                 FirebaseAuth.instance.currentUser?.email ?? '';
                             final namePart = email.split('@').first;
-                            // Zamien pierwsza litere na wielka
+                            // Zamień pierwszą literę na wielką
                             displayName = namePart.isNotEmpty
                                 ? namePart[0].toUpperCase() +
                                     namePart.substring(1)
@@ -2629,7 +2640,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await PlanAccessController.instance
           .signIn(_emailController.text.trim(), _passwordController.text);
 
-      // Zapisz dane logowania jesli "Zapamietaj mnie" jest wlaczone
+      // Zapisz dane logowania jeśli "Zapamiętaj mnie" jest włączone
       final prefs = await getPrefs();
       if (_rememberMe) {
         await prefs.setBool(_rememberMeKey, true);
@@ -2641,7 +2652,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await prefs.remove(_savedPasswordKey);
       }
 
-      // Po zalogowaniu, sprawdz role uzytkownika
+      // Po zalogowaniu, sprawdź rolę użytkownika
       if (mounted) {
         final state = PlanAccessController.instance.notifier.value;
         if (state.isAuthenticated) {
@@ -2699,7 +2710,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         valueListenable: PlanAccessController.instance.notifier,
                         builder: (context, state, _) {
                           if (state.isAuthenticated) {
-                            // Automatyczne przekierowanie dla zalogowanych uzytkownik�w
+                            // Automatyczne przekierowanie dla zalogowanych użytkowników
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               if (state.role == PlanUserRole.coach) {
                                 Navigator.of(context).pushReplacement(
@@ -2976,7 +2987,7 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                 return ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
-                    // Nagl�wek planu
+                    // Nagłówek planu
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -3055,7 +3066,7 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Lista cwiczen
+                    // Lista ćwiczeń
                     if (plan.entries.isEmpty)
                       Center(
                         child: Padding(
@@ -3068,9 +3079,9 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                               const SizedBox(height: 12),
                               Text(
                                 lang == 'PL'
-                                    ? 'Brak cwiczen w planie'
+                                    ? 'Brak ćwiczeń w planie'
                                     : lang == 'NO'
-                                        ? 'Ingen �velser i planen'
+                                        ? 'Ingen øvelser i planen'
                                         : 'No exercises in plan',
                                 style: TextStyle(
                                     color: accent.withValues(alpha: 0.6)),
@@ -3134,7 +3145,7 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                               ),
                             ),
                             title: Text(
-                              exercise.exercise.split(' � ').first,
+                              exercise.exercise.split(' – ').first,
                               style: const TextStyle(
                                 color: accent,
                                 fontWeight: FontWeight.w600,
@@ -3284,7 +3295,7 @@ class CoachDashboardScreen extends StatelessWidget {
                             color: Colors.black, size: 28),
                         label: Text(
                           lang == 'PL'
-                              ? 'Lista klient�w'
+                              ? 'Lista klientów'
                               : lang == 'NO'
                                   ? 'Klientliste'
                                   : 'Client List',
@@ -3333,7 +3344,7 @@ class CoachDashboardScreen extends StatelessWidget {
                     const SizedBox(height: 30),
                     OutlinedButton.icon(
                       onPressed: () async {
-                        // Wyczysc dane "Zapamietaj mnie" przy wylogowaniu
+                        // Wyczyść dane "Zapamiętaj mnie" przy wylogowaniu
                         final prefs = await getPrefs();
                         await prefs.setBool('remember_me', false);
                         await prefs.remove('saved_email');
@@ -3441,7 +3452,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 style: const TextStyle(color: Color(0xFFFFD700)),
                 decoration: InputDecoration(
                     labelText: globalLanguage == 'PL'
-                        ? 'Imie i nazwisko'
+                        ? 'Imię i nazwisko'
                         : globalLanguage == 'NO'
                             ? 'Navn'
                             : 'Full name',
@@ -3463,7 +3474,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 style: const TextStyle(color: Color(0xFFFFD700)),
                 decoration: InputDecoration(
                     labelText: globalLanguage == 'PL'
-                        ? 'Haslo (min. 6 znak�w)'
+                        ? 'Hasło (min. 6 znaków)'
                         : globalLanguage == 'NO'
                             ? 'Passord (min. 6 tegn)'
                             : 'Password (min. 6 chars)',
@@ -3497,7 +3508,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
         );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Klient dodany pomyslnie')),
+            const SnackBar(content: Text('Klient dodany pomyślnie')),
           );
           _loadClients();
         }
@@ -3522,9 +3533,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
             style: const TextStyle(color: Color(0xFFFFD700))),
         content: Text(
           globalLanguage == 'PL'
-              ? 'Czy na pewno chcesz usunac klienta $email?\n\nTa operacja usunie r�wniez wszystkie dane klienta (plan, historie cwiczen).'
+              ? 'Czy na pewno chcesz usunąć klienta $email?\n\nTa operacja usunie również wszystkie dane klienta (plan, historię ćwiczeń).'
               : globalLanguage == 'NO'
-                  ? 'Er du sikker p� at du vil slette klienten $email?\n\nDenne operasjonen sletter ogs� alle klientens data (plan, treningshistorikk).'
+                  ? 'Er du sikker på at du vil slette klienten $email?\n\nDenne operasjonen sletter også alle klientens data (plan, treningshistorikk).'
                   : 'Are you sure you want to delete client $email?\n\nThis will also delete all client data (plan, exercise history).',
           style: const TextStyle(color: Color(0xB3FFD700)),
         ),
@@ -3548,7 +3559,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
         await PlanAccessController.instance.deleteClient(email);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Klient usuniety')),
+            const SnackBar(content: Text('Klient usunięty')),
           );
           _loadClients();
         }
@@ -3580,7 +3591,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
             children: [
               Text(
                   globalLanguage == 'PL'
-                      ? 'Lista klient�w'
+                      ? 'Lista klientów'
                       : globalLanguage == 'NO'
                           ? 'Kundeliste'
                           : 'Client list',
@@ -3688,11 +3699,11 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
 
   // Nazwy dni tygodnia
   static const List<String> _dayNamesPL = [
-    'Poniedzialek',
+    'Poniedziałek',
     'Wtorek',
-    'Sroda',
+    'Środa',
     'Czwartek',
-    'Piatek',
+    'Piątek',
     'Sobota',
     'Niedziela'
   ];
@@ -3711,8 +3722,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     'Onsdag',
     'Torsdag',
     'Fredag',
-    'L�rdag',
-    'S�ndag'
+    'Lørdag',
+    'Søndag'
   ];
 
   List<String> get _dayNames {
@@ -3756,7 +3767,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     }
   }
 
-  // Odswieza plan bez pokazywania loadera - zachowuje pozycje scrollowania
+  // Odświeża plan bez pokazywania loadera - zachowuje pozycję scrollowania
   Future<void> _refreshPlan() async {
     try {
       final plan = await PlanAccessController.instance
@@ -3769,25 +3780,25 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     } catch (_) {}
   }
 
-  // Sprawdz czy dzien jest dniem wolnym
+  // Sprawdź czy dzień jest dniem wolnym
   bool _isRestDay(int dayIndex) {
     return _plan?.restDays.contains(dayIndex) ?? false;
   }
 
-  // Pobierz cwiczenia dla danego dnia
+  // Pobierz ćwiczenia dla danego dnia
   List<ClientPlanEntry> _getExercisesForDay(int dayIndex) {
     if (_plan == null) return [];
     return _plan!.entries.where((e) => e.dayOfWeek == dayIndex).toList();
   }
 
-  // Przelacz dzien wolny
+  // Przełącz dzień wolny
   Future<void> _toggleRestDay(int dayIndex) async {
     final currentRestDays = List<int>.from(_plan?.restDays ?? []);
     if (currentRestDays.contains(dayIndex)) {
       currentRestDays.remove(dayIndex);
     } else {
       currentRestDays.add(dayIndex);
-      // Usun cwiczenia z tego dnia gdy oznaczamy jako wolny
+      // Usuń ćwiczenia z tego dnia gdy oznaczamy jako wolny
       final entriesWithoutDay =
           (_plan?.entries ?? []).where((e) => e.dayOfWeek != dayIndex).toList();
       await PlanAccessController.instance.updateClientPlanEntries(
@@ -3822,7 +3833,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                 style: const TextStyle(color: Color(0xFFFFD700)),
                 decoration: InputDecoration(
                   labelText: globalLanguage == 'PL'
-                      ? 'Tytul planu'
+                      ? 'Tytuł planu'
                       : globalLanguage == 'NO'
                           ? 'Plantittel'
                           : 'Plan title',
@@ -3898,13 +3909,13 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         kCategoryNames.keys.where((key) => key != 'PLAN').toList();
     String selectedCategory = categories.first;
 
-    // Pobierz cwiczenia z wybranej kategorii
+    // Pobierz ćwiczenia z wybranej kategorii
     List<String> exercisesForCategory =
         kDefaultExercises[selectedCategory] ?? [];
     String? selectedExercise =
         exercisesForCategory.isNotEmpty ? exercisesForCategory.first : null;
 
-    // Mapa cwiczenie -> kategoria dla wyswietlania kategorii przy wyszukiwaniu
+    // Mapa ćwiczenie -> kategoria dla wyświetlania kategorii przy wyszukiwaniu
     final Map<String, String> exerciseToCategoryMap = {};
     for (final cat in categories) {
       for (final ex in kDefaultExercises[cat] ?? []) {
@@ -3916,10 +3927,10 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) {
-          // Filtruj cwiczenia na podstawie wyszukiwania
+          // Filtruj ćwiczenia na podstawie wyszukiwania
           List<String> filteredExercises;
           if (searchQuery.isNotEmpty) {
-            // Szukaj we wszystkich kategoriach - uzywaj Set aby uniknac duplikat�w
+            // Szukaj we wszystkich kategoriach - używaj Set aby uniknąć duplikatów
             final allExercisesSet = <String>{};
             for (final cat in categories) {
               allExercisesSet.addAll(kDefaultExercises[cat] ?? []);
@@ -3930,20 +3941,20 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                 .toSet() // Dodatkowe zabezpieczenie przed duplikatami
                 .toList();
           } else {
-            // Aktualizuj liste cwiczen gdy zmieni sie kategoria
+            // Aktualizuj listę ćwiczeń gdy zmieni się kategoria
             exercisesForCategory = kDefaultExercises[selectedCategory] ?? [];
-            // Usun duplikaty z kategorii
+            // Usuń duplikaty z kategorii
             filteredExercises = exercisesForCategory.toSet().toList();
           }
 
-          // Upewnij sie ze selectedExercise jest w liscie
+          // Upewnij się że selectedExercise jest w liście
           if (filteredExercises.isEmpty) {
             selectedExercise = null;
           } else if (selectedExercise == null ||
               !filteredExercises.contains(selectedExercise)) {
             selectedExercise = filteredExercises.first;
           }
-          // Automatycznie ustaw czy cwiczenie jest na czas
+          // Automatycznie ustaw czy ćwiczenie jest na czas
           if (selectedExercise != null) {
             isTimeBased = kTimeBasedExercises.contains(selectedExercise);
           }
@@ -4039,7 +4050,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       },
                     ),
                   if (searchQuery.isEmpty) const SizedBox(height: 12),
-                  // Cwiczenie - dropdown z baza
+                  // Ćwiczenie - dropdown z bazą
                   if (filteredExercises.isEmpty)
                     Padding(
                       padding: const EdgeInsets.all(16),
@@ -4066,13 +4077,13 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         border: OutlineInputBorder(),
                       ),
                       items: filteredExercises.map((ex) {
-                        // Pobierz kategorie dla cwiczenia
+                        // Pobierz kategorię dla ćwiczenia
                         final category = exerciseToCategoryMap[ex] ?? '';
                         final categoryLabel = searchQuery.isNotEmpty &&
                                 category.isNotEmpty
                             ? ' [${localizedCategoryName(category, globalLanguage)}]'
                             : '';
-                        final exerciseName = ex.split(' � ').first;
+                        final exerciseName = ex.split(' – ').first;
                         return DropdownMenuItem(
                           value: ex,
                           child: Text(
@@ -4092,7 +4103,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       },
                     ),
                   const SizedBox(height: 12),
-                  // Info czy cwiczenie na czas
+                  // Info czy ćwiczenie na czas
                   if (isTimeBased)
                     Container(
                       padding: const EdgeInsets.all(8),
@@ -4129,7 +4140,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Czas trwania - tylko dla cwiczen na czas (co 30s)
+                  // Czas trwania - tylko dla ćwiczeń na czas (co 30s)
                   if (isTimeBased)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -4362,9 +4373,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black.withValues(alpha: 0.9),
-        title: const Text('Usun cwiczenie',
+        title: const Text('Usuń ćwiczenie',
             style: TextStyle(color: Color(0xFFFFD700))),
-        content: const Text('Czy na pewno chcesz usunac to cwiczenie?',
+        content: const Text('Czy na pewno chcesz usunąć to ćwiczenie?',
             style: TextStyle(color: Color(0xB3FFD700))),
         actions: [
           TextButton(
@@ -4417,10 +4428,10 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         ? entry.category!.toUpperCase()
         : categories.first;
 
-    // Pobierz cwiczenia z wybranej kategorii
+    // Pobierz ćwiczenia z wybranej kategorii
     List<String> exercisesForCategory =
         kDefaultExercises[selectedCategory] ?? [];
-    // Znajdz aktualne cwiczenie lub uzyj pierwszego z listy
+    // Znajdź aktualne ćwiczenie lub użyj pierwszego z listy
     String? selectedExercise = exercisesForCategory.contains(entry.exercise)
         ? entry.exercise
         : (exercisesForCategory.isNotEmpty ? exercisesForCategory.first : null);
@@ -4429,7 +4440,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) {
-          // Aktualizuj liste cwiczen gdy zmieni sie kategoria
+          // Aktualizuj listę ćwiczeń gdy zmieni się kategoria
           exercisesForCategory = kDefaultExercises[selectedCategory] ?? [];
           if (selectedExercise == null ||
               !exercisesForCategory.contains(selectedExercise)) {
@@ -4437,7 +4448,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                 ? exercisesForCategory.first
                 : null;
           }
-          // Automatycznie ustaw czy cwiczenie jest na czas
+          // Automatycznie ustaw czy ćwiczenie jest na czas
           if (selectedExercise != null) {
             isTimeBased = kTimeBasedExercises.contains(selectedExercise);
           }
@@ -4488,7 +4499,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     },
                   ),
                   const SizedBox(height: 12),
-                  // Cwiczenie - dropdown z baza
+                  // Ćwiczenie - dropdown z bazą
                   DropdownButtonFormField<String>(
                     value: selectedExercise,
                     dropdownColor: const Color(0xFF1A1A2E),
@@ -4506,8 +4517,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               value: ex,
                               child: Text(
                                 ex
-                                    .split(' � ')
-                                    .first, // Pokaz tylko polska nazwe
+                                    .split(' – ')
+                                    .first, // Pokaż tylko polską nazwę
                                 style:
                                     const TextStyle(color: Color(0xFF2ECC71)),
                                 overflow: TextOverflow.ellipsis,
@@ -4524,7 +4535,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     },
                   ),
                   const SizedBox(height: 12),
-                  // Info czy cwiczenie na czas
+                  // Info czy ćwiczenie na czas
                   if (isTimeBased)
                     Container(
                       padding: const EdgeInsets.all(8),
@@ -4561,7 +4572,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Czas trwania - tylko dla cwiczen na czas (co 30s)
+                  // Czas trwania - tylko dla ćwiczeń na czas (co 30s)
                   if (isTimeBased)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -4704,7 +4715,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           sets: int.tryParse(setsCtrl.text) ?? 3,
           restSeconds: int.tryParse(restCtrl.text) ?? 90,
           timeSeconds: isTimeBased ? (int.tryParse(timeCtrl.text) ?? 30) : 0,
-          dayOfWeek: entry.dayOfWeek, // Zachowaj dzien tygodnia
+          dayOfWeek: entry.dayOfWeek, // Zachowaj dzień tygodnia
         );
 
         final entries = List<ClientPlanEntry>.from(_plan?.entries ?? []);
@@ -4789,7 +4800,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
               Expanded(
                 child: Text(
                   lang == 'PL'
-                      ? 'Postepy klienta'
+                      ? 'Postępy klienta'
                       : lang == 'NO'
                           ? 'Klientens fremgang'
                           : 'Client Progress',
@@ -4812,7 +4823,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         const SizedBox(height: 12),
                         Text(
                           lang == 'PL'
-                              ? 'Brak zapisanych postep�w'
+                              ? 'Brak zapisanych postępów'
                               : lang == 'NO'
                                   ? 'Ingen lagret fremgang'
                                   : 'No saved progress',
@@ -4823,8 +4834,6 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                   )
                 : ListView.builder(
                     itemCount: allProgress.keys.length,
-                    addAutomaticKeepAlives: false,
-                    addRepaintBoundaries: true,
                     itemBuilder: (ctx, index) {
                       final exerciseName = allProgress.keys.elementAt(index);
                       final logs = allProgress[exerciseName]!;
@@ -4852,7 +4861,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                             ? Text(
                                 isTime
                                     ? '${lang == 'PL' ? 'Ostatni' : 'Last'}: ${latestLog.durationSeconds}s'
-                                    : '${lang == 'PL' ? 'Ostatni' : 'Last'}: ${latestLog.weight} kg � ${latestLog.reps}',
+                                    : '${lang == 'PL' ? 'Ostatni' : 'Last'}: ${latestLog.weight} kg × ${latestLog.reps}',
                                 style: const TextStyle(
                                     color: Colors.white54, fontSize: 12),
                               )
@@ -4863,7 +4872,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                           final isTimeBased = log.durationSeconds > 0;
                           final value = isTimeBased
                               ? '${log.durationSeconds}s'
-                              : '${log.weight} kg � ${log.reps}';
+                              : '${log.weight} kg × ${log.reps}';
                           return Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 4),
@@ -4904,9 +4913,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ),
                       content: Text(
                         lang == 'PL'
-                            ? 'Czy na pewno chcesz usunac cala historie cwiczen tego klienta? Tej operacji nie mozna cofnac.'
+                            ? 'Czy na pewno chcesz usunąć całą historię ćwiczeń tego klienta? Tej operacji nie można cofnąć.'
                             : lang == 'NO'
-                                ? 'Er du sikker p� at du vil slette all treningshistorikk for denne klienten? Denne handlingen kan ikke angres.'
+                                ? 'Er du sikker på at du vil slette all treningshistorikk for denne klienten? Denne handlingen kan ikke angres.'
                                 : 'Are you sure you want to delete all exercise history for this client? This action cannot be undone.',
                         style: const TextStyle(color: Colors.white70),
                       ),
@@ -4926,7 +4935,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                           onPressed: () => Navigator.pop(c, true),
                           child: Text(
                             lang == 'PL'
-                                ? 'Usun'
+                                ? 'Usuń'
                                 : lang == 'NO'
                                     ? 'Slett'
                                     : 'Delete',
@@ -4945,7 +4954,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(lang == 'PL'
-                                ? 'Progres zostal zresetowany'
+                                ? 'Progres został zresetowany'
                                 : lang == 'NO'
                                     ? 'Fremgang ble tilbakestilt'
                                     : 'Progress has been reset'),
@@ -4958,7 +4967,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content:
-                                Text('${lang == 'PL' ? 'Blad' : 'Error'}: $e'),
+                                Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -4996,7 +5005,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(lang == 'PL'
-              ? 'Blad ladowania postep�w'
+              ? 'Błąd ładowania postępów'
               : 'Error loading progress'),
           backgroundColor: Colors.red,
         ),
@@ -5077,7 +5086,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                   icon: const Icon(Icons.insights, size: 20),
                                   label: Text(
                                     lang == 'PL'
-                                        ? 'Pokaz postepy'
+                                        ? 'Pokaż postępy'
                                         : lang == 'NO'
                                             ? 'Vis fremgang'
                                             : 'View Progress',
@@ -5102,7 +5111,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Plan treningowy - nagl�wek
+                      // Plan treningowy - nagłówek
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -5135,7 +5144,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         ),
                       const SizedBox(height: 8),
 
-                      // Dni tygodnia z cwiczeniami
+                      // Dni tygodnia z ćwiczeniami
                       ...List.generate(7, (dayIndex) {
                         final isRestDay = _isRestDay(dayIndex);
                         final exercisesForDay = _getExercisesForDay(dayIndex);
@@ -5186,17 +5195,17 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               subtitle: Text(
                                 isRestDay
                                     ? (lang == 'PL'
-                                        ? 'Dzien wolny'
+                                        ? 'Dzień wolny'
                                         : lang == 'NO'
                                             ? 'Hviledag'
                                             : 'Rest day')
                                     : (exercisesForDay.isEmpty
                                         ? (lang == 'PL'
-                                            ? 'Brak cwiczen'
+                                            ? 'Brak ćwiczeń'
                                             : lang == 'NO'
-                                                ? 'Ingen �velser'
+                                                ? 'Ingen øvelser'
                                                 : 'No exercises')
-                                        : '${exercisesForDay.length} ${lang == 'PL' ? 'cwiczen' : lang == 'NO' ? '�velser' : 'exercises'}'),
+                                        : '${exercisesForDay.length} ${lang == 'PL' ? 'ćwiczeń' : lang == 'NO' ? 'øvelser' : 'exercises'}'),
                                 style: TextStyle(
                                   color: isRestDay
                                       ? restDayColor.withValues(alpha: 0.7)
@@ -5207,7 +5216,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // Przycisk oznacz jako dzien wolny
+                                  // Przycisk oznacz jako dzień wolny
                                   IconButton(
                                     icon: Icon(
                                       isRestDay
@@ -5218,20 +5227,20 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                     ),
                                     tooltip: isRestDay
                                         ? (lang == 'PL'
-                                            ? 'Dzien treningowy'
+                                            ? 'Dzień treningowy'
                                             : 'Training day')
                                         : (lang == 'PL'
-                                            ? 'Dzien wolny'
+                                            ? 'Dzień wolny'
                                             : 'Rest day'),
                                     onPressed: () => _toggleRestDay(dayIndex),
                                   ),
-                                  // Przycisk dodaj cwiczenie
+                                  // Przycisk dodaj ćwiczenie
                                   if (!isRestDay)
                                     IconButton(
                                       icon: const Icon(Icons.add_circle,
                                           color: accent, size: 24),
                                       tooltip: lang == 'PL'
-                                          ? 'Dodaj cwiczenie'
+                                          ? 'Dodaj ćwiczenie'
                                           : 'Add exercise',
                                       onPressed: () =>
                                           _addExerciseForDay(dayIndex),
@@ -5253,7 +5262,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                         const SizedBox(height: 8),
                                         Text(
                                           lang == 'PL'
-                                              ? 'Kliknij + aby dodac cwiczenie'
+                                              ? 'Kliknij + aby dodać ćwiczenie'
                                               : 'Click + to add exercise',
                                           style: TextStyle(
                                               color: accent.withValues(
@@ -5291,7 +5300,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                             color: accent, size: 18),
                                       ),
                                       title: Text(
-                                        exercise.exercise.split(' � ').first,
+                                        exercise.exercise.split(' – ').first,
                                         style: const TextStyle(
                                             color: accent,
                                             fontWeight: FontWeight.w600,
@@ -5299,7 +5308,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       subtitle: Text(
-                                        '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'} � ${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${exercise.timeSeconds > 0 ? ' � ${exercise.timeSeconds}s' : ''}',
+                                        '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${exercise.timeSeconds > 0 ? ' • ${exercise.timeSeconds}s' : ''}',
                                         style: TextStyle(
                                             color:
                                                 accent.withValues(alpha: 0.6),
@@ -5308,7 +5317,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                       trailing: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          // Strzalka w g�re
+                                          // Strzałka w górę
                                           IconButton(
                                             icon: Icon(Icons.arrow_upward,
                                                 color: entryIndex > 0
@@ -5325,7 +5334,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                             constraints: const BoxConstraints(
                                                 minWidth: 28, minHeight: 28),
                                           ),
-                                          // Strzalka w d�l
+                                          // Strzałka w dół
                                           IconButton(
                                             icon: Icon(Icons.arrow_downward,
                                                 color: entryIndex <
@@ -5415,169 +5424,164 @@ class ProgressChart extends StatelessWidget {
               style: TextStyle(color: accentColor.withValues(alpha: 0.6))));
     }
 
-    // RepaintBoundary zapobiega niepotrzebnym repaintom wykresu
-    return RepaintBoundary(
-      child: Container(
-        height: 220,
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: accentColor.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: accentColor.withValues(alpha: 0.08)),
-        ),
-        child: Column(children: [
-          if (title.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text(title,
-                  style: TextStyle(
-                      color: accentColor.withValues(alpha: 0.9),
-                      fontWeight: FontWeight.bold)),
-            ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final int n = history.length;
-                final double availableWidth = constraints.maxWidth;
-                final double barWidth =
-                    n == 1 ? 50.0 : (availableWidth / n) * 0.7;
-                final double spacing = n == 1 ? 0 : (availableWidth / n) * 0.3;
-
-                // Oblicz wartosci dla proporcjonalnych wysokosci
-                final bool isTimeBased =
-                    history.any((log) => log.durationSeconds > 0);
-
-                List<double> values = [];
-                for (final log in history) {
-                  if (isTimeBased) {
-                    values.add(log.durationSeconds.toDouble());
-                  } else {
-                    final w = double.tryParse(log.weight) ?? 0;
-                    final r = double.tryParse(log.reps) ?? 0;
-                    values.add(w * r);
-                  }
-                }
-
-                final double maxVal = values.isNotEmpty
-                    ? values.reduce((a, b) => a > b ? a : b)
-                    : 1;
-                final double minVal = values.isNotEmpty
-                    ? values.reduce((a, b) => a < b ? a : b)
-                    : 0;
-                final double range = maxVal - minVal;
-
-                // Dostepna wysokosc dla slupk�w
-                final double maxBarHeight = 80.0;
-                final double minBarHeight = 20.0;
-
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: List.generate(history.length, (i) {
-                      final log = history[i];
-                      final isTimeBasedEntry = log.durationSeconds > 0;
-
-                      // Etykieta: dla cwiczen czasowych - czas, dla wagowych - ciezar
-                      final String label1 = isTimeBasedEntry
-                          ? '${log.durationSeconds}s'
-                          : '${log.weight}kg';
-                      final String label2 = '${log.reps}x';
-
-                      // Oblicz proporcjonalna wysokosc slupka
-                      double barHeight;
-                      if (range < 0.01) {
-                        // Wszystkie wartosci r�wne - uzyj maksymalnej wysokosci
-                        barHeight = maxBarHeight;
-                      } else {
-                        // Normalizuj wartosc do zakresu [minBarHeight, maxBarHeight]
-                        final normalizedValue = (values[i] - minVal) / range;
-                        barHeight = minBarHeight +
-                            normalizedValue * (maxBarHeight - minBarHeight);
-                      }
-
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          left: i == 0 ? spacing / 2 : spacing / 2,
-                          right: i == history.length - 1
-                              ? spacing / 2
-                              : spacing / 2,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            // Slupek o proporcjonalnej wysokosci
-                            Container(
-                              width: barWidth,
-                              height: barHeight,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    accentColor,
-                                    accentColor.withOpacity(0.6)
-                                  ],
-                                ),
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(4),
-                                  topRight: Radius.circular(4),
-                                ),
-                                border: Border.all(
-                                  color: accentColor.withOpacity(0.8),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  log.sets,
-                                  style: const TextStyle(
-                                    color: Color(0xFFFFD700),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            // Etykieta z danymi
-                            Text(
-                              label2,
-                              style: TextStyle(
-                                color: accentColor,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              label1,
-                              style: TextStyle(
-                                color: accentColor.withOpacity(0.8),
-                                fontSize: 9,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 6),
-          Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                  Translations.withParams('sets_label',
-                      language: language,
-                      params: {'count': history.length.toString()}),
-                  style: TextStyle(
-                      color: accentColor.withValues(alpha: 0.7),
-                      fontSize: 12))),
-        ]),
+    return Container(
+      height: 220,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: accentColor.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: accentColor.withValues(alpha: 0.08)),
       ),
+      child: Column(children: [
+        if (title.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Text(title,
+                style: TextStyle(
+                    color: accentColor.withValues(alpha: 0.9),
+                    fontWeight: FontWeight.bold)),
+          ),
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final int n = history.length;
+              final double availableWidth = constraints.maxWidth;
+              final double barWidth =
+                  n == 1 ? 50.0 : (availableWidth / n) * 0.7;
+              final double spacing = n == 1 ? 0 : (availableWidth / n) * 0.3;
+
+              // Oblicz wartości dla proporcjonalnych wysokości
+              final bool isTimeBased =
+                  history.any((log) => log.durationSeconds > 0);
+
+              List<double> values = [];
+              for (final log in history) {
+                if (isTimeBased) {
+                  values.add(log.durationSeconds.toDouble());
+                } else {
+                  final w = double.tryParse(log.weight) ?? 0;
+                  final r = double.tryParse(log.reps) ?? 0;
+                  values.add(w * r);
+                }
+              }
+
+              final double maxVal = values.isNotEmpty
+                  ? values.reduce((a, b) => a > b ? a : b)
+                  : 1;
+              final double minVal = values.isNotEmpty
+                  ? values.reduce((a, b) => a < b ? a : b)
+                  : 0;
+              final double range = maxVal - minVal;
+
+              // Dostępna wysokość dla słupków
+              final double maxBarHeight = 80.0;
+              final double minBarHeight = 20.0;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: List.generate(history.length, (i) {
+                    final log = history[i];
+                    final isTimeBasedEntry = log.durationSeconds > 0;
+
+                    // Etykieta: dla ćwiczeń czasowych - czas, dla wagowych - ciężar
+                    final String label1 = isTimeBasedEntry
+                        ? '${log.durationSeconds}s'
+                        : '${log.weight}kg';
+                    final String label2 = '${log.reps}x';
+
+                    // Oblicz proporcjonalną wysokość słupka
+                    double barHeight;
+                    if (range < 0.01) {
+                      // Wszystkie wartości równe - użyj maksymalnej wysokości
+                      barHeight = maxBarHeight;
+                    } else {
+                      // Normalizuj wartość do zakresu [minBarHeight, maxBarHeight]
+                      final normalizedValue = (values[i] - minVal) / range;
+                      barHeight = minBarHeight +
+                          normalizedValue * (maxBarHeight - minBarHeight);
+                    }
+
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: i == 0 ? spacing / 2 : spacing / 2,
+                        right:
+                            i == history.length - 1 ? spacing / 2 : spacing / 2,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          // Słupek o proporcjonalnej wysokości
+                          Container(
+                            width: barWidth,
+                            height: barHeight,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  accentColor,
+                                  accentColor.withOpacity(0.6)
+                                ],
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              ),
+                              border: Border.all(
+                                color: accentColor.withOpacity(0.8),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                log.sets,
+                                style: const TextStyle(
+                                  color: Color(0xFFFFD700),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          // Etykieta z danymi
+                          Text(
+                            label2,
+                            style: TextStyle(
+                              color: accentColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            label1,
+                            style: TextStyle(
+                              color: accentColor.withOpacity(0.8),
+                              fontSize: 9,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 6),
+        Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+                Translations.withParams('sets_label',
+                    language: language,
+                    params: {'count': history.length.toString()}),
+                style: TextStyle(
+                    color: accentColor.withValues(alpha: 0.7), fontSize: 12))),
+      ]),
     );
   }
 }
@@ -5605,11 +5609,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   // Nazwy dni tygodnia
   static const List<String> _dayNamesPL = [
-    'Poniedzialek',
+    'Poniedziałek',
     'Wtorek',
-    'Sroda',
+    'Środa',
     'Czwartek',
-    'Piatek',
+    'Piątek',
     'Sobota',
     'Niedziela'
   ];
@@ -5628,8 +5632,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     'Onsdag',
     'Torsdag',
     'Fredag',
-    'L�rdag',
-    'S�ndag'
+    'Lørdag',
+    'Søndag'
   ];
 
   List<String> _getDayNames(String lang) {
@@ -5679,13 +5683,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-  // Pobierz cwiczenia dla danego dnia
+  // Pobierz ćwiczenia dla danego dnia
   List<ClientPlanEntry> _getExercisesForDay(int dayIndex) {
     if (_clientPlan == null) return [];
     return _clientPlan!.entries.where((e) => e.dayOfWeek == dayIndex).toList();
   }
 
-  // Sprawdz czy dzien jest dniem wolnym
+  // Sprawdź czy dzień jest dniem wolnym
   bool _isRestDay(int dayIndex) {
     return _clientPlan?.restDays.contains(dayIndex) ?? false;
   }
@@ -5764,7 +5768,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               },
               icon: const Icon(Icons.refresh, color: Colors.black),
               label: Text(lang == 'PL'
-                  ? 'Odswiez'
+                  ? 'Odśwież'
                   : lang == 'NO'
                       ? 'Oppdater'
                       : 'Refresh'),
@@ -5778,7 +5782,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     final dayNames = _getDayNames(lang);
 
-    // 8 element�w: 1 kafelek PLAN + 7 dni tygodnia
+    // 8 elementów: 1 kafelek PLAN + 7 dni tygodnia
     return ListView.separated(
       itemCount: 8,
       separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -5791,7 +5795,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   ? 'Plan'
                   : 'Plan';
           final planSubtitle = lang == 'PL'
-              ? 'Tw�j plan treningowy'
+              ? 'Twój plan treningowy'
               : lang == 'NO'
                   ? 'Din treningsplan'
                   : 'Your training plan';
@@ -5869,7 +5873,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           );
         }
 
-        // Pozostale elementy - dni tygodnia (index - 1 bo pierwszy to PLAN)
+        // Pozostałe elementy - dni tygodnia (index - 1 bo pierwszy to PLAN)
         final dayIndex = index - 1;
         final dayName = dayNames[dayIndex];
         final exercises = _getExercisesForDay(dayIndex);
@@ -5879,21 +5883,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
         String subtitle;
         if (isRest) {
           subtitle = lang == 'PL'
-              ? 'Dzien wolny'
+              ? 'Dzień wolny'
               : lang == 'NO'
                   ? 'Hviledag'
                   : 'Rest day';
         } else if (exerciseCount == 0) {
           subtitle = lang == 'PL'
-              ? 'Brak cwiczen'
+              ? 'Brak ćwiczeń'
               : lang == 'NO'
-                  ? 'Ingen �velser'
+                  ? 'Ingen øvelser'
                   : 'No exercises';
         } else {
           subtitle = lang == 'PL'
-              ? '$exerciseCount cwiczen'
+              ? '$exerciseCount ćwiczeń'
               : lang == 'NO'
-                  ? '$exerciseCount �velser'
+                  ? '$exerciseCount øvelser'
                   : '$exerciseCount exercises';
         }
 
@@ -5983,7 +5987,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  // Widok domyslny - kategorie (dla niezalogowanych lub trenera)
+  // Widok domyślny - kategorie (dla niezalogowanych lub trenera)
   Widget _buildDefaultCategoriesView(String lang, Color gold) {
     return ListView.separated(
       itemCount: categories.length,
@@ -6053,7 +6057,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 }
 
-// Ekran cwiczen dla danego dnia (dla klienta)
+// Ekran ćwiczeń dla danego dnia (dla klienta)
 class ClientDayExercisesScreen extends StatelessWidget {
   final int dayIndex;
   final String dayName;
@@ -6085,7 +6089,7 @@ class ClientDayExercisesScreen extends StatelessWidget {
             child: SafeArea(
               child: Column(
                 children: [
-                  // Nagl�wek dnia
+                  // Nagłówek dnia
                   Container(
                     margin: const EdgeInsets.all(16),
                     padding: const EdgeInsets.all(16),
@@ -6136,14 +6140,14 @@ class ClientDayExercisesScreen extends StatelessWidget {
                               Text(
                                 isRestDay
                                     ? (lang == 'PL'
-                                        ? 'Dzien wolny od treningu'
+                                        ? 'Dzień wolny od treningu'
                                         : lang == 'NO'
                                             ? 'Hviledag'
                                             : 'Rest day')
                                     : (lang == 'PL'
-                                        ? '${exercises.length} cwiczen do wykonania'
+                                        ? '${exercises.length} ćwiczeń do wykonania'
                                         : lang == 'NO'
-                                            ? '${exercises.length} �velser � gj�re'
+                                            ? '${exercises.length} øvelser å gjøre'
                                             : '${exercises.length} exercises to do'),
                                 style: TextStyle(
                                   color: (isRestDay ? Colors.green : accent)
@@ -6158,7 +6162,7 @@ class ClientDayExercisesScreen extends StatelessWidget {
                     ),
                   ),
 
-                  // Lista cwiczen lub komunikat o dniu wolnym
+                  // Lista ćwiczeń lub komunikat o dniu wolnym
                   Expanded(
                     child: isRestDay
                         ? Center(
@@ -6171,7 +6175,7 @@ class ClientDayExercisesScreen extends StatelessWidget {
                                 const SizedBox(height: 16),
                                 Text(
                                   lang == 'PL'
-                                      ? 'Odpoczywaj i regeneruj sie!'
+                                      ? 'Odpoczywaj i regeneruj się!'
                                       : lang == 'NO'
                                           ? 'Hvil og kom deg!'
                                           : 'Rest and recover!',
@@ -6194,9 +6198,9 @@ class ClientDayExercisesScreen extends StatelessWidget {
                                     const SizedBox(height: 12),
                                     Text(
                                       lang == 'PL'
-                                          ? 'Brak cwiczen na ten dzien'
+                                          ? 'Brak ćwiczeń na ten dzień'
                                           : lang == 'NO'
-                                              ? 'Ingen �velser for denne dagen'
+                                              ? 'Ingen øvelser for denne dagen'
                                               : 'No exercises for this day',
                                       style: TextStyle(
                                           color: accent.withValues(alpha: 0.6)),
@@ -6208,8 +6212,6 @@ class ClientDayExercisesScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 itemCount: exercises.length,
-                                addAutomaticKeepAlives: false,
-                                addRepaintBoundaries: true,
                                 itemBuilder: (context, index) {
                                   final exercise = exercises[index];
                                   final isTimeBased = exercise.timeSeconds > 0;
@@ -6271,7 +6273,7 @@ class ClientDayExercisesScreen extends StatelessWidget {
                                           ),
                                           title: Text(
                                             exercise.exercise
-                                                .split(' � ')
+                                                .split(' – ')
                                                 .first,
                                             style: const TextStyle(
                                               color: accent,
@@ -6434,11 +6436,11 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
   List<String> _exercises = [];
   Map<String, String> _recs = {};
   Map<String, int> _trainerRecommendedSets =
-      {}; // Mapa zalecen trenera: cwiczenie -> liczba serii
+      {}; // Mapa zaleceń trenera: ćwiczenie -> liczba serii
   Map<String, int> _trainerRecommendedRestSeconds =
-      {}; // Mapa zalecen trenera: cwiczenie -> czas przerwy
+      {}; // Mapa zaleceń trenera: ćwiczenie -> czas przerwy
   Map<String, int> _trainerRecommendedTimeSeconds =
-      {}; // Mapa zalecen trenera: cwiczenie -> czas cwiczenia
+      {}; // Mapa zaleceń trenera: ćwiczenie -> czas ćwiczenia
   static const Map<String, String> _categoryAliases = {
     'KLATA': 'CHEST',
     'CHEST': 'CHEST',
@@ -6472,15 +6474,15 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
   Future<void> _load() async {
     final prefs = await getPrefs();
 
-    // Pokaz cwiczenia zapisane lokalnie dla tej kategorii
+    // Pokaż ćwiczenia zapisane lokalnie dla tej kategorii
     List<String> list = prefs.getStringList(_prefsKey) ?? [];
     Map<String, int> trainerSetsMap = {}; // Zalecone serie od trenera
     Map<String, int> trainerRestSecondsMap =
         {}; // Zalecony czas przerwy od trenera
     Map<String, int> trainerTimeSecondsMap =
-        {}; // Zalecony czas cwiczenia od trenera
+        {}; // Zalecony czas ćwiczenia od trenera
 
-    // Dla zalogowanego klienta - dodaj cwiczenia z jego planu
+    // Dla zalogowanego klienta - dodaj ćwiczenia z jego planu
     final state = PlanAccessController.instance.notifier.value;
     debugPrint(
         '[ExerciseListScreen] State: isAuthenticated=${state.isAuthenticated}, role=${state.role}, normalizedCategory=$_normalizedCategory');
@@ -6499,7 +6501,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
               debugPrint(
                   '[ExerciseListScreen] Entry: exercise=${entry.exercise}, category=$entryCategory, comparing with $_normalizedCategory');
               if (entryCategory == _normalizedCategory) {
-                // Zawsze ustaw typ cwiczenia z planu (czasowe jesli timeSeconds > 0)
+                // Zawsze ustaw typ ćwiczenia z planu (czasowe jeśli timeSeconds > 0)
                 final isTimeBased = entry.timeSeconds > 0;
                 await prefs.setBool(
                     'ex_type_time_${entry.exercise}', isTimeBased);
@@ -6514,7 +6516,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                   trainerRestSecondsMap[entry.exercise] = entry.restSeconds;
                 }
 
-                // Zapisz zalecony czas cwiczenia od trenera
+                // Zapisz zalecony czas ćwiczenia od trenera
                 if (entry.timeSeconds > 0) {
                   trainerTimeSecondsMap[entry.exercise] = entry.timeSeconds;
                 }
@@ -6526,12 +6528,12 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                 }
               }
             }
-            // Zapisz zaktualizowana liste lokalnie
+            // Zapisz zaktualizowaną listę lokalnie
             await prefs.setStringList(_prefsKey, list);
           }
         }
       } catch (e) {
-        // Ignoruj bledy pobierania planu
+        // Ignoruj błędy pobierania planu
         debugPrint('[ExerciseListScreen] Error loading plan: $e');
       }
     }
@@ -6780,7 +6782,6 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                         height: 220,
                         child: ListView.builder(
                           itemCount: baseList.length,
-                          addAutomaticKeepAlives: false,
                           itemBuilder: (ctx, i) {
                             final name = baseList[i];
                             final displayName = localizedBaseList[i];
@@ -6929,8 +6930,6 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                         : ListView.builder(
                             padding: const EdgeInsets.all(16),
                             itemCount: _exercises.length,
-                            addAutomaticKeepAlives: false,
-                            addRepaintBoundaries: true,
                             itemBuilder: (ctx, i) {
                               final name = _exercises[i];
                               final displayName =
@@ -7023,7 +7022,7 @@ class ExerciseDetailScreen extends StatefulWidget {
   final int?
       recommendedRestSeconds; // Zalecony czas przerwy od trenera (dla klienta)
   final int?
-      recommendedTimeSeconds; // Zalecony czas cwiczenia od trenera (dla klienta)
+      recommendedTimeSeconds; // Zalecony czas ćwiczenia od trenera (dla klienta)
   const ExerciseDetailScreen(
       {super.key,
       required this.exerciseName,
@@ -7059,7 +7058,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   bool _vibrationEnabled = true;
   static const String _vibrationEnabledKey = 'vibration_enabled';
-  Timer? _vibrationTimer; // Timer do ciaglych wibracji
+  Timer? _vibrationTimer; // Timer do ciągłych wibracji
 
   @override
   void initState() {
@@ -7069,13 +7068,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _loadAutoStart();
     _loadVibrationEnabled();
 
-    // Ustaw czas przerwy zalecony przez trenera (jesli dostepny)
+    // Ustaw czas przerwy zalecony przez trenera (jeśli dostępny)
     if (widget.recommendedRestSeconds != null &&
         widget.recommendedRestSeconds! > 0) {
       _totalRestSeconds = widget.recommendedRestSeconds!;
       _secondsRemaining = _totalRestSeconds;
     }
-    // Czas cwiczenia od trenera jest ustawiany w _loadHistory()
+    // Czas ćwiczenia od trenera jest ustawiany w _loadHistory()
   }
 
   void _animControllerInit() {
@@ -7150,7 +7149,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   void _startContinuousVibration() {
     if (!_vibrationEnabled) return;
     _vibrationTimer?.cancel();
-    // Wibruj co 1.5 sekundy az do zatrzymania
+    // Wibruj co 1.5 sekundy aż do zatrzymania
     _vibrationTimer =
         Timer.periodic(const Duration(milliseconds: 1500), (_) async {
       if (!mounted) {
@@ -7163,7 +7162,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
           js_bridge.evalJs(
               'if(navigator.vibrate){navigator.vibrate([300,150,300,150,300]);}');
         } else if (!kIsWeb && Platform.isIOS) {
-          // iOS - uzyj HapticFeedback (wielokrotnie dla silniejszego efektu)
+          // iOS - użyj HapticFeedback (wielokrotnie dla silniejszego efektu)
           await HapticFeedback.heavyImpact();
           await Future.delayed(const Duration(milliseconds: 150));
           await HapticFeedback.heavyImpact();
@@ -7193,7 +7192,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         js_bridge.evalJs(
             'if(navigator.vibrate){navigator.vibrate([300,150,300,150,300]);}');
       } else if (!kIsWeb && Platform.isIOS) {
-        // iOS - uzyj HapticFeedback (wielokrotnie dla silniejszego efektu)
+        // iOS - użyj HapticFeedback (wielokrotnie dla silniejszego efektu)
         await HapticFeedback.heavyImpact();
         await Future.delayed(const Duration(milliseconds: 150));
         await HapticFeedback.heavyImpact();
@@ -7213,7 +7212,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   }
 
   bool _exerciseTimeNotified =
-      false; // Czy juz powiadomiono o zakonczeniu czasu cwiczenia
+      false; // Czy już powiadomiono o zakończeniu czasu ćwiczenia
 
   void _startSetStopwatch() {
     _setTimer?.cancel();
@@ -7229,7 +7228,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         _tController.text = secs.toString();
       });
 
-      // Sprawdz czy osiagnieto planowany czas cwiczenia
+      // Sprawdź czy osiągnięto planowany czas ćwiczenia
       if (!_exerciseTimeNotified) {
         final plannedTime = int.tryParse(_wController.text) ?? 0;
         if (plannedTime > 0 && secs >= plannedTime) {
@@ -7265,7 +7264,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   Future<void> _notifyExerciseTimeEnd() async {
     final lang = globalLanguage;
 
-    // Uruchom ciagle wibracje (beda trwac do wcisniecia STOP)
+    // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
     _startContinuousVibration();
     try {
       HapticFeedback.heavyImpact();
@@ -7273,9 +7272,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     try {
       await NotificationService.instance.showNotification(
           title: lang == 'PL'
-              ? 'Czas cwiczenia minal!'
+              ? 'Czas ćwiczenia minął!'
               : lang == 'NO'
-                  ? '�velsestiden er over!'
+                  ? 'Øvelsestiden er over!'
                   : 'Exercise time finished!',
           body: localizedExerciseName(widget.exerciseName, lang));
     } catch (_) {}
@@ -7283,7 +7282,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _startRestTimer({bool resume = false}) {
     _timer?.cancel();
-    // Wlacz wakelock zeby ekran nie gasl podczas przerwy
+    // Włącz wakelock żeby ekran nie gasł podczas przerwy
     try {
       WakelockPlus.enable();
     } catch (_) {}
@@ -7336,8 +7335,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _stopTimer() {
     _timer?.cancel();
-    _stopVibration(); // Zatrzymaj ciagle wibracje
-    // Wylacz wakelock
+    _stopVibration(); // Zatrzymaj ciągłe wibracje
+    // Wyłącz wakelock
     try {
       WakelockPlus.disable();
     } catch (_) {}
@@ -7353,7 +7352,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _resetTimer() {
     _timer?.cancel();
-    // Wlacz wakelock podczas resetu
+    // Włącz wakelock podczas resetu
     try {
       WakelockPlus.enable();
     } catch (_) {}
@@ -7400,17 +7399,17 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         backgroundColor: const Color(0xFF0E1117),
         title: Text(
           lang == 'PL'
-              ? 'Seria ${nextSet - 1} zakonczona!'
+              ? 'Seria ${nextSet - 1} zakończona!'
               : lang == 'NO'
-                  ? 'Sett ${nextSet - 1} fullf�rt!'
+                  ? 'Sett ${nextSet - 1} fullført!'
                   : 'Set ${nextSet - 1} complete!',
           style: const TextStyle(color: Color(0xFFFFD700)),
         ),
         content: Text(
           lang == 'PL'
-              ? 'Co chcesz zrobic?'
+              ? 'Co chcesz zrobić?'
               : lang == 'NO'
-                  ? 'Hva vil du gj�re?'
+                  ? 'Hva vil du gjøre?'
                   : 'What do you want to do?',
           style: TextStyle(color: Color(0xB3FFD700)),
         ),
@@ -7424,7 +7423,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             },
             child: Text(
               lang == 'PL'
-                  ? 'Wr�c do serii 1'
+                  ? 'Wróć do serii 1'
                   : lang == 'NO'
                       ? 'Tilbake til sett 1'
                       : 'Back to set 1',
@@ -7440,7 +7439,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             },
             child: Text(
               lang == 'PL'
-                  ? 'Rozpocznij serie $nextSet'
+                  ? 'Rozpocznij serię $nextSet'
                   : lang == 'NO'
                       ? 'Start sett $nextSet'
                       : 'Start set $nextSet',
@@ -7452,7 +7451,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     );
   }
 
-  /// Dialog informujacy klienta, ze trener zalecil okreslona liczbe serii
+  /// Dialog informujący klienta, że trener zalecił określoną liczbę serii
   void _showTrainerRecommendationDialog(int recommendedSets, int nextSet) {
     if (!mounted) return;
     final lang = globalLanguage;
@@ -7465,15 +7464,15 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
           lang == 'PL'
               ? 'Zalecenie trenera wykonane!'
               : lang == 'NO'
-                  ? 'Trenerens anbefaling fullf�rt!'
+                  ? 'Trenerens anbefaling fullført!'
                   : 'Trainer recommendation complete!',
           style: const TextStyle(color: Color(0xFF2ECC71)),
         ),
         content: Text(
           lang == 'PL'
-              ? 'Tw�j trener zalecil $recommendedSets serie dla tego cwiczenia.\n\nUkonczyles zalecona liczbe serii!\n\nCzy chcesz kontynuowac nastepna serie czy wr�cic do serii 1?'
+              ? 'Twój trener zalecił $recommendedSets serie dla tego ćwiczenia.\n\nUkończyłeś zaleconą liczbę serii!\n\nCzy chcesz kontynuować następną serię czy wrócić do serii 1?'
               : lang == 'NO'
-                  ? 'Treneren din anbefalte $recommendedSets sett for denne �velsen.\n\nDu har fullf�rt det anbefalte antall sett!\n\nVil du fortsette med neste sett eller g� tilbake til sett 1?'
+                  ? 'Treneren din anbefalte $recommendedSets sett for denne øvelsen.\n\nDu har fullført det anbefalte antall sett!\n\nVil du fortsette med neste sett eller gå tilbake til sett 1?'
                   : 'Your trainer recommended $recommendedSets sets for this exercise.\n\nYou have completed the recommended number of sets!\n\nDo you want to continue with the next set or go back to set 1?',
           style: TextStyle(color: Color(0xB3FFD700), height: 1.4),
         ),
@@ -7487,7 +7486,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             },
             child: Text(
               lang == 'PL'
-                  ? 'Wr�c do serii 1'
+                  ? 'Wróć do serii 1'
                   : lang == 'NO'
                       ? 'Tilbake til sett 1'
                       : 'Back to set 1',
@@ -7506,7 +7505,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             },
             child: Text(
               lang == 'PL'
-                  ? 'Kontynuuj serie $nextSet'
+                  ? 'Kontynuuj serię $nextSet'
                   : lang == 'NO'
                       ? 'Fortsett med sett $nextSet'
                       : 'Continue set $nextSet',
@@ -7522,7 +7521,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     final lang = globalLanguage;
     final exName = localizedExerciseName(widget.exerciseName, lang);
 
-    // Uruchom ciagle wibracje (beda trwac do wcisniecia STOP)
+    // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
     _startContinuousVibration();
     try {
       HapticFeedback.heavyImpact();
@@ -7561,7 +7560,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         } else {
           _sController.text = "1";
           if (_isTimeBased) {
-            // Uzyj zalecanego czasu od trenera jesli dostepny
+            // Użyj zalecanego czasu od trenera jeśli dostępny
             if (widget.recommendedTimeSeconds != null &&
                 widget.recommendedTimeSeconds! > 0) {
               _wController.text = widget.recommendedTimeSeconds.toString();
@@ -7571,7 +7570,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
           }
         }
 
-        // Ustaw zalecany czas cwiczenia od trenera dla cwiczen czasowych (jesli dostepny)
+        // Ustaw zalecany czas ćwiczenia od trenera dla ćwiczeń czasowych (jeśli dostępny)
         if (_isTimeBased &&
             widget.recommendedTimeSeconds != null &&
             widget.recommendedTimeSeconds! > 0) {
@@ -7600,7 +7599,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
           lang == 'PL'
               ? 'Edytuj wpis'
               : lang == 'NO'
-                  ? 'Rediger oppf�ring'
+                  ? 'Rediger oppføring'
                   : 'Edit entry',
           style: const TextStyle(color: Color(0xFFFFD700)),
         ),
@@ -7711,17 +7710,17 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         backgroundColor: const Color(0xFF0E1117),
         title: Text(
           lang == 'PL'
-              ? 'Seria 4 zakonczona!'
+              ? 'Seria 4 zakończona!'
               : lang == 'NO'
-                  ? 'Sett 4 fullf�rt!'
+                  ? 'Sett 4 fullført!'
                   : 'Set 4 complete!',
           style: const TextStyle(color: Color(0xFFFFD700)),
         ),
         content: Text(
           lang == 'PL'
-              ? 'Co chcesz zrobic?'
+              ? 'Co chcesz zrobić?'
               : lang == 'NO'
-                  ? 'Hva vil du gj�re?'
+                  ? 'Hva vil du gjøre?'
                   : 'What do you want to do?',
           style: TextStyle(color: Color(0xB3FFD700)),
         ),
@@ -7735,7 +7734,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             },
             child: Text(
               lang == 'PL'
-                  ? 'Wr�c do serii 1'
+                  ? 'Wróć do serii 1'
                   : lang == 'NO'
                       ? 'Tilbake til sett 1'
                       : 'Back to set 1',
@@ -7751,7 +7750,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             },
             child: Text(
               lang == 'PL'
-                  ? 'Rozpocznij serie 5'
+                  ? 'Rozpocznij serię 5'
                   : lang == 'NO'
                       ? 'Start sett 5'
                       : 'Start set 5',
@@ -7786,7 +7785,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     data.add(jsonEncode(log.toJson()));
     await prefs.setStringList('history_${widget.exerciseName}', data);
 
-    // Zapisz do Firebase jesli uzytkownik jest klientem
+    // Zapisz do Firebase jeśli użytkownik jest klientem
     final state = PlanAccessController.instance.notifier.value;
     debugPrint(
         '[ExerciseDetailScreen] Current user role: ${state.role}, email: ${state.userEmail}');
@@ -7823,12 +7822,12 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     }
     _loadHistory();
 
-    // Sprawdz zalecenia trenera dla klienta
+    // Sprawdź zalecenia trenera dla klienta
     final trainerRec = widget.recommendedSets;
     debugPrint(
         '[ExerciseDetailScreen] _saveLog: currentSetNum=$currentSetNum, trainerRec=$trainerRec, exercise=${widget.exerciseName}');
     if (trainerRec != null && trainerRec > 0 && currentSetNum == trainerRec) {
-      // Klient ukonczyl zalecona przez trenera liczbe serii
+      // Klient ukończył zaleconą przez trenera liczbę serii
       debugPrint(
           '[ExerciseDetailScreen] Showing trainer recommendation dialog!');
       _showTrainerRecommendationDialog(trainerRec, currentSetNum + 1);
@@ -7978,7 +7977,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                const Text('CZAS CWICZENIA',
+                                                const Text('CZAS ĆWICZENIA',
                                                     style: TextStyle(
                                                         color:
                                                             Color(0xFFFFD700),
@@ -8216,7 +8215,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                                     size: 36),
                                               ),
                                               const SizedBox(width: 8),
-                                              // Pole tekstowe z waga
+                                              // Pole tekstowe z wagą
                                               SizedBox(
                                                 width: 80,
                                                 child: TextField(
@@ -8817,7 +8816,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           const SizedBox(height: 12),
                           ListTile(
                             leading: const Icon(Icons.language, color: gold),
-                            title: const Text('Jezyk aplikacji',
+                            title: const Text('Język aplikacji',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: gold)),
                             subtitle: Text(lang,
@@ -8842,15 +8841,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ? (userEmail.isNotEmpty
                                       ? userEmail
                                       : 'Zalogowano')
-                                  : 'Nie jestes zalogowany',
+                                  : 'Nie jesteś zalogowany',
                               textAlign: TextAlign.center,
                               style:
                                   TextStyle(color: gold.withValues(alpha: 0.7)),
                             ),
                             onTap: () async {
                               if (loggedIn) {
-                                // Wyczysc dane "Zapamietaj mnie" przy wylogowaniu
-                                final prefs = await getPrefs();
+                                // Wyczyść dane "Zapamiętaj mnie" przy wylogowaniu
+                                final prefs =
+                                    await SharedPreferences.getInstance();
                                 await prefs.setBool('remember_me', false);
                                 await prefs.remove('saved_email');
                                 await prefs.remove('saved_password');
@@ -8878,13 +8878,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ListTile(
                             enabled: loggedIn,
                             leading: const Icon(Icons.lock, color: gold),
-                            title: const Text('Zmien haslo',
+                            title: const Text('Zmień hasło',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: gold)),
                             subtitle: Text(
                               loggedIn
-                                  ? 'Aktualne konto: ${userEmail.isNotEmpty ? userEmail : 'zalogowany uzytkownik'}'
-                                  : 'Zaloguj sie, aby zmienic haslo',
+                                  ? 'Aktualne konto: ${userEmail.isNotEmpty ? userEmail : 'zalogowany użytkownik'}'
+                                  : 'Zaloguj się, aby zmienić hasło',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: loggedIn
@@ -8983,11 +8983,11 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     final confirm = _confirmController.text.trim();
 
     if (newPass.length < 6) {
-      setState(() => _error = 'Haslo musi miec min. 6 znak�w');
+      setState(() => _error = 'Hasło musi mieć min. 6 znaków');
       return;
     }
     if (newPass != confirm) {
-      setState(() => _error = 'Hasla nie sa takie same');
+      setState(() => _error = 'Hasła nie są takie same');
       return;
     }
 
@@ -9001,7 +9001,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Haslo zostalo zmienione')),
+          const SnackBar(content: Text('Hasło zostało zmienione')),
         );
       }
     } catch (e) {
@@ -9020,7 +9020,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     return AlertDialog(
       backgroundColor: Colors.black.withValues(alpha: 0.9),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text('Zmien haslo',
+      title: const Text('Zmień hasło',
           style:
               TextStyle(color: Color(0xFFFFD700), fontWeight: FontWeight.w800)),
       content: Column(
@@ -9031,7 +9031,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             obscureText: true,
             style: const TextStyle(color: Color(0xFFFFD700)),
             decoration: const InputDecoration(
-                labelText: 'Obecne haslo',
+                labelText: 'Obecne hasło',
                 prefixIcon: Icon(Icons.lock_outline)),
           ),
           const SizedBox(height: 10),
@@ -9040,7 +9040,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             obscureText: true,
             style: const TextStyle(color: Color(0xFFFFD700)),
             decoration: const InputDecoration(
-                labelText: 'Nowe haslo', prefixIcon: Icon(Icons.password)),
+                labelText: 'Nowe hasło', prefixIcon: Icon(Icons.password)),
           ),
           const SizedBox(height: 10),
           TextField(
@@ -9048,7 +9048,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             obscureText: true,
             style: const TextStyle(color: Color(0xFFFFD700)),
             decoration: const InputDecoration(
-                labelText: 'Powt�rz nowe haslo',
+                labelText: 'Powtórz nowe hasło',
                 prefixIcon: Icon(Icons.password)),
           ),
           if (_error != null) ...[
@@ -9074,3 +9074,4 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     );
   }
 }
+

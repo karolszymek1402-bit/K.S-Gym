@@ -1880,7 +1880,10 @@ Widget buildLogo(BuildContext context, Color accentColor, {double size = 34}) {
 }
 
 PreferredSizeWidget buildCustomAppBar(BuildContext context,
-    {required Color accentColor}) {
+    {required Color accentColor, VoidCallback? onLogout}) {
+  final state = PlanAccessController.instance.notifier.value;
+  final isLoggedIn = state.isAuthenticated;
+
   return AppBar(
     backgroundColor: Colors.transparent,
     elevation: 0,
@@ -1902,6 +1905,87 @@ PreferredSizeWidget buildCustomAppBar(BuildContext context,
               letterSpacing: 1.2)),
     ]),
     actions: [
+      if (isLoggedIn)
+        IconButton(
+          tooltip: globalLanguage == 'PL'
+              ? 'Wyloguj'
+              : globalLanguage == 'NO'
+                  ? 'Logg ut'
+                  : 'Logout',
+          icon: const Icon(Icons.logout),
+          color: const Color(0xFFFFD700),
+          onPressed: () async {
+            final lang = globalLanguage;
+            final confirm = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                backgroundColor: Colors.black.withValues(alpha: 0.9),
+                title: Text(
+                  lang == 'PL'
+                      ? 'Wyloguj'
+                      : lang == 'NO'
+                          ? 'Logg ut'
+                          : 'Logout',
+                  style: const TextStyle(color: Color(0xFFFFD700)),
+                ),
+                content: Text(
+                  lang == 'PL'
+                      ? 'Czy na pewno chcesz się wylogować?'
+                      : lang == 'NO'
+                          ? 'Er du sikker på at du vil logge ut?'
+                          : 'Are you sure you want to log out?',
+                  style: const TextStyle(color: Colors.white70),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: Text(
+                      lang == 'PL'
+                          ? 'Anuluj'
+                          : lang == 'NO'
+                              ? 'Avbryt'
+                              : 'Cancel',
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFFD700),
+                      foregroundColor: Colors.black,
+                    ),
+                    child: Text(
+                      lang == 'PL'
+                          ? 'Wyloguj'
+                          : lang == 'NO'
+                              ? 'Logg ut'
+                              : 'Logout',
+                    ),
+                  ),
+                ],
+              ),
+            );
+
+            if (confirm == true) {
+              // Wyczyść zapamiętane dane logowania
+              final prefs = await getPrefs();
+              await prefs.setBool('remember_me', false);
+              await prefs.remove('saved_email');
+              await prefs.remove('saved_password');
+
+              // Wyloguj z Firebase
+              await PlanAccessController.instance.signOut();
+
+              // Przekieruj do ekranu startowego
+              if (context.mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const StartChoiceScreen()),
+                  (route) => false,
+                );
+              }
+            }
+          },
+        ),
       IconButton(
         tooltip: 'Ustawienia',
         icon: const Icon(Icons.settings),

@@ -1769,18 +1769,21 @@ class _KsGymAppState extends State<KsGymApp> {
 
   /// Precache SVG assets dla szybszego renderowania
   Future<void> _precacheAssets() async {
+    // Skip SVG precaching on web - some SVGs have unsupported elements
+    if (kIsWeb) return;
+
     final svgAssets = [
-      'assets/images/logo.svg',
-      'assets/images/chest.svg',
-      'assets/images/back.svg',
-      'assets/images/legs.svg',
-      'assets/images/shoulders.svg',
-      'assets/images/biceps.svg',
-      'assets/images/triceps.svg',
-      'assets/images/abs.svg',
-      'assets/images/forearms.svg',
-      'assets/images/plan.svg',
-      'assets/images/exercise.svg',
+      'assets/mojelogo.svg',
+      'assets/klata.svg',
+      'assets/plecy.svg',
+      'assets/nogi.svg',
+      'assets/barki.svg',
+      'assets/biceps.svg',
+      'assets/triceps.svg',
+      'assets/brzuch.svg',
+      'assets/przedramie.svg',
+      'assets/plan.svg',
+      'assets/notatnik.svg',
     ];
 
     for (final asset in svgAssets) {
@@ -2632,13 +2635,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signIn() async {
+    debugPrint('🔐 _signIn called with email: ${_emailController.text.trim()}');
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
+      debugPrint('🔐 Calling PlanAccessController.signIn...');
       await PlanAccessController.instance
           .signIn(_emailController.text.trim(), _passwordController.text);
+      debugPrint('🔐 signIn completed successfully');
 
       // Zapisz dane logowania jeśli "Zapamiętaj mnie" jest włączone
       final prefs = await getPrefs();
@@ -2654,19 +2660,39 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Po zalogowaniu, sprawdź rolę użytkownika
       if (mounted) {
+        // Poczekaj chwilę na aktualizację stanu przez Firebase listener
+        await Future.delayed(const Duration(milliseconds: 500));
+
         final state = PlanAccessController.instance.notifier.value;
+        debugPrint(
+            '🔐 State after login: isAuthenticated=${state.isAuthenticated}, role=${state.role}, email=${state.userEmail}');
+
         if (state.isAuthenticated) {
+          debugPrint('🔐 User authenticated, redirecting...');
           if (state.role == PlanUserRole.client) {
             // Klient - przekieruj do CategoryScreen
+            debugPrint('🔐 Redirecting to CategoryScreen (client)');
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const CategoryScreen()),
             );
           } else if (state.role == PlanUserRole.coach) {
             // Trener - przekieruj do CoachDashboardScreen
+            debugPrint('🔐 Redirecting to CoachDashboardScreen (coach)');
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const CoachDashboardScreen()),
             );
+          } else {
+            debugPrint(
+                '🔐 Unknown role: ${state.role}, redirecting to CategoryScreen');
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const CategoryScreen()),
+            );
           }
+        } else {
+          debugPrint('🔐 User not authenticated after signIn!');
+          setState(() {
+            _error = 'Logowanie nie powiodło się - spróbuj ponownie';
+          });
         }
       }
     } catch (e) {
@@ -9074,4 +9100,3 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     );
   }
 }
-

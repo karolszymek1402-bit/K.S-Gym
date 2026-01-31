@@ -279,12 +279,77 @@ class PlanAccessController {
         ? trimmedPassword.padRight(6, '0')
         : trimmedPassword;
 
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: trimmedEmail,
-      password: normalizedPassword,
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+        email: trimmedEmail,
+        password: normalizedPassword,
+      )
+          .timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw Exception(
+              'Przekroczono czas oczekiwania. Sprawdź połączenie z internetem.');
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      // Translate Firebase error codes to user-friendly messages
+      String message;
+      switch (e.code) {
+        case 'user-not-found':
+          message = 'Nie znaleziono użytkownika z tym adresem email';
+          break;
+        case 'wrong-password':
+        case 'invalid-credential':
+          message = 'Nieprawidłowe hasło';
+          break;
+        case 'invalid-email':
+          message = 'Nieprawidłowy format adresu email';
+          break;
+        case 'user-disabled':
+          message = 'Konto zostało zablokowane';
+          break;
+        case 'too-many-requests':
+          message = 'Zbyt wiele prób. Spróbuj ponownie za chwilę';
+          break;
+        case 'network-request-failed':
+          message = 'Brak połączenia z internetem';
+          break;
+        default:
+          message = 'Błąd logowania: ${e.code} - ${e.message}';
+      }
+      throw Exception(message);
+    } catch (e) {
+      // Catch any other exceptions
+      if (e.toString().contains('timeout') ||
+          e.toString().contains('Przekroczono')) {
+        rethrow;
+      }
+      throw Exception('Błąd logowania: $e');
+    }
+
+    // Resolve role and update state directly
+    final role = await _resolveRole(trimmedEmail);
+
+    // Update state immediately after successful login
+    notifier.value = notifier.value.copyWith(
+      userEmail: trimmedEmail,
+      role: role,
+      planLoading: role != PlanUserRole.coach,
+      clearPlan: role == PlanUserRole.coach,
     );
 
-    await _resolveRole(trimmedEmail);
+    // If client, set up plan watching
+    if (role == PlanUserRole.client) {
+      await _syncLocalHistoryIfNeeded(trimmedEmail);
+      await _ensureClientPlan(trimmedEmail);
+      _watchPlan(trimmedEmail);
+    } else {
+      notifier.value = notifier.value.copyWith(planLoading: false);
+    }
+
+    debugPrint(
+        '🔐 signIn: Updated state - email: $trimmedEmail, role: $role, isAuthenticated: ${notifier.value.isAuthenticated}');
   }
 
   Future<void> signInAsCoach(String email, String password) async {

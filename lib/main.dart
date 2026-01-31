@@ -3171,7 +3171,8 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                               ),
                             ),
                             title: Text(
-                              exercise.exercise.split(' – ').first,
+                              localizedExerciseName(
+                                  exercise.exercise, globalLanguage),
                               style: const TextStyle(
                                 color: accent,
                                 fontWeight: FontWeight.w600,
@@ -4109,7 +4110,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                 category.isNotEmpty
                             ? ' [${localizedCategoryName(category, globalLanguage)}]'
                             : '';
-                        final exerciseName = ex.split(' – ').first;
+                        final exerciseName =
+                            localizedExerciseName(ex, globalLanguage);
                         return DropdownMenuItem(
                           value: ex,
                           child: Text(
@@ -4542,9 +4544,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         .map((ex) => DropdownMenuItem(
                               value: ex,
                               child: Text(
-                                ex
-                                    .split(' – ')
-                                    .first, // Pokaż tylko polską nazwę
+                                localizedExerciseName(ex, globalLanguage),
                                 style:
                                     const TextStyle(color: Color(0xFF2ECC71)),
                                 overflow: TextOverflow.ellipsis,
@@ -5326,7 +5326,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                             color: accent, size: 18),
                                       ),
                                       title: Text(
-                                        exercise.exercise.split(' – ').first,
+                                        localizedExerciseName(
+                                            exercise.exercise, lang),
                                         style: const TextStyle(
                                             color: accent,
                                             fontWeight: FontWeight.w600,
@@ -6298,9 +6299,8 @@ class ClientDayExercisesScreen extends StatelessWidget {
                                             ),
                                           ),
                                           title: Text(
-                                            exercise.exercise
-                                                .split(' – ')
-                                                .first,
+                                            localizedExerciseName(
+                                                exercise.exercise, lang),
                                             style: const TextStyle(
                                               color: accent,
                                               fontWeight: FontWeight.w600,

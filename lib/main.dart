@@ -7422,7 +7422,11 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   }
 
   void _startContinuousVibration() {
-    if (!_vibrationEnabled) return;
+    if (!_vibrationEnabled) {
+      debugPrint('🔔 Vibration disabled by user setting');
+      return;
+    }
+    debugPrint('🔔 Starting continuous vibration, kIsWeb=$kIsWeb');
     _vibrationTimer?.cancel();
     // Wibruj co 1.5 sekundy aż do zatrzymania
     _vibrationTimer =
@@ -7433,9 +7437,18 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       }
       try {
         if (kIsWeb) {
-          // Web Vibration API
-          js_bridge.evalJs(
-              'if(navigator.vibrate){navigator.vibrate([300,150,300,150,300]);}');
+          // Web Vibration API - check if supported and call
+          debugPrint('🔔 Attempting web vibration...');
+          js_bridge.evalJs('''
+            (function() {
+              if (navigator.vibrate) {
+                var result = navigator.vibrate([300, 150, 300, 150, 300]);
+                console.log('Vibration API called, result:', result);
+              } else {
+                console.log('Vibration API not supported');
+              }
+            })();
+          ''');
         } else if (!kIsWeb && Platform.isIOS) {
           // iOS - użyj HapticFeedback (wielokrotnie dla silniejszego efektu)
           await HapticFeedback.heavyImpact();
@@ -7795,6 +7808,32 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   Future<void> _notifyEnd() async {
     final lang = globalLanguage;
     final exName = localizedExerciseName(widget.exerciseName, lang);
+
+    debugPrint('🔔 _notifyEnd called, starting vibration and sound');
+
+    // Odtwórz dźwięk alarmu na web (jako fallback dla urządzeń bez wibracji)
+    if (kIsWeb) {
+      try {
+        js_bridge.evalJs('''
+          (function() {
+            try {
+              var audio = new Audio('assets/sounds/alert.mp3');
+              audio.volume = 1.0;
+              audio.play().then(function() {
+                console.log('Alert sound played');
+              }).catch(function(e) {
+                console.log('Audio play failed:', e);
+              });
+            } catch(e) {
+              console.log('Audio error:', e);
+            }
+          })();
+        ''');
+        debugPrint('🔔 Web audio play triggered');
+      } catch (e) {
+        debugPrint('🔔 Web audio error: $e');
+      }
+    }
 
     // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
     _startContinuousVibration();

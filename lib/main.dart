@@ -6307,17 +6307,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
         final isClient =
             state.isAuthenticated && state.role == PlanUserRole.client;
 
+        // Kolor dla klienta - biały/jasny zamiast złotego
+        const Color clientAccent = Color(0xFFE0E0E0);
+
         return Scaffold(
-          appBar: buildCustomAppBar(context, accentColor: gold),
+          appBar: buildCustomAppBar(context,
+              accentColor: isClient ? clientAccent : gold),
           body: GymBackgroundWithFitness(
             goldDumbbells: false,
-            backgroundImage: 'assets/moje_tlo.png',
+            backgroundImage: isClient ? null : 'assets/moje_tlo.png',
             backgroundImageOpacity: 0.32,
-            gradientColors: [
-              const Color(0xFF0B2E5A),
-              const Color(0xFF0A2652),
-              const Color(0xFF0E3D8C),
-            ],
+            gradientColors: isClient
+                ? [
+                    const Color(0xFF1A1A2E), // Ciemny granat
+                    const Color(0xFF16213E), // Ciemny niebieski
+                    const Color(0xFF0F3460), // Głęboki niebieski
+                  ]
+                : [
+                    const Color(0xFF0B2E5A),
+                    const Color(0xFF0A2652),
+                    const Color(0xFF0E3D8C),
+                  ],
             child: SafeArea(
               child: Padding(
                 padding:
@@ -6326,7 +6336,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   children: [
                     Expanded(
                       child: isClient
-                          ? _buildClientDaysView(lang, gold)
+                          ? _buildClientDaysView(lang, clientAccent)
                           : _buildDefaultCategoriesView(lang, gold),
                     ),
                   ],
@@ -6342,8 +6352,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   // Widok dla klienta - dni tygodnia
   Widget _buildClientDaysView(String lang, Color gold) {
     if (_loading) {
-      return const Center(
-          child: CircularProgressIndicator(color: Color(0xFFFFD700)));
+      return Center(child: CircularProgressIndicator(color: gold));
     }
 
     if (_clientPlan == null) {
@@ -6368,7 +6377,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 setState(() => _loading = true);
                 _loadClientPlan();
               },
-              icon: const Icon(Icons.refresh, color: Colors.black),
+              icon: Icon(Icons.refresh,
+                  color: gold == const Color(0xFFE0E0E0)
+                      ? Colors.black
+                      : Colors.black),
               label: Text(lang == 'PL'
                   ? 'Odśwież'
                   : lang == 'NO'

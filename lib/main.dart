@@ -765,7 +765,6 @@ const Set<String> kTimeBasedExercises = {
   'Zwis na drążku – Dead Hang',
   "Spacer Farmera – Farmer's Carry / Farmer's Walk",
   'Spacer z hantlem jednorącz – Suitcase Carry',
-  'Spacer z gumą (Monster Walk) – Monster Walk / Banded Side Steps',
   'Mountain Climbers – Mountain Climbers',
   'Nożyce – Flutter Kicks',
   'Kettlebell Swing – Kettlebell Swing',

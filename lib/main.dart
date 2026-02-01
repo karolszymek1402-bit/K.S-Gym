@@ -8464,18 +8464,27 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
     // Sprawdź zalecenia trenera dla klienta
     final trainerRec = widget.recommendedSets;
+    final authState = PlanAccessController.instance.notifier.value;
+    final isLoggedInAsClient =
+        authState.isAuthenticated && authState.role == PlanUserRole.client;
+
     debugPrint(
-        '[ExerciseDetailScreen] _saveLog: currentSetNum=$currentSetNum, trainerRec=$trainerRec, exercise=${widget.exerciseName}');
+        '[ExerciseDetailScreen] _saveLog: currentSetNum=$currentSetNum, trainerRec=$trainerRec, isLoggedInAsClient=$isLoggedInAsClient, exercise=${widget.exerciseName}');
+
     if (trainerRec != null && trainerRec > 0 && currentSetNum == trainerRec) {
       // Klient ukończył zaleconą przez trenera liczbę serii
       debugPrint(
           '[ExerciseDetailScreen] Showing trainer recommendation dialog!');
       _showTrainerRecommendationDialog(trainerRec, currentSetNum + 1);
-    } else if (currentSetNum == 3) {
-      _promptNextSet(4);
-    } else if (currentSetNum == 4) {
-      _showResetSetsDialog();
+    } else if (!isLoggedInAsClient) {
+      // Pytanie o kolejną serię tylko dla niezalogowanych użytkowników
+      if (currentSetNum == 3) {
+        _promptNextSet(4);
+      } else if (currentSetNum == 4) {
+        _showResetSetsDialog();
+      }
     }
+    // Dla zalogowanych klientów bez ustawionych rekomendacji - brak dodatkowych dialogów
 
     if (_autoStart) {
       _startRestTimer(resume: false);

@@ -13,7 +13,7 @@ class ClientListScreen extends StatefulWidget {
 }
 
 class _ClientListScreenState extends State<ClientListScreen> {
-  List<String> _clients = [];
+  List<UserProfile> _clients = [];
   bool _loading = true;
 
   @override
@@ -30,10 +30,10 @@ class _ClientListScreenState extends State<ClientListScreen> {
   Future<void> _loadClients() async {
     setState(() => _loading = true);
     try {
-      final emails = await PlanAccessController.instance.fetchAllClientEmails();
+      final clients = await PlanAccessController.instance.fetchAllClients();
       if (mounted) {
         setState(() {
-          _clients = emails;
+          _clients = clients;
           _loading = false;
         });
       }
@@ -77,7 +77,11 @@ class _ClientListScreenState extends State<ClientListScreen> {
                     padding: const EdgeInsets.all(16),
                     itemCount: _clients.length,
                     itemBuilder: (context, index) {
-                      final email = _clients[index];
+                      final client = _clients[index];
+                      final email = client.email;
+                      final displayName = client.displayName?.isNotEmpty == true
+                          ? client.displayName!
+                          : email;
                       return Card(
                         color: const Color(0xFF0B2E5A).withValues(alpha: 0.6),
                         margin: const EdgeInsets.only(bottom: 12),
@@ -101,12 +105,21 @@ class _ClientListScreenState extends State<ClientListScreen> {
                             ),
                           ),
                           title: Text(
-                            email,
+                            displayName,
                             style: const TextStyle(
                               color: Color(0xFFFFD700),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          subtitle: displayName != email
+                              ? Text(
+                                  email,
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              : null,
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

@@ -601,6 +601,20 @@ class PlanAccessController {
     }
   }
 
+  /// Update client display name
+  Future<void> updateClientDisplayName(
+      String email, String? displayName) async {
+    final docId = _docIdFromEmail(email);
+    try {
+      await _usersCollection.doc(docId).update({
+        'displayName':
+            displayName?.trim().isNotEmpty == true ? displayName!.trim() : null,
+      });
+    } catch (_) {
+      rethrow;
+    }
+  }
+
   /// Update client email (rename client)
   Future<void> updateClientEmail(String oldEmail, String newEmail) async {
     final oldDocId = _docIdFromEmail(oldEmail);

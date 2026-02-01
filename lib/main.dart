@@ -298,12 +298,9 @@ class Translations {
       'NO': ' • tid {time}s'
     },
     'test_version_hint': {
-      'EN':
-          'Log in with your trainer or client account',
-      'PL':
-          'Zaloguj się kontem trenerskim lub klienta',
-      'NO':
-          'Logg inn med trener- eller kunde-konto'
+      'EN': 'Log in with your trainer or client account',
+      'PL': 'Zaloguj się kontem trenerskim lub klienta',
+      'NO': 'Logg inn med trener- eller kunde-konto'
     },
     'contact_sheet_title': {'EN': 'Contact', 'PL': 'Kontakt', 'NO': 'Kontakt'},
     'contact_phone_label': {'EN': 'Phone', 'PL': 'Telefon', 'NO': 'Telefon'},

@@ -6054,30 +6054,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
     // Nasz system: 0=poniedziałek, 6=niedziela
     final todayIndex = now.weekday - 1;
     debugPrint(
-        '🏋️ _checkMissedWorkouts: Today is ${now.toString()}, weekday index: $todayIndex');
+        '🏋️ _checkMissedWorkouts: Today is ${now.toString()}, weekday index: $todayIndex (0=pon, 6=niedz)');
 
     final prefs = await getPrefs();
-    final lastCheckDate = prefs.getString('last_workout_check_date');
     final today =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
+    // Sprawdź czy już pokazaliśmy dialog dzisiaj dla konkretnej daty
+    final shownDialogToday = prefs.getString('shown_missed_dialog_date');
+
     debugPrint(
-        '🏋️ _checkMissedWorkouts: lastCheckDate=$lastCheckDate, today=$today');
+        '🏋️ _checkMissedWorkouts: today=$today, shownDialogToday=$shownDialogToday');
 
-    // Sprawdzaj tylko raz dziennie (ale możemy to pominąć dla testów)
-    if (lastCheckDate == today) {
-      debugPrint('🏋️ _checkMissedWorkouts: Already checked today, skipping');
-      return;
-    }
-    await prefs.setString('last_workout_check_date', today);
-
-    // Sprawdź wczorajszy dzień (lub poprzednie dni do 3 dni wstecz)
+    // Sprawdź poprzednie dni (do 3 dni wstecz)
     for (int daysBack = 1; daysBack <= 3; daysBack++) {
       final checkDate = now.subtract(Duration(days: daysBack));
       final checkDayIndex = checkDate.weekday - 1;
+      final dateStr =
+          '${checkDate.year}-${checkDate.month.toString().padLeft(2, '0')}-${checkDate.day.toString().padLeft(2, '0')}';
 
       debugPrint(
-          '🏋️ Checking $daysBack days back: ${checkDate.toString()}, dayIndex: $checkDayIndex');
+          '🏋️ Checking $daysBack days back: $dateStr, dayIndex: $checkDayIndex');
 
       // Czy był zaplanowany trening na ten dzień?
       final exercisesForDay = _getExercisesForDay(checkDayIndex);
@@ -6093,24 +6090,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
 
       // Czy trening został wykonany? Sprawdź historię ćwiczeń z tego dnia
-      final dateStr =
-          '${checkDate.year}-${checkDate.month.toString().padLeft(2, '0')}-${checkDate.day.toString().padLeft(2, '0')}';
       final wasCompleted =
           await _wasWorkoutCompletedOnDate(dateStr, exercisesForDay);
 
       debugPrint('🏋️ Date $dateStr: wasCompleted=$wasCompleted');
 
-      // Sprawdź czy już pytaliśmy o ten dzień
-      final askedKey = 'asked_missed_workout_$dateStr';
-      final alreadyAsked = prefs.getBool(askedKey) ?? false;
+      if (!wasCompleted) {
+        // Sprawdź czy już pokazaliśmy dialog dla tej daty dzisiaj
+        if (shownDialogToday == '$today:$dateStr') {
+          debugPrint('🏋️ Already shown dialog for $dateStr today, skipping');
+          continue;
+        }
 
-      debugPrint('🏋️ Already asked about $dateStr: $alreadyAsked');
-
-      if (!wasCompleted && !alreadyAsked) {
-        // Zapisz że pytaliśmy
-        await prefs.setBool(askedKey, true);
+        // Zapisz że pokazaliśmy dialog dla tej daty dzisiaj
+        await prefs.setString('shown_missed_dialog_date', '$today:$dateStr');
         debugPrint(
-            '🏋️ SHOWING DIALOG for missed workout on day $checkDayIndex');
+            '🏋️ SHOWING DIALOG for missed workout on day $checkDayIndex ($dateStr)');
 
         if (mounted) {
           _showMissedWorkoutDialog(checkDayIndex, daysBack);

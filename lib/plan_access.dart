@@ -409,8 +409,14 @@ class PlanAccessController {
 
   Future<void> signOut() async {
     _planSubscription?.cancel();
+    _planSubscription = null;
     _historySyncedForEmail = null;
+
+    // Reset state immediately before Firebase signOut
+    notifier.value = const PlanAccessState();
+
     await FirebaseAuth.instance.signOut();
+    debugPrint('🔐 signOut: State reset, user logged out');
   }
 
   Future<void> logout() async => signOut();

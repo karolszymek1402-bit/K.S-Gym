@@ -640,7 +640,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Przysiad ze sztangą (Low Bar) – Low Bar Squat',
     'Przysiad przedni – Front Squat',
     'Przysiad ze sztangą trzymaną skrzyżnie – Cross Grip Front Squat',
-    'Przysiad typu Goblet – Goblet Squat',
+    'Przysiad typu Goblet (Przysiad z hantlem przy klatce) – Goblet Squat',
     'Przysiad na maszynie Smitha – Smith Machine Squat',
     'Przysiad Hack – Hack Squat',
     'Przysiad wahadłowy (maszyna) – Pendulum Squat',
@@ -1107,8 +1107,8 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'EN': 'Cross Grip Front Squat',
     'NO': 'Cross Grip Front Squat',
   },
-  'Przysiad typu Goblet – Goblet Squat': {
-    'PL': 'Przysiad typu Goblet',
+  'Przysiad typu Goblet (Przysiad z hantlem przy klatce) – Goblet Squat': {
+    'PL': 'Przysiad typu Goblet (Przysiad z hantlem przy klatce)',
     'EN': 'Goblet Squat',
     'NO': 'Goblet Squat',
   },

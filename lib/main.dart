@@ -772,7 +772,6 @@ const Set<String> kTimeBasedExercises = {
   'Russian Twist – Russian Twist',
   'Pallof Press – Pallof Press',
   'Glute Bridge (Mostek) – Glute Bridge',
-  'Dead Bug – Dead Bug',
 };
 
 // Translations for seeded exercises across languages.

@@ -6044,19 +6044,31 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   // Sprawdź czy są zaległe treningi z poprzednich dni
   Future<void> _checkMissedWorkouts() async {
-    if (_clientPlan == null) return;
+    if (_clientPlan == null) {
+      debugPrint('🏋️ _checkMissedWorkouts: No client plan, skipping');
+      return;
+    }
 
     final now = DateTime.now();
     // DateTime.weekday: 1=poniedziałek, 7=niedziela
     // Nasz system: 0=poniedziałek, 6=niedziela
+    final todayIndex = now.weekday - 1;
+    debugPrint(
+        '🏋️ _checkMissedWorkouts: Today is ${now.toString()}, weekday index: $todayIndex');
 
     final prefs = await getPrefs();
     final lastCheckDate = prefs.getString('last_workout_check_date');
     final today =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
-    // Sprawdzaj tylko raz dziennie
-    if (lastCheckDate == today) return;
+    debugPrint(
+        '🏋️ _checkMissedWorkouts: lastCheckDate=$lastCheckDate, today=$today');
+
+    // Sprawdzaj tylko raz dziennie (ale możemy to pominąć dla testów)
+    if (lastCheckDate == today) {
+      debugPrint('🏋️ _checkMissedWorkouts: Already checked today, skipping');
+      return;
+    }
     await prefs.setString('last_workout_check_date', today);
 
     // Sprawdź wczorajszy dzień (lub poprzednie dni do 3 dni wstecz)
@@ -6064,11 +6076,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
       final checkDate = now.subtract(Duration(days: daysBack));
       final checkDayIndex = checkDate.weekday - 1;
 
+      debugPrint(
+          '🏋️ Checking $daysBack days back: ${checkDate.toString()}, dayIndex: $checkDayIndex');
+
       // Czy był zaplanowany trening na ten dzień?
       final exercisesForDay = _getExercisesForDay(checkDayIndex);
       final isRestDay = _isRestDay(checkDayIndex);
 
-      if (exercisesForDay.isEmpty || isRestDay) continue;
+      debugPrint(
+          '🏋️ Day $checkDayIndex: ${exercisesForDay.length} exercises, isRestDay: $isRestDay');
+
+      if (exercisesForDay.isEmpty || isRestDay) {
+        debugPrint(
+            '🏋️ Skipping day $checkDayIndex - no exercises or rest day');
+        continue;
+      }
 
       // Czy trening został wykonany? Sprawdź historię ćwiczeń z tego dnia
       final dateStr =
@@ -6076,13 +6098,19 @@ class _CategoryScreenState extends State<CategoryScreen> {
       final wasCompleted =
           await _wasWorkoutCompletedOnDate(dateStr, exercisesForDay);
 
+      debugPrint('🏋️ Date $dateStr: wasCompleted=$wasCompleted');
+
       // Sprawdź czy już pytaliśmy o ten dzień
       final askedKey = 'asked_missed_workout_$dateStr';
       final alreadyAsked = prefs.getBool(askedKey) ?? false;
 
+      debugPrint('🏋️ Already asked about $dateStr: $alreadyAsked');
+
       if (!wasCompleted && !alreadyAsked) {
         // Zapisz że pytaliśmy
         await prefs.setBool(askedKey, true);
+        debugPrint(
+            '🏋️ SHOWING DIALOG for missed workout on day $checkDayIndex');
 
         if (mounted) {
           _showMissedWorkoutDialog(checkDayIndex, daysBack);
@@ -6090,6 +6118,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         break; // Pokaż tylko jeden dialog na raz
       }
     }
+    debugPrint('🏋️ _checkMissedWorkouts: Finished checking');
   }
 
   // Sprawdź czy trening został wykonany w danym dniu
@@ -6304,27 +6333,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
         final isClient =
             state.isAuthenticated && state.role == PlanUserRole.client;
 
-        // Kolor dla klienta - biały/jasny zamiast złotego
-        const Color clientAccent = Color(0xFFE0E0E0);
-
         return Scaffold(
-          appBar: buildCustomAppBar(context,
-              accentColor: isClient ? clientAccent : gold),
+          appBar: buildCustomAppBar(context, accentColor: gold),
           body: GymBackgroundWithFitness(
             goldDumbbells: false,
-            backgroundImage: isClient ? null : 'assets/moje_tlo.png',
+            backgroundImage: 'assets/moje_tlo.png',
             backgroundImageOpacity: 0.32,
-            gradientColors: isClient
-                ? [
-                    const Color(0xFF1A1A2E), // Ciemny granat
-                    const Color(0xFF16213E), // Ciemny niebieski
-                    const Color(0xFF0F3460), // Głęboki niebieski
-                  ]
-                : [
-                    const Color(0xFF0B2E5A),
-                    const Color(0xFF0A2652),
-                    const Color(0xFF0E3D8C),
-                  ],
+            gradientColors: [
+              const Color(0xFF0B2E5A),
+              const Color(0xFF0A2652),
+              const Color(0xFF0E3D8C),
+            ],
             child: SafeArea(
               child: Padding(
                 padding:
@@ -6333,7 +6352,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   children: [
                     Expanded(
                       child: isClient
-                          ? _buildClientDaysView(lang, clientAccent)
+                          ? _buildClientDaysView(lang, gold)
                           : _buildDefaultCategoriesView(lang, gold),
                     ),
                   ],

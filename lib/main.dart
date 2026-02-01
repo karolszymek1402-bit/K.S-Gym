@@ -4162,6 +4162,250 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     }
   }
 
+  // Kopiuj wszystkie ćwiczenia z jednego dnia na inny
+  Future<void> _copyDayExercises(int fromDayIndex) async {
+    final lang = globalLanguage;
+    final fromDayName = _dayNames[fromDayIndex];
+
+    // Pobierz listę dni do wyboru (bez aktualnego dnia)
+    final availableDays =
+        List.generate(7, (i) => i).where((i) => i != fromDayIndex).toList();
+
+    int? selectedDay;
+
+    final result = await showDialog<int>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            backgroundColor: Colors.black.withValues(alpha: 0.95),
+            title: Text(
+              lang == 'PL'
+                  ? 'Kopiuj trening'
+                  : lang == 'NO'
+                      ? 'Kopier trening'
+                      : 'Copy workout',
+              style: const TextStyle(color: Color(0xFFFFD700)),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lang == 'PL'
+                        ? 'Kopiuj ćwiczenia z dnia:'
+                        : lang == 'NO'
+                            ? 'Kopier øvelser fra:'
+                            : 'Copy exercises from:',
+                    style:
+                        TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    fromDayName,
+                    style: const TextStyle(
+                      color: Color(0xFFFFD700),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    lang == 'PL'
+                        ? 'Wybierz dzień docelowy:'
+                        : lang == 'NO'
+                            ? 'Velg måldag:'
+                            : 'Select target day:',
+                    style:
+                        TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+                  ),
+                  const SizedBox(height: 8),
+                  ...availableDays.map((dayIndex) {
+                    final dayName = _dayNames[dayIndex];
+                    final isRestDay = _isRestDay(dayIndex);
+                    final exerciseCount = _getExercisesForDay(dayIndex).length;
+                    final isSelected = selectedDay == dayIndex;
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: InkWell(
+                        onTap: () {
+                          setDialogState(() {
+                            selectedDay = dayIndex;
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFFFD700).withValues(alpha: 0.2)
+                                : Colors.black.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFFFFD700)
+                                  : Colors.white.withValues(alpha: 0.2),
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                isRestDay ? Icons.hotel : Icons.fitness_center,
+                                color: isRestDay
+                                    ? const Color(0xFF4CAF50)
+                                    : const Color(0xFFFFD700),
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      dayName,
+                                      style: TextStyle(
+                                        color: isSelected
+                                            ? const Color(0xFFFFD700)
+                                            : Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      isRestDay
+                                          ? (lang == 'PL'
+                                              ? 'Dzień wolny'
+                                              : lang == 'NO'
+                                                  ? 'Hviledag'
+                                                  : 'Rest day')
+                                          : (exerciseCount > 0
+                                              ? '$exerciseCount ${lang == 'PL' ? 'ćwiczeń' : lang == 'NO' ? 'øvelser' : 'exercises'}'
+                                              : (lang == 'PL'
+                                                  ? 'Brak ćwiczeń'
+                                                  : lang == 'NO'
+                                                      ? 'Ingen øvelser'
+                                                      : 'No exercises')),
+                                      style: TextStyle(
+                                        color:
+                                            Colors.white.withValues(alpha: 0.5),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (isSelected)
+                                const Icon(Icons.check_circle,
+                                    color: Color(0xFFFFD700), size: 20),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  lang == 'PL'
+                      ? 'Anuluj'
+                      : lang == 'NO'
+                          ? 'Avbryt'
+                          : 'Cancel',
+                  style: const TextStyle(color: Colors.white70),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: selectedDay != null
+                    ? () => Navigator.pop(ctx, selectedDay)
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFD700),
+                  foregroundColor: Colors.black,
+                  disabledBackgroundColor: Colors.grey.withValues(alpha: 0.3),
+                ),
+                child: Text(
+                  lang == 'PL'
+                      ? 'Kopiuj'
+                      : lang == 'NO'
+                          ? 'Kopier'
+                          : 'Copy',
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    if (result != null) {
+      try {
+        // Pobierz aktualne wpisy
+        final entries = List<ClientPlanEntry>.from(_plan?.entries ?? []);
+
+        // Pobierz ćwiczenia z dnia źródłowego
+        final exercisesToCopy =
+            entries.where((e) => e.dayOfWeek == fromDayIndex).toList();
+
+        // Utwórz kopie ćwiczeń z nowym dniem
+        final copiedExercises = exercisesToCopy
+            .map((e) => e.copyWith(dayOfWeek: result))
+            .toList();
+
+        // Dodaj skopiowane ćwiczenia do listy (zachowując istniejące)
+        final updatedEntries = [...entries, ...copiedExercises];
+
+        // Usuń dzień docelowy z dni wolnych jeśli był
+        final currentRestDays = List<int>.from(_plan?.restDays ?? []);
+        if (currentRestDays.contains(result)) {
+          currentRestDays.remove(result);
+          await PlanAccessController.instance.updateClientPlanRestDays(
+            widget.clientEmail,
+            currentRestDays,
+          );
+        }
+
+        await PlanAccessController.instance.updateClientPlanEntries(
+          widget.clientEmail,
+          updatedEntries,
+        );
+
+        await _refreshPlan();
+
+        if (mounted) {
+          final toDayName = _dayNames[result];
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                lang == 'PL'
+                    ? 'Skopiowano trening z $fromDayName na $toDayName'
+                    : lang == 'NO'
+                        ? 'Trening kopiert fra $fromDayName til $toDayName'
+                        : 'Copied workout from $fromDayName to $toDayName',
+              ),
+              backgroundColor: const Color(0xFF4CAF50),
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+  }
+
   Future<void> _editPlan() async {
     final titleCtrl =
         TextEditingController(text: _plan?.title ?? 'New Training Plan');
@@ -5564,6 +5808,19 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  // Przycisk kopiuj trening na inny dzień
+                                  if (!isRestDay && exercisesForDay.isNotEmpty)
+                                    IconButton(
+                                      icon: const Icon(Icons.copy,
+                                          color: Color(0xFF9C27B0), size: 20),
+                                      tooltip: lang == 'PL'
+                                          ? 'Kopiuj na inny dzień'
+                                          : lang == 'NO'
+                                              ? 'Kopier til annen dag'
+                                              : 'Copy to another day',
+                                      onPressed: () =>
+                                          _copyDayExercises(dayIndex),
+                                    ),
                                   // Przycisk przenieś trening na inny dzień
                                   if (!isRestDay && exercisesForDay.isNotEmpty)
                                     IconButton(

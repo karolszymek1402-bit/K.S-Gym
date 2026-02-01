@@ -6029,6 +6029,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
               _clientPlan = plan;
               _loading = false;
             });
+            // Sprawdź zaległe treningi po załadowaniu planu
+            _checkMissedWorkouts();
           }
         } catch (e) {
           if (mounted) {
@@ -6041,6 +6043,246 @@ class _CategoryScreenState extends State<CategoryScreen> {
     } else {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  // Sprawdź czy są zaległe treningi z poprzednich dni
+  Future<void> _checkMissedWorkouts() async {
+    if (_clientPlan == null) return;
+
+    final now = DateTime.now();
+    // DateTime.weekday: 1=poniedziałek, 7=niedziela
+    // Nasz system: 0=poniedziałek, 6=niedziela
+
+    final prefs = await getPrefs();
+    final lastCheckDate = prefs.getString('last_workout_check_date');
+    final today =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+    // Sprawdzaj tylko raz dziennie
+    if (lastCheckDate == today) return;
+    await prefs.setString('last_workout_check_date', today);
+
+    // Sprawdź wczorajszy dzień (lub poprzednie dni do 3 dni wstecz)
+    for (int daysBack = 1; daysBack <= 3; daysBack++) {
+      final checkDate = now.subtract(Duration(days: daysBack));
+      final checkDayIndex = checkDate.weekday - 1;
+
+      // Czy był zaplanowany trening na ten dzień?
+      final exercisesForDay = _getExercisesForDay(checkDayIndex);
+      final isRestDay = _isRestDay(checkDayIndex);
+
+      if (exercisesForDay.isEmpty || isRestDay) continue;
+
+      // Czy trening został wykonany? Sprawdź historię ćwiczeń z tego dnia
+      final dateStr =
+          '${checkDate.year}-${checkDate.month.toString().padLeft(2, '0')}-${checkDate.day.toString().padLeft(2, '0')}';
+      final wasCompleted =
+          await _wasWorkoutCompletedOnDate(dateStr, exercisesForDay);
+
+      // Sprawdź czy już pytaliśmy o ten dzień
+      final askedKey = 'asked_missed_workout_$dateStr';
+      final alreadyAsked = prefs.getBool(askedKey) ?? false;
+
+      if (!wasCompleted && !alreadyAsked) {
+        // Zapisz że pytaliśmy
+        await prefs.setBool(askedKey, true);
+
+        if (mounted) {
+          _showMissedWorkoutDialog(checkDayIndex, daysBack);
+        }
+        break; // Pokaż tylko jeden dialog na raz
+      }
+    }
+  }
+
+  // Sprawdź czy trening został wykonany w danym dniu
+  Future<bool> _wasWorkoutCompletedOnDate(
+      String dateStr, List<ClientPlanEntry> exercises) async {
+    if (exercises.isEmpty) return true;
+
+    final prefs = await getPrefs();
+    int completedCount = 0;
+
+    for (final exercise in exercises) {
+      final historyKey = 'history_${exercise.exercise}';
+      final historyData = prefs.getStringList(historyKey) ?? [];
+
+      // Sprawdź czy jest wpis z tego dnia
+      for (final entry in historyData) {
+        try {
+          final decoded = jsonDecode(entry);
+          if (decoded is Map && decoded['date'] != null) {
+            final entryDate = decoded['date'].toString();
+            if (entryDate.startsWith(dateStr)) {
+              completedCount++;
+              break;
+            }
+          }
+        } catch (_) {}
+      }
+    }
+
+    // Uznaj trening za wykonany jeśli wykonano co najmniej połowę ćwiczeń
+    return completedCount >= (exercises.length / 2);
+  }
+
+  // Pokaż dialog o zaległym treningu
+  void _showMissedWorkoutDialog(int missedDayIndex, int daysBack) {
+    final lang = globalLanguage;
+    final dayNames = _getDayNames(lang);
+    final missedDayName = dayNames[missedDayIndex];
+    final exercises = _getExercisesForDay(missedDayIndex);
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.black.withValues(alpha: 0.95),
+        title: Row(
+          children: [
+            const Icon(Icons.calendar_today,
+                color: Color(0xFFFFD700), size: 24),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                lang == 'PL'
+                    ? 'Zaległy trening'
+                    : lang == 'NO'
+                        ? 'Ubesvart trening'
+                        : 'Missed workout',
+                style: const TextStyle(color: Color(0xFFFFD700), fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              lang == 'PL'
+                  ? 'Wygląda na to, że nie wykonałeś treningu z dnia:'
+                  : lang == 'NO'
+                      ? 'Det ser ut som du gikk glipp av treningen fra:'
+                      : 'It looks like you missed the workout from:',
+              style: const TextStyle(color: Colors.white70),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFD700).withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                    color: const Color(0xFFFFD700).withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.fitness_center, color: Color(0xFFFFD700)),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          missedDayName,
+                          style: const TextStyle(
+                            color: Color(0xFFFFD700),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '${exercises.length} ${lang == 'PL' ? 'ćwiczeń' : lang == 'NO' ? 'øvelser' : 'exercises'}',
+                          style: TextStyle(
+                            color:
+                                const Color(0xFFFFD700).withValues(alpha: 0.7),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    daysBack == 1
+                        ? (lang == 'PL'
+                            ? 'wczoraj'
+                            : lang == 'NO'
+                                ? 'i går'
+                                : 'yesterday')
+                        : '$daysBack ${lang == 'PL' ? 'dni temu' : lang == 'NO' ? 'dager siden' : 'days ago'}',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              lang == 'PL'
+                  ? 'Czy chcesz wykonać ten trening dzisiaj?'
+                  : lang == 'NO'
+                      ? 'Vil du gjøre denne treningen i dag?'
+                      : 'Would you like to do this workout today?',
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              lang == 'PL'
+                  ? 'Pomiń'
+                  : lang == 'NO'
+                      ? 'Hopp over'
+                      : 'Skip',
+              style: const TextStyle(color: Colors.white54),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.pop(ctx);
+              // Otwórz widok ćwiczeń z zaległego dnia
+              _openMissedWorkout(missedDayIndex);
+            },
+            icon: const Icon(Icons.play_arrow, size: 20),
+            label: Text(
+              lang == 'PL'
+                  ? 'Tak, zaczynam!'
+                  : lang == 'NO'
+                      ? 'Ja, start!'
+                      : 'Yes, start!',
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF4CAF50),
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Otwórz widok zaległego treningu
+  void _openMissedWorkout(int dayIndex) {
+    final lang = globalLanguage;
+    final dayNames = _getDayNames(lang);
+    final exercises = _getExercisesForDay(dayIndex);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ClientDayExercisesScreen(
+          dayIndex: dayIndex,
+          dayName: dayNames[dayIndex],
+          exercises: exercises,
+          isRestDay: false,
+          themeColor: _gold,
+        ),
+      ),
+    );
   }
 
   // Pobierz ćwiczenia dla danego dnia

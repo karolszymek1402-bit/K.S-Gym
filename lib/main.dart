@@ -6690,7 +6690,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 }
 
 // Ekran ćwiczeń dla danego dnia (dla klienta)
-class ClientDayExercisesScreen extends StatelessWidget {
+class ClientDayExercisesScreen extends StatefulWidget {
   final int dayIndex;
   final String dayName;
   final List<ClientPlanEntry> exercises;
@@ -6705,6 +6705,349 @@ class ClientDayExercisesScreen extends StatelessWidget {
     required this.isRestDay,
     this.themeColor = const Color(0xFFFFD700),
   });
+
+  @override
+  State<ClientDayExercisesScreen> createState() =>
+      _ClientDayExercisesScreenState();
+}
+
+class _ClientDayExercisesScreenState extends State<ClientDayExercisesScreen> {
+  late List<ClientPlanEntry> _exercises;
+  late bool _isRestDay;
+  ClientPlan? _clientPlan;
+
+  // Nazwy dni tygodnia
+  static const List<String> _dayNamesPL = [
+    'Poniedziałek',
+    'Wtorek',
+    'Środa',
+    'Czwartek',
+    'Piątek',
+    'Sobota',
+    'Niedziela'
+  ];
+  static const List<String> _dayNamesEN = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
+  static const List<String> _dayNamesNO = [
+    'Mandag',
+    'Tirsdag',
+    'Onsdag',
+    'Torsdag',
+    'Fredag',
+    'Lørdag',
+    'Søndag'
+  ];
+
+  List<String> _getDayNames(String lang) {
+    switch (lang) {
+      case 'NO':
+        return _dayNamesNO;
+      case 'EN':
+        return _dayNamesEN;
+      default:
+        return _dayNamesPL;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _exercises = List.from(widget.exercises);
+    _isRestDay = widget.isRestDay;
+    _loadClientPlan();
+  }
+
+  Future<void> _loadClientPlan() async {
+    final state = PlanAccessController.instance.notifier.value;
+    final email = state.userEmail;
+    if (email != null) {
+      try {
+        final plan =
+            await PlanAccessController.instance.fetchPlanForEmail(email);
+        if (mounted) {
+          setState(() {
+            _clientPlan = plan;
+            // Zaktualizuj ćwiczenia z aktualnego planu
+            _exercises = plan?.entries
+                    .where((e) => e.dayOfWeek == widget.dayIndex)
+                    .toList() ??
+                [];
+            _isRestDay =
+                plan?.restDays.contains(widget.dayIndex) ?? widget.isRestDay;
+          });
+        }
+      } catch (e) {
+        debugPrint('Error loading client plan: $e');
+      }
+    }
+  }
+
+  // Pobierz ćwiczenia dla danego dnia
+  List<ClientPlanEntry> _getExercisesForDay(int dayIndex) {
+    if (_clientPlan == null) return [];
+    return _clientPlan!.entries.where((e) => e.dayOfWeek == dayIndex).toList();
+  }
+
+  // Sprawdź czy dzień jest dniem wolnym
+  bool _isDayRestDay(int dayIndex) {
+    return _clientPlan?.restDays.contains(dayIndex) ?? false;
+  }
+
+  // Przenieś trening na inny dzień
+  Future<void> _moveWorkoutToDay() async {
+    final lang = globalLanguage;
+    final state = PlanAccessController.instance.notifier.value;
+    final email = state.userEmail;
+
+    if (email == null || _clientPlan == null) return;
+
+    final dayNames = _getDayNames(lang);
+    final fromDayName = dayNames[widget.dayIndex];
+
+    // Dostępne dni (bez aktualnego)
+    final availableDays =
+        List.generate(7, (i) => i).where((i) => i != widget.dayIndex).toList();
+
+    int? selectedDay;
+
+    final result = await showDialog<int>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            backgroundColor: Colors.black.withValues(alpha: 0.95),
+            title: Text(
+              lang == 'PL'
+                  ? 'Przenieś trening'
+                  : lang == 'NO'
+                      ? 'Flytt trening'
+                      : 'Move workout',
+              style: const TextStyle(color: Color(0xFFFFD700)),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lang == 'PL'
+                        ? 'Przenieś ćwiczenia z dnia:'
+                        : lang == 'NO'
+                            ? 'Flytt øvelser fra:'
+                            : 'Move exercises from:',
+                    style:
+                        TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    fromDayName,
+                    style: const TextStyle(
+                      color: Color(0xFFFFD700),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    lang == 'PL'
+                        ? 'Wybierz dzień docelowy:'
+                        : lang == 'NO'
+                            ? 'Velg måldag:'
+                            : 'Select target day:',
+                    style:
+                        TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+                  ),
+                  const SizedBox(height: 8),
+                  ...availableDays.map((dayIndex) {
+                    final targetDayName = dayNames[dayIndex];
+                    final isTargetRestDay = _isDayRestDay(dayIndex);
+                    final exerciseCount = _getExercisesForDay(dayIndex).length;
+                    final isSelected = selectedDay == dayIndex;
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: InkWell(
+                        onTap: () {
+                          setDialogState(() {
+                            selectedDay = dayIndex;
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFFFD700).withValues(alpha: 0.2)
+                                : Colors.black.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFFFFD700)
+                                  : Colors.white.withValues(alpha: 0.2),
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                isTargetRestDay
+                                    ? Icons.hotel
+                                    : Icons.fitness_center,
+                                color: isTargetRestDay
+                                    ? const Color(0xFF4CAF50)
+                                    : const Color(0xFFFFD700),
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      targetDayName,
+                                      style: TextStyle(
+                                        color: isSelected
+                                            ? const Color(0xFFFFD700)
+                                            : Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      isTargetRestDay
+                                          ? (lang == 'PL'
+                                              ? 'Dzień wolny'
+                                              : lang == 'NO'
+                                                  ? 'Hviledag'
+                                                  : 'Rest day')
+                                          : (exerciseCount > 0
+                                              ? '$exerciseCount ${lang == 'PL' ? 'ćwiczeń' : lang == 'NO' ? 'øvelser' : 'exercises'}'
+                                              : (lang == 'PL'
+                                                  ? 'Brak ćwiczeń'
+                                                  : lang == 'NO'
+                                                      ? 'Ingen øvelser'
+                                                      : 'No exercises')),
+                                      style: TextStyle(
+                                        color:
+                                            Colors.white.withValues(alpha: 0.5),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (isSelected)
+                                const Icon(Icons.check_circle,
+                                    color: Color(0xFFFFD700), size: 20),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  lang == 'PL'
+                      ? 'Anuluj'
+                      : lang == 'NO'
+                          ? 'Avbryt'
+                          : 'Cancel',
+                  style: const TextStyle(color: Colors.white70),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: selectedDay != null
+                    ? () => Navigator.pop(ctx, selectedDay)
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFD700),
+                  foregroundColor: Colors.black,
+                  disabledBackgroundColor: Colors.grey.withValues(alpha: 0.3),
+                ),
+                child: Text(
+                  lang == 'PL'
+                      ? 'Przenieś'
+                      : lang == 'NO'
+                          ? 'Flytt'
+                          : 'Move',
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    if (result != null) {
+      try {
+        // Pobierz aktualne wpisy
+        final entries = List<ClientPlanEntry>.from(_clientPlan?.entries ?? []);
+
+        // Przenieś ćwiczenia z widget.dayIndex na result (nowy dzień)
+        final updatedEntries = entries.map((e) {
+          if (e.dayOfWeek == widget.dayIndex) {
+            return e.copyWith(dayOfWeek: result);
+          }
+          return e;
+        }).toList();
+
+        // Usuń result z dni wolnych jeśli był
+        final currentRestDays = List<int>.from(_clientPlan?.restDays ?? []);
+        if (currentRestDays.contains(result)) {
+          currentRestDays.remove(result);
+          await PlanAccessController.instance.updateClientPlanRestDays(
+            email,
+            currentRestDays,
+          );
+        }
+
+        await PlanAccessController.instance.updateClientPlanEntries(
+          email,
+          updatedEntries,
+        );
+
+        if (mounted) {
+          final toDayName = dayNames[result];
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                lang == 'PL'
+                    ? 'Przeniesiono trening z $fromDayName na $toDayName'
+                    : lang == 'NO'
+                        ? 'Trening flyttet fra $fromDayName til $toDayName'
+                        : 'Moved workout from $fromDayName to $toDayName',
+              ),
+              backgroundColor: const Color(0xFF4CAF50),
+            ),
+          );
+
+          // Wróć do poprzedniego ekranu
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -6728,9 +7071,9 @@ class ClientDayExercisesScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          (isRestDay ? Colors.green : accent)
+                          (_isRestDay ? Colors.green : accent)
                               .withValues(alpha: 0.2),
-                          (isRestDay ? Colors.green : accent)
+                          (_isRestDay ? Colors.green : accent)
                               .withValues(alpha: 0.05),
                         ],
                         begin: Alignment.topLeft,
@@ -6738,65 +7081,95 @@ class ClientDayExercisesScreen extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                          color: (isRestDay ? Colors.green : accent)
+                          color: (_isRestDay ? Colors.green : accent)
                               .withValues(alpha: 0.3)),
                     ),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: isRestDay ? Colors.green : accent,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            isRestDay ? Icons.hotel : Icons.fitness_center,
-                            color: Colors.black,
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                dayName,
-                                style: TextStyle(
-                                  color: isRestDay ? Colors.green : accent,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 22,
-                                ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: _isRestDay ? Colors.green : accent,
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                isRestDay
-                                    ? (lang == 'PL'
-                                        ? 'Dzień wolny od treningu'
-                                        : lang == 'NO'
-                                            ? 'Hviledag'
-                                            : 'Rest day')
-                                    : (lang == 'PL'
-                                        ? '${exercises.length} ćwiczeń do wykonania'
-                                        : lang == 'NO'
-                                            ? '${exercises.length} øvelser å gjøre'
-                                            : '${exercises.length} exercises to do'),
-                                style: TextStyle(
-                                  color: (isRestDay ? Colors.green : accent)
-                                      .withValues(alpha: 0.7),
-                                  fontSize: 13,
-                                ),
+                              child: Icon(
+                                _isRestDay ? Icons.hotel : Icons.fitness_center,
+                                color: Colors.black,
+                                size: 28,
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.dayName,
+                                    style: TextStyle(
+                                      color: _isRestDay ? Colors.green : accent,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 22,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _isRestDay
+                                        ? (lang == 'PL'
+                                            ? 'Dzień wolny od treningu'
+                                            : lang == 'NO'
+                                                ? 'Hviledag'
+                                                : 'Rest day')
+                                        : (lang == 'PL'
+                                            ? '${_exercises.length} ćwiczeń do wykonania'
+                                            : lang == 'NO'
+                                                ? '${_exercises.length} øvelser å gjøre'
+                                                : '${_exercises.length} exercises to do'),
+                                    style: TextStyle(
+                                      color:
+                                          (_isRestDay ? Colors.green : accent)
+                                              .withValues(alpha: 0.7),
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
+                        // Przycisk przenoszenia treningu (tylko jeśli są ćwiczenia)
+                        if (_exercises.isNotEmpty) ...[
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: _moveWorkoutToDay,
+                              icon: const Icon(Icons.swap_horiz, size: 20),
+                              label: Text(
+                                lang == 'PL'
+                                    ? 'Przenieś trening na inny dzień'
+                                    : lang == 'NO'
+                                        ? 'Flytt trening til en annen dag'
+                                        : 'Move workout to another day',
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: accent,
+                                side: BorderSide(
+                                    color: accent.withValues(alpha: 0.5)),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
 
                   // Lista ćwiczeń lub komunikat o dniu wolnym
                   Expanded(
-                    child: isRestDay
+                    child: _isRestDay
                         ? Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -6819,7 +7192,7 @@ class ClientDayExercisesScreen extends StatelessWidget {
                               ],
                             ),
                           )
-                        : exercises.isEmpty
+                        : _exercises.isEmpty
                             ? Center(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -6843,9 +7216,9 @@ class ClientDayExercisesScreen extends StatelessWidget {
                             : ListView.builder(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: exercises.length,
+                                itemCount: _exercises.length,
                                 itemBuilder: (context, index) {
-                                  final exercise = exercises[index];
+                                  final exercise = _exercises[index];
                                   final isTimeBased = exercise.timeSeconds > 0;
 
                                   return Container(

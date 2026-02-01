@@ -299,11 +299,11 @@ class Translations {
     },
     'test_version_hint': {
       'EN':
-          'Test version: trainer or client account. Admin manual: karolszymek1402@gmail.com / katarynka09',
+          'Log in with your trainer or client account',
       'PL':
-          'Wersja testowa: konto trenerskie lub klienta. Admin manualny: karolszymek1402@gmail.com / katarynka09',
+          'Zaloguj się kontem trenerskim lub klienta',
       'NO':
-          'Testversjon: trener- eller kunde-konto. Admin manuelt: karolszymek1402@gmail.com / katarynka09'
+          'Logg inn med trener- eller kunde-konto'
     },
     'contact_sheet_title': {'EN': 'Contact', 'PL': 'Kontakt', 'NO': 'Kontakt'},
     'contact_phone_label': {'EN': 'Phone', 'PL': 'Telefon', 'NO': 'Telefon'},

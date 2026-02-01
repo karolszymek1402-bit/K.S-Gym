@@ -3509,7 +3509,7 @@ class ClientsScreen extends StatefulWidget {
 }
 
 class _ClientsScreenState extends State<ClientsScreen> {
-  List<String> _clientEmails = [];
+  List<UserProfile> _clients = [];
   bool _loading = true;
 
   @override
@@ -3527,10 +3527,10 @@ class _ClientsScreenState extends State<ClientsScreen> {
   Future<void> _loadClients() async {
     setState(() => _loading = true);
     try {
-      final emails = await PlanAccessController.instance.fetchAllClientEmails();
+      final clients = await PlanAccessController.instance.fetchAllClients();
       if (mounted) {
         setState(() {
-          _clientEmails = emails;
+          _clients = clients;
           _loading = false;
         });
       }
@@ -3613,6 +3613,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
         await PlanAccessController.instance.createClientAccount(
           emailCtrl.text.trim(),
           passwordCtrl.text.trim(),
+          displayName: nameCtrl.text.trim(),
         );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -3714,7 +3715,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         child:
                             CircularProgressIndicator(color: Color(0xFFFFD700)),
                       )
-                    : _clientEmails.isEmpty
+                    : _clients.isEmpty
                         ? Center(
                             child: Text(
                                 Translations.get('no_clients',
@@ -3725,11 +3726,15 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         : RefreshIndicator(
                             onRefresh: _loadClients,
                             child: ListView.separated(
-                              itemCount: _clientEmails.length,
+                              itemCount: _clients.length,
                               separatorBuilder: (_, __) =>
                                   const SizedBox(height: 10),
                               itemBuilder: (context, index) {
-                                final email = _clientEmails[index];
+                                final client = _clients[index];
+                                final email = client.email;
+                                final displayName = client.displayName;
+                                final hasName = displayName != null &&
+                                    displayName.isNotEmpty;
                                 return Container(
                                   decoration: BoxDecoration(
                                     color: Colors.black.withValues(alpha: 0.35),
@@ -3753,13 +3758,15 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                       child: const Icon(Icons.person,
                                           color: Colors.black),
                                     ),
-                                    title: Text(email,
+                                    title: Text(hasName ? displayName : email,
                                         style: const TextStyle(
                                             color: Color(0xFFFFD700),
                                             fontWeight: FontWeight.w700)),
-                                    subtitle: const Text('Klient',
+                                    subtitle: Text(hasName ? email : 'Klient',
                                         style: TextStyle(
-                                            color: Color(0xFF2ECC71))),
+                                            color: hasName
+                                                ? const Color(0xB3FFD700)
+                                                : const Color(0xFF2ECC71))),
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [

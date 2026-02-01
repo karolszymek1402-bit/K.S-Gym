@@ -453,7 +453,8 @@ class PlanAccessController {
     }
   }
 
-  Future<void> createClientAccount(String email, String password) async {
+  Future<void> createClientAccount(String email, String password,
+      {String? displayName}) async {
     // Use a secondary Firebase app so the coach session stays active while creating a client.
     final secondaryApp = await Firebase.initializeApp(
       name: 'client_creator',
@@ -482,6 +483,8 @@ class PlanAccessController {
       final userProfile = UserProfile(
         email: trimmedEmail,
         role: PlanUserRole.client,
+        displayName:
+            displayName?.trim().isNotEmpty == true ? displayName!.trim() : null,
         createdAt: DateTime.now(),
       );
 
@@ -542,6 +545,24 @@ class PlanAccessController {
       }
 
       return emails;
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /// Fetch all client profiles (with displayName)
+  Future<List<UserProfile>> fetchAllClients() async {
+    try {
+      final snapshot =
+          await _usersCollection.where('role', isEqualTo: 'client').get();
+
+      final clients = <UserProfile>[];
+      for (var doc in snapshot.docs) {
+        final profile = UserProfile.fromMap(doc.data());
+        clients.add(profile);
+      }
+
+      return clients;
     } catch (_) {
       return [];
     }

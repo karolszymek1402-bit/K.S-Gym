@@ -8325,7 +8325,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _loadHistory();
     _loadAutoStart();
     _loadVibrationEnabled();
-    _requestNotificationPermission();
+    // Nie pytaj o uprawnienia do powiadomień przy starcie - zrobimy to przy końcu timera
 
     // Ustaw czas przerwy zalecony przez trenera (jeśli dostępny)
     if (widget.recommendedRestSeconds != null &&
@@ -8334,23 +8334,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       _secondsRemaining = _totalRestSeconds;
     }
     // Czas ćwiczenia od trenera jest ustawiany w _loadHistory()
-  }
-
-  // Żądaj uprawnień do powiadomień przy starcie
-  void _requestNotificationPermission() {
-    if (kIsWeb) {
-      try {
-        js_bridge.evalJs('''
-          (function() {
-            if ('Notification' in window && Notification.permission === 'default') {
-              Notification.requestPermission().then(function(permission) {
-                console.log('Notification permission:', permission);
-              });
-            }
-          })();
-        ''');
-      } catch (_) {}
-    }
   }
 
   void _animControllerInit() {

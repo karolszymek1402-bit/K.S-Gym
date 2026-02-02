@@ -4354,9 +4354,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
             entries.where((e) => e.dayOfWeek == fromDayIndex).toList();
 
         // Utwórz kopie ćwiczeń z nowym dniem
-        final copiedExercises = exercisesToCopy
-            .map((e) => e.copyWith(dayOfWeek: result))
-            .toList();
+        final copiedExercises =
+            exercisesToCopy.map((e) => e.copyWith(dayOfWeek: result)).toList();
 
         // Dodaj skopiowane ćwiczenia do listy (zachowując istniejące)
         final updatedEntries = [...entries, ...copiedExercises];
@@ -8326,6 +8325,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _loadHistory();
     _loadAutoStart();
     _loadVibrationEnabled();
+    _requestNotificationPermission();
 
     // Ustaw czas przerwy zalecony przez trenera (jeśli dostępny)
     if (widget.recommendedRestSeconds != null &&
@@ -8334,6 +8334,23 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       _secondsRemaining = _totalRestSeconds;
     }
     // Czas ćwiczenia od trenera jest ustawiany w _loadHistory()
+  }
+
+  // Żądaj uprawnień do powiadomień przy starcie
+  void _requestNotificationPermission() {
+    if (kIsWeb) {
+      try {
+        js_bridge.evalJs('''
+          (function() {
+            if ('Notification' in window && Notification.permission === 'default') {
+              Notification.requestPermission().then(function(permission) {
+                console.log('Notification permission:', permission);
+              });
+            }
+          })();
+        ''');
+      } catch (_) {}
+    }
   }
 
   void _animControllerInit() {
@@ -8811,7 +8828,18 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     // Odtwórz dźwięk alarmu na web
     if (kIsWeb) {
       try {
-        // Użyj Web Audio API do wygenerowania głośnego beep (nie wymaga pliku)
+        // Użyj Web Audio API do wygenerowania głośnego beep + Web Notification
+        final notificationTitle = lang == 'PL'
+            ? 'Przerwa zakończona!'
+            : lang == 'NO'
+                ? 'Pause ferdig!'
+                : 'Rest finished!';
+        final notificationBody = lang == 'PL'
+            ? 'Czas na następną serię: $exName'
+            : lang == 'NO'
+                ? 'Tid for neste sett: $exName'
+                : 'Time for next set: $exName';
+
         js_bridge.evalJs('''
           (function() {
             try {
@@ -8850,9 +8878,42 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                 console.log('Audio fallback also failed:', e2);
               }
             }
+            
+            // Web Notification API - działa nawet na zablokowanym ekranie
+            try {
+              if ('Notification' in window) {
+                if (Notification.permission === 'granted') {
+                  var notification = new Notification('$notificationTitle', {
+                    body: '$notificationBody',
+                    icon: 'icons/Icon-192.png',
+                    tag: 'rest-timer',
+                    requireInteraction: true,
+                    vibrate: [300, 150, 300, 150, 300]
+                  });
+                  notification.onclick = function() {
+                    window.focus();
+                    notification.close();
+                  };
+                  console.log('Web Notification shown');
+                } else if (Notification.permission !== 'denied') {
+                  Notification.requestPermission().then(function(permission) {
+                    if (permission === 'granted') {
+                      new Notification('$notificationTitle', {
+                        body: '$notificationBody',
+                        icon: 'icons/Icon-192.png',
+                        tag: 'rest-timer',
+                        requireInteraction: true
+                      });
+                    }
+                  });
+                }
+              }
+            } catch(e) {
+              console.log('Notification error:', e);
+            }
           })();
         ''');
-        debugPrint('🔔 Web Audio beep triggered');
+        debugPrint('🔔 Web Audio beep and notification triggered');
       } catch (e) {
         debugPrint('🔔 Web audio error: \$e');
       }

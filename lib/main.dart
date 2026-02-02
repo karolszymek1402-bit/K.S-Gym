@@ -10285,14 +10285,14 @@ class _SmallIconButton extends StatelessWidget {
     return Material(
       color: Colors.black.withValues(alpha: 0.6),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: color.withValues(alpha: 0.9))),
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: color.withValues(alpha: 0.9), width: 1.5)),
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         onTap: onPressed,
         child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: Icon(icon, size: 18, color: color)),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Icon(icon, size: 28, color: color)),
       ),
     );
   }

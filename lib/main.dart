@@ -5,15 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show HapticFeedback, Clipboard, ClipboardData;
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'js_bridge.dart' as js_bridge;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vibration/vibration.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'firebase_options.dart';
@@ -348,11 +346,6 @@ class Translations {
       'EN': 'Copied to clipboard',
       'PL': 'Skopiowano do schowka',
       'NO': 'Kopiert til utklippstavle'
-    },
-    'vibration_enabled': {
-      'EN': 'Vibration',
-      'PL': 'Wibracje',
-      'NO': 'Vibrasjon'
     },
     'sound_enabled': {'EN': 'Sound', 'PL': 'Dźwięk', 'NO': 'Lyd'},
     // Dodatkowe tłumaczenia dla trenera
@@ -8314,17 +8307,12 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   bool _autoStart = true;
   static const String _autoStartKey = 'auto_start_timer';
 
-  bool _vibrationEnabled = true;
-  static const String _vibrationEnabledKey = 'vibration_enabled';
-  Timer? _vibrationTimer; // Timer do ciągłych wibracji
-
   @override
   void initState() {
     super.initState();
     _animControllerInit();
     _loadHistory();
     _loadAutoStart();
-    _loadVibrationEnabled();
     // Nie pytaj o uprawnienia do powiadomień przy starcie - zrobimy to przy końcu timera
 
     // Ustaw czas przerwy zalecony przez trenera (jeśli dostępny)
@@ -8345,14 +8333,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   void dispose() {
     _timer?.cancel();
     _setTimer?.cancel();
-    _vibrationTimer?.cancel();
-    try {
-      if (kIsWeb) {
-        js_bridge.evalJs('if(navigator.vibrate){navigator.vibrate(0);}');
-      } else {
-        Vibration.cancel();
-      }
-    } catch (_) {}
     _wController.dispose();
     _rController.dispose();
     _sController.dispose();
@@ -8381,108 +8361,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         _autoStart = v;
       });
     }
-  }
-
-  Future<void> _loadVibrationEnabled() async {
-    final prefs = await getPrefs();
-    final val = prefs.getBool(_vibrationEnabledKey);
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = val ?? true;
-      });
-    }
-  }
-
-  void _stopVibration() {
-    _vibrationTimer?.cancel();
-    _vibrationTimer = null;
-    try {
-      if (kIsWeb) {
-        js_bridge.evalJs('if(navigator.vibrate){navigator.vibrate(0);}');
-      } else {
-        Vibration.cancel();
-      }
-    } catch (_) {}
-  }
-
-  void _startContinuousVibration({bool skipFirstSound = false}) {
-    if (!_vibrationEnabled) {
-      debugPrint('🔔 Vibration disabled by user setting');
-      return;
-    }
-    debugPrint('🔔 Starting continuous vibration and sound, kIsWeb=$kIsWeb');
-    _vibrationTimer?.cancel();
-
-    // Jeśli nie pomijamy pierwszego dźwięku, odtwórz go od razu
-    if (!skipFirstSound) {
-      _vibrateOnce();
-    }
-
-    // Wibruj i odtwarzaj dźwięk co 2 sekundy aż do zatrzymania
-    _vibrationTimer =
-        Timer.periodic(const Duration(milliseconds: 2000), (_) async {
-      if (!mounted) {
-        _stopVibration();
-        return;
-      }
-      try {
-        if (kIsWeb) {
-          // Web Vibration API - check if supported and call
-          debugPrint('🔔 Attempting web vibration...');
-          js_bridge.evalJs('''
-            (function() {
-              // Tylko wibracja, bez dźwięku
-              if (navigator.vibrate) {
-                navigator.vibrate([300, 150, 300, 150, 300]);
-              }
-            })();
-          ''');
-        } else if (!kIsWeb && Platform.isIOS) {
-          // iOS - użyj HapticFeedback (wielokrotnie dla silniejszego efektu)
-          await HapticFeedback.heavyImpact();
-          await Future.delayed(const Duration(milliseconds: 150));
-          await HapticFeedback.heavyImpact();
-          await Future.delayed(const Duration(milliseconds: 150));
-          await HapticFeedback.heavyImpact();
-        } else {
-          // Android i inne platformy
-          if (await Vibration.hasVibrator() == true) {
-            if (await Vibration.hasCustomVibrationsSupport() == true) {
-              Vibration.vibrate(pattern: [0, 300, 150, 300, 150, 300]);
-            } else {
-              await Vibration.vibrate(duration: 500);
-            }
-          }
-        }
-      } catch (_) {}
-    });
-  }
-
-  Future<void> _vibrateOnce() async {
-    if (!_vibrationEnabled) return;
-    try {
-      if (kIsWeb) {
-        // Web Vibration API
-        js_bridge.evalJs(
-            'if(navigator.vibrate){navigator.vibrate([300,150,300,150,300]);}');
-      } else if (!kIsWeb && Platform.isIOS) {
-        // iOS - użyj HapticFeedback (wielokrotnie dla silniejszego efektu)
-        await HapticFeedback.heavyImpact();
-        await Future.delayed(const Duration(milliseconds: 150));
-        await HapticFeedback.heavyImpact();
-        await Future.delayed(const Duration(milliseconds: 150));
-        await HapticFeedback.heavyImpact();
-      } else {
-        // Android i inne platformy
-        if (await Vibration.hasVibrator() == true) {
-          if (await Vibration.hasCustomVibrationsSupport() == true) {
-            Vibration.vibrate(pattern: [0, 300, 150, 300, 150, 300]);
-          } else {
-            await Vibration.vibrate(duration: 500);
-          }
-        }
-      }
-    } catch (_) {}
   }
 
   bool _exerciseTimeNotified =
@@ -8515,7 +8393,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _stopSetStopwatch() {
     _setTimer?.cancel();
-    _stopVibration(); // Zatrzymaj wibracje
     if (_setStart != null) {
       final secs = DateTime.now().difference(_setStart!).inSeconds;
       setState(() {
@@ -8527,7 +8404,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _resetSetStopwatch() {
     _setTimer?.cancel();
-    _stopVibration(); // Zatrzymaj wibracje
     _exerciseTimeNotified = false;
     setState(() {
       _tController.clear();
@@ -8538,11 +8414,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   Future<void> _notifyExerciseTimeEnd() async {
     final lang = globalLanguage;
 
-    // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
-    _startContinuousVibration();
-    try {
-      HapticFeedback.heavyImpact();
-    } catch (_) {}
     try {
       await NotificationService.instance.showNotification(
           title: lang == 'PL'
@@ -8625,7 +8496,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _stopTimer() {
     _timer?.cancel();
-    _stopVibration(); // Zatrzymaj ciągłe wibracje
     // Wyłącz wakelock
     try {
       WakelockPlus.disable();
@@ -8840,7 +8710,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                       icon: 'icons/Icon-192.png',
                       tag: 'rest-timer-' + Date.now(),
                       requireInteraction: true,
-                      vibrate: [300, 150, 300, 150, 300],
                       renotify: true
                     });
                     console.log('Service Worker notification shown');
@@ -8863,8 +8732,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                   body: '$notificationBody',
                   icon: 'icons/Icon-192.png',
                   tag: 'rest-timer-' + Date.now(),
-                  requireInteraction: true,
-                  vibrate: [300, 150, 300, 150, 300]
+                  requireInteraction: true
                 });
                 notification.onclick = function() {
                   window.focus();
@@ -8894,11 +8762,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       }
     }
 
-    // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
-    _startContinuousVibration(skipFirstSound: kIsWeb);
-    try {
-      HapticFeedback.heavyImpact();
-    } catch (_) {}
     try {
       await NotificationService.instance.showNotification(
           title: Translations.get('rest_finished_title', language: lang),
@@ -9180,12 +9043,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       debugPrint(
           '[ExerciseDetailScreen] Not saving to Firebase - role: ${state.role}, email: ${state.userEmail}');
     }
-
-    try {
-      if (await Vibration.hasVibrator() == true) {
-        await Vibration.vibrate(duration: 40);
-      }
-    } catch (_) {}
 
     if (_isTimeBased) {
       _resetSetStopwatch();
@@ -10094,32 +9951,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _vibrationEnabled = true;
-  static const String _vibrationEnabledKey = 'vibration_enabled';
-
   @override
   void initState() {
     super.initState();
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    final prefs = await getPrefs();
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = prefs.getBool(_vibrationEnabledKey) ?? true;
-      });
-    }
-  }
-
-  Future<void> _setVibrationEnabled(bool v) async {
-    final prefs = await getPrefs();
-    await prefs.setBool(_vibrationEnabledKey, v);
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = v;
-      });
-    }
   }
 
   Future<void> _setLanguage(String lang) async {
@@ -10282,17 +10116,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   }
                                 : null,
-                          ),
-                          Divider(color: Color(0x1FFFD700)),
-                          SwitchListTile(
-                            secondary: const Icon(Icons.vibration, color: gold),
-                            title: Text(
-                                Translations.get('vibration_enabled',
-                                    language: lang),
-                                style: const TextStyle(color: gold)),
-                            value: _vibrationEnabled,
-                            onChanged: (v) => _setVibrationEnabled(v),
-                            activeColor: gold,
                           ),
                         ],
                       ),

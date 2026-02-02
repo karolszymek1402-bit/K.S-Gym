@@ -79,9 +79,10 @@ class _ClientListScreenState extends State<ClientListScreen> {
                     itemBuilder: (context, index) {
                       final client = _clients[index];
                       final email = client.email;
-                      final displayName = client.displayName?.isNotEmpty == true
-                          ? client.displayName!
-                          : email;
+                      final hasDisplayName =
+                          client.displayName?.isNotEmpty == true;
+                      final displayName =
+                          hasDisplayName ? client.displayName! : email;
                       return Card(
                         color: const Color(0xFF0B2E5A).withValues(alpha: 0.6),
                         margin: const EdgeInsets.only(bottom: 12),
@@ -111,15 +112,19 @@ class _ClientListScreenState extends State<ClientListScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          subtitle: displayName != email
-                              ? Text(
-                                  email,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                  ),
-                                )
-                              : null,
+                          subtitle: Text(
+                            hasDisplayName
+                                ? email
+                                : (lang == 'PL'
+                                    ? 'Klient'
+                                    : lang == 'NO'
+                                        ? 'Klient'
+                                        : 'Client'),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
+                          ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

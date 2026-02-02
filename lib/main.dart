@@ -8422,13 +8422,19 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     } catch (_) {}
   }
 
-  void _startContinuousVibration() {
+  void _startContinuousVibration({bool skipFirstSound = false}) {
     if (!_vibrationEnabled) {
       debugPrint('🔔 Vibration disabled by user setting');
       return;
     }
     debugPrint('🔔 Starting continuous vibration and sound, kIsWeb=$kIsWeb');
     _vibrationTimer?.cancel();
+
+    // Jeśli nie pomijamy pierwszego dźwięku, odtwórz go od razu
+    if (!skipFirstSound) {
+      _vibrateOnce();
+    }
+
     // Wibruj i odtwarzaj dźwięk co 2 sekundy aż do zatrzymania
     _vibrationTimer =
         Timer.periodic(const Duration(milliseconds: 2000), (_) async {
@@ -8482,8 +8488,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         }
       } catch (_) {}
     });
-    // Pierwsza wibracja natychmiast
-    _vibrateOnce();
   }
 
   Future<void> _vibrateOnce() async {
@@ -8920,7 +8924,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     }
 
     // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
-    _startContinuousVibration();
+    // skipFirstSound: true bo dźwięk już był odtworzony powyżej
+    _startContinuousVibration(skipFirstSound: kIsWeb);
     try {
       HapticFeedback.heavyImpact();
     } catch (_) {}

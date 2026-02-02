@@ -8560,6 +8560,22 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     try {
       WakelockPlus.enable();
     } catch (_) {}
+
+    // Poproś o uprawnienia do powiadomień przy pierwszym uruchomieniu timera
+    if (kIsWeb) {
+      try {
+        js_bridge.evalJs('''
+          (function() {
+            if ('Notification' in window && Notification.permission === 'default') {
+              Notification.requestPermission().then(function(permission) {
+                console.log('Notification permission granted:', permission);
+              });
+            }
+          })();
+        ''');
+      } catch (_) {}
+    }
+
     setState(() {
       if (!resume || _secondsRemaining == 0) {
         _secondsRemaining = _totalRestSeconds;
@@ -8797,10 +8813,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
     debugPrint('🔔 _notifyEnd called, starting vibration and sound');
 
-    // Odtwórz dźwięk alarmu na web
+    // Powiadomienia na web
     if (kIsWeb) {
       try {
-        // Użyj Web Audio API do wygenerowania głośnego beep + Web Notification
         final notificationTitle = lang == 'PL'
             ? 'Przerwa zakończona!'
             : lang == 'NO'
@@ -8814,48 +8829,72 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
         js_bridge.evalJs('''
           (function() {
-            // Web Notification API - działa nawet na zablokowanym ekranie
-            try {
-              if ('Notification' in window) {
-                if (Notification.permission === 'granted') {
-                  var notification = new Notification('$notificationTitle', {
-                    body: '$notificationBody',
-                    icon: 'icons/Icon-192.png',
-                    tag: 'rest-timer',
-                    requireInteraction: true,
-                    vibrate: [300, 150, 300, 150, 300]
+            // Funkcja pokazująca powiadomienie
+            function showNotification() {
+              try {
+                // Najpierw spróbuj przez Service Worker (działa lepiej na zablokowanym ekranie)
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                  navigator.serviceWorker.ready.then(function(registration) {
+                    registration.showNotification('$notificationTitle', {
+                      body: '$notificationBody',
+                      icon: 'icons/Icon-192.png',
+                      tag: 'rest-timer-' + Date.now(),
+                      requireInteraction: true,
+                      vibrate: [300, 150, 300, 150, 300],
+                      renotify: true
+                    });
+                    console.log('Service Worker notification shown');
+                  }).catch(function(err) {
+                    console.log('SW notification failed, trying regular:', err);
+                    showRegularNotification();
                   });
-                  notification.onclick = function() {
-                    window.focus();
-                    notification.close();
-                  };
-                  console.log('Web Notification shown');
-                } else if (Notification.permission !== 'denied') {
-                  Notification.requestPermission().then(function(permission) {
-                    if (permission === 'granted') {
-                      new Notification('$notificationTitle', {
-                        body: '$notificationBody',
-                        icon: 'icons/Icon-192.png',
-                        tag: 'rest-timer',
-                        requireInteraction: true
-                      });
-                    }
-                  });
+                } else {
+                  showRegularNotification();
                 }
+              } catch(e) {
+                console.log('Notification error:', e);
+                showRegularNotification();
               }
-            } catch(e) {
-              console.log('Notification error:', e);
+            }
+            
+            function showRegularNotification() {
+              if ('Notification' in window && Notification.permission === 'granted') {
+                var notification = new Notification('$notificationTitle', {
+                  body: '$notificationBody',
+                  icon: 'icons/Icon-192.png',
+                  tag: 'rest-timer-' + Date.now(),
+                  requireInteraction: true,
+                  vibrate: [300, 150, 300, 150, 300]
+                });
+                notification.onclick = function() {
+                  window.focus();
+                  notification.close();
+                };
+                console.log('Regular notification shown');
+              }
+            }
+            
+            // Sprawdź uprawnienia i pokaż powiadomienie
+            if ('Notification' in window) {
+              if (Notification.permission === 'granted') {
+                showNotification();
+              } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(function(permission) {
+                  if (permission === 'granted') {
+                    showNotification();
+                  }
+                });
+              }
             }
           })();
         ''');
-        debugPrint('🔔 Web Audio beep and notification triggered');
+        debugPrint('🔔 Web notification triggered');
       } catch (e) {
-        debugPrint('🔔 Web audio error: \$e');
+        debugPrint('🔔 Web notification error: \$e');
       }
     }
 
     // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
-    // skipFirstSound: true bo dźwięk już był odtworzony powyżej
     _startContinuousVibration(skipFirstSound: kIsWeb);
     try {
       HapticFeedback.heavyImpact();

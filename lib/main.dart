@@ -8428,28 +8428,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       try {
         if (kIsWeb) {
           // Web Vibration API - check if supported and call
-          debugPrint('🔔 Attempting web vibration and sound...');
+          debugPrint('🔔 Attempting web vibration...');
           js_bridge.evalJs('''
             (function() {
-              // Wibracja
+              // Tylko wibracja, bez dźwięku
               if (navigator.vibrate) {
                 navigator.vibrate([300, 150, 300, 150, 300]);
               }
-              // Dźwięk alarmu
-              try {
-                var AudioContext = window.AudioContext || window.webkitAudioContext;
-                var ctx = new AudioContext();
-                function beep(f, d, v) {
-                  var o = ctx.createOscillator();
-                  var g = ctx.createGain();
-                  o.connect(g); g.connect(ctx.destination);
-                  o.frequency.value = f; o.type = 'square'; g.gain.value = v;
-                  o.start(ctx.currentTime); o.stop(ctx.currentTime + d);
-                }
-                beep(880, 0.15, 0.4);
-                setTimeout(function() { beep(880, 0.15, 0.4); }, 200);
-                setTimeout(function() { beep(1100, 0.2, 0.4); }, 450);
-              } catch(e) {}
             })();
           ''');
         } else if (!kIsWeb && Platform.isIOS) {
@@ -8829,43 +8814,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
         js_bridge.evalJs('''
           (function() {
-            try {
-              // Stwórz kontekst audio
-              var AudioContext = window.AudioContext || window.webkitAudioContext;
-              var ctx = new AudioContext();
-              
-              // Funkcja do odtworzenia pojedynczego beep
-              function beep(frequency, duration, volume) {
-                var oscillator = ctx.createOscillator();
-                var gainNode = ctx.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(ctx.destination);
-                oscillator.frequency.value = frequency;
-                oscillator.type = 'square';
-                gainNode.gain.value = volume;
-                oscillator.start(ctx.currentTime);
-                oscillator.stop(ctx.currentTime + duration);
-              }
-              
-              // Odtwórz serię beepów (alarm)
-              beep(880, 0.2, 0.5);
-              setTimeout(function() { beep(880, 0.2, 0.5); }, 300);
-              setTimeout(function() { beep(880, 0.2, 0.5); }, 600);
-              setTimeout(function() { beep(1200, 0.3, 0.5); }, 1000);
-              
-              console.log('Beep alarm played via Web Audio API');
-            } catch(e) {
-              console.log('Web Audio API error:', e);
-              // Fallback do pliku audio
-              try {
-                var audio = new Audio('assets/sounds/alert.mp3');
-                audio.volume = 1.0;
-                audio.play();
-              } catch(e2) {
-                console.log('Audio fallback also failed:', e2);
-              }
-            }
-            
             // Web Notification API - działa nawet na zablokowanym ekranie
             try {
               if ('Notification' in window) {

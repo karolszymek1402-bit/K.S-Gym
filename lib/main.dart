@@ -10129,6 +10129,88 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   }
                                 : null,
                           ),
+                          // Reset progresu - tylko dla niezalogowanych
+                          if (!loggedIn) ...[
+                            Divider(color: Color(0x1FFFD700)),
+                            ListTile(
+                              leading:
+                                  const Icon(Icons.restart_alt, color: gold),
+                              title: Text(
+                                lang == 'PL'
+                                    ? 'Resetuj ćwiczenia'
+                                    : lang == 'NO'
+                                        ? 'Nullstill øvelser'
+                                        : 'Reset exercises',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: gold),
+                              ),
+                              subtitle: Text(
+                                lang == 'PL'
+                                    ? 'Usuń wszystkie dodane ćwiczenia'
+                                    : lang == 'NO'
+                                        ? 'Slett alle øvelser'
+                                        : 'Remove all added exercises',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: gold.withValues(alpha: 0.7)),
+                              ),
+                              onTap: () => _showResetExercisesDialog(
+                                  context, lang, gold),
+                            ),
+                            Divider(color: Color(0x1FFFD700)),
+                            ListTile(
+                              leading:
+                                  const Icon(Icons.delete_sweep, color: gold),
+                              title: Text(
+                                lang == 'PL'
+                                    ? 'Resetuj progres'
+                                    : lang == 'NO'
+                                        ? 'Nullstill fremgang'
+                                        : 'Reset progress',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: gold),
+                              ),
+                              subtitle: Text(
+                                lang == 'PL'
+                                    ? 'Wyczyść historię i zapisane ciężary'
+                                    : lang == 'NO'
+                                        ? 'Slett historikk og lagrede vekter'
+                                        : 'Clear history and saved weights',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: gold.withValues(alpha: 0.7)),
+                              ),
+                              onTap: () =>
+                                  _showResetProgressDialog(context, lang, gold),
+                            ),
+                            Divider(color: Color(0x1FFFD700)),
+                            ListTile(
+                              leading: Icon(Icons.warning_amber,
+                                  color: Colors.red.shade300),
+                              title: Text(
+                                lang == 'PL'
+                                    ? 'Resetuj wszystko'
+                                    : lang == 'NO'
+                                        ? 'Nullstill alt'
+                                        : 'Reset everything',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.red.shade300),
+                              ),
+                              subtitle: Text(
+                                lang == 'PL'
+                                    ? 'Wyczyść ćwiczenia, plan i historię'
+                                    : lang == 'NO'
+                                        ? 'Slett øvelser, plan og historikk'
+                                        : 'Clear exercises, plan and history',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.red.shade300
+                                        .withValues(alpha: 0.7)),
+                              ),
+                              onTap: () =>
+                                  _showResetAllDialog(context, lang, gold),
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -10140,6 +10222,304 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       },
     );
+  }
+
+  // Dialog resetowania ćwiczeń
+  Future<void> _showResetExercisesDialog(
+      BuildContext context, String lang, Color gold) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF0E1528),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: gold.withValues(alpha: 0.4)),
+        ),
+        title: Text(
+          lang == 'PL'
+              ? 'Resetuj ćwiczenia?'
+              : lang == 'NO'
+                  ? 'Nullstill øvelser?'
+                  : 'Reset exercises?',
+          style: TextStyle(color: gold),
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          lang == 'PL'
+              ? 'Wszystkie dodane ćwiczenia zostaną usunięte. Historia i zapisane ciężary zostaną zachowane.'
+              : lang == 'NO'
+                  ? 'Alle øvelser vil bli slettet. Historikk og lagrede vekter beholdes.'
+                  : 'All added exercises will be removed. History and saved weights will be kept.',
+          style: const TextStyle(color: Colors.white70),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              lang == 'PL'
+                  ? 'Anuluj'
+                  : lang == 'NO'
+                      ? 'Avbryt'
+                      : 'Cancel',
+              style: const TextStyle(color: Colors.white54),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: gold,
+              foregroundColor: Colors.black,
+            ),
+            child: Text(
+              lang == 'PL'
+                  ? 'Resetuj'
+                  : lang == 'NO'
+                      ? 'Nullstill'
+                      : 'Reset',
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      await _resetExercises();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              lang == 'PL'
+                  ? 'Ćwiczenia zostały zresetowane'
+                  : lang == 'NO'
+                      ? 'Øvelser nullstilt'
+                      : 'Exercises have been reset',
+            ),
+            backgroundColor: Colors.green.shade700,
+          ),
+        );
+      }
+    }
+  }
+
+  // Dialog resetowania progresu
+  Future<void> _showResetProgressDialog(
+      BuildContext context, String lang, Color gold) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF0E1528),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: gold.withValues(alpha: 0.4)),
+        ),
+        title: Text(
+          lang == 'PL'
+              ? 'Resetuj progres?'
+              : lang == 'NO'
+                  ? 'Nullstill fremgang?'
+                  : 'Reset progress?',
+          style: TextStyle(color: gold),
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          lang == 'PL'
+              ? 'Historia ćwiczeń i zapisane ciężary zostaną usunięte. Ćwiczenia i plan zostaną zachowane.'
+              : lang == 'NO'
+                  ? 'Treningshistorikk og lagrede vekter vil bli slettet. Øvelser og plan beholdes.'
+                  : 'Exercise history and saved weights will be removed. Exercises and plan will be kept.',
+          style: const TextStyle(color: Colors.white70),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              lang == 'PL'
+                  ? 'Anuluj'
+                  : lang == 'NO'
+                      ? 'Avbryt'
+                      : 'Cancel',
+              style: const TextStyle(color: Colors.white54),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: gold,
+              foregroundColor: Colors.black,
+            ),
+            child: Text(
+              lang == 'PL'
+                  ? 'Resetuj'
+                  : lang == 'NO'
+                      ? 'Nullstill'
+                      : 'Reset',
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      await _resetProgress();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              lang == 'PL'
+                  ? 'Progres został zresetowany'
+                  : lang == 'NO'
+                      ? 'Fremgang nullstilt'
+                      : 'Progress has been reset',
+            ),
+            backgroundColor: Colors.green.shade700,
+          ),
+        );
+      }
+    }
+  }
+
+  // Dialog resetowania wszystkiego
+  Future<void> _showResetAllDialog(
+      BuildContext context, String lang, Color gold) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF0E1528),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.red.shade300.withValues(alpha: 0.4)),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.warning_amber, color: Colors.red.shade300),
+            const SizedBox(width: 8),
+            Text(
+              lang == 'PL'
+                  ? 'Resetuj wszystko?'
+                  : lang == 'NO'
+                      ? 'Nullstill alt?'
+                      : 'Reset everything?',
+              style: TextStyle(color: Colors.red.shade300),
+            ),
+          ],
+        ),
+        content: Text(
+          lang == 'PL'
+              ? 'WSZYSTKIE dane zostaną usunięte:\n• Ćwiczenia\n• Plan treningowy\n• Historia ćwiczeń\n• Zapisane ciężary\n\nTej operacji nie można cofnąć!'
+              : lang == 'NO'
+                  ? 'ALLE data vil bli slettet:\n• Øvelser\n• Treningsplan\n• Treningshistorikk\n• Lagrede vekter\n\nDette kan ikke angres!'
+                  : 'ALL data will be removed:\n• Exercises\n• Training plan\n• Exercise history\n• Saved weights\n\nThis cannot be undone!',
+          style: const TextStyle(color: Colors.white70),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              lang == 'PL'
+                  ? 'Anuluj'
+                  : lang == 'NO'
+                      ? 'Avbryt'
+                      : 'Cancel',
+              style: const TextStyle(color: Colors.white54),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade700,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(
+              lang == 'PL'
+                  ? 'Resetuj wszystko'
+                  : lang == 'NO'
+                      ? 'Nullstill alt'
+                      : 'Reset all',
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      await _resetAll();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              lang == 'PL'
+                  ? 'Wszystkie dane zostały zresetowane'
+                  : lang == 'NO'
+                      ? 'Alle data nullstilt'
+                      : 'All data has been reset',
+            ),
+            backgroundColor: Colors.green.shade700,
+          ),
+        );
+      }
+    }
+  }
+
+  // Resetuj tylko ćwiczenia (listy)
+  Future<void> _resetExercises() async {
+    final prefs = await getPrefs();
+    final keys = prefs.getKeys().toList();
+
+    // Usuń listy ćwiczeń dla kategorii
+    final exerciseListKeys =
+        keys.where((k) => k.startsWith('ex_') && !k.startsWith('ex_type_'));
+    for (final key in exerciseListKeys) {
+      await prefs.remove(key);
+    }
+  }
+
+  // Resetuj progres (historia, ciężary)
+  Future<void> _resetProgress() async {
+    final prefs = await getPrefs();
+    final keys = prefs.getKeys().toList();
+
+    // Usuń historię ćwiczeń
+    for (final key in keys.where((k) => k.startsWith('history_'))) {
+      await prefs.remove(key);
+    }
+
+    // Usuń zapisane ciężary
+    for (final key in keys.where(
+        (k) => k.startsWith('last_weight_') || k.startsWith('best_weight_'))) {
+      await prefs.remove(key);
+    }
+
+    // Usuń typ ćwiczenia
+    for (final key in keys.where((k) => k.startsWith('ex_type_'))) {
+      await prefs.remove(key);
+    }
+
+    // Usuń datę pokazania dialogu zaległych treningów
+    await prefs.remove('shown_missed_dialog_date');
+  }
+
+  // Resetuj wszystko
+  Future<void> _resetAll() async {
+    final prefs = await getPrefs();
+    final keys = prefs.getKeys().toList();
+
+    // Zachowaj tylko ustawienia języka i "zapamiętaj mnie"
+    final keysToKeep = {
+      'app_language',
+      'remember_me',
+      'saved_email',
+      'saved_password'
+    };
+
+    for (final key in keys) {
+      if (!keysToKeep.contains(key)) {
+        await prefs.remove(key);
+      }
+    }
   }
 }
 

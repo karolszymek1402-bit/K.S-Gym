@@ -115,6 +115,8 @@ class ClientPlanEntry {
     this.timeSeconds = 0,
     this.dayOfWeek = 0,
     this.note = '',
+    this.warmupType,
+    this.cardioType,
   });
 
   final String? category;
@@ -124,6 +126,8 @@ class ClientPlanEntry {
   final int timeSeconds;
   final int dayOfWeek; // 0=Poniedziałek, 1=Wtorek, ..., 6=Niedziela
   final String note; // Notatka trenera dla klienta
+  final String? warmupType; // Opis rozgrzewki
+  final String? cardioType; // Opis cardio
 
   Map<String, dynamic> toMap() => {
         if (category != null && category!.trim().isNotEmpty)
@@ -134,6 +138,10 @@ class ClientPlanEntry {
         'timeSeconds': timeSeconds,
         'dayOfWeek': dayOfWeek,
         'note': note,
+        if (warmupType != null && warmupType!.trim().isNotEmpty)
+          'warmupType': warmupType,
+        if (cardioType != null && cardioType!.trim().isNotEmpty)
+          'cardioType': cardioType,
       };
 
   factory ClientPlanEntry.fromMap(Map<String, dynamic> map) {
@@ -145,6 +153,8 @@ class ClientPlanEntry {
       timeSeconds: (map['timeSeconds'] as num?)?.toInt() ?? 0,
       dayOfWeek: (map['dayOfWeek'] as num?)?.toInt() ?? 0,
       note: (map['note'] as String?) ?? '',
+      warmupType: map['warmupType'] as String?,
+      cardioType: map['cardioType'] as String?,
     );
   }
 
@@ -156,6 +166,8 @@ class ClientPlanEntry {
     int? timeSeconds,
     int? dayOfWeek,
     String? note,
+    String? warmupType,
+    String? cardioType,
   }) {
     return ClientPlanEntry(
       category: category ?? this.category,
@@ -165,6 +177,8 @@ class ClientPlanEntry {
       timeSeconds: timeSeconds ?? this.timeSeconds,
       dayOfWeek: dayOfWeek ?? this.dayOfWeek,
       note: note ?? this.note,
+      warmupType: warmupType ?? this.warmupType,
+      cardioType: cardioType ?? this.cardioType,
     );
   }
 }

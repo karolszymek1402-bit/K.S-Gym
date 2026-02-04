@@ -494,6 +494,18 @@ class Translations {
       'PL': 'Czas ćwiczenia minął!',
       'NO': 'Øvelsestiden er over!'
     },
+    'warmup_label': {'EN': 'Warm-up', 'PL': 'Rozgrzewka', 'NO': 'Oppvarming'},
+    'warmup_hint': {
+      'EN': 'e.g. mobility, band work, light sets',
+      'PL': 'np. mobilizacja, guma, lekkie serie',
+      'NO': 'f.eks. mobilitet, strikk, lette sett'
+    },
+    'cardio_label': {'EN': 'Cardio', 'PL': 'Cardio', 'NO': 'Kondis'},
+    'cardio_hint': {
+      'EN': 'e.g. bike, treadmill, intervals',
+      'PL': 'np. rower, bieżnia, interwały',
+      'NO': 'f.eks. sykkel, mølle, intervaller'
+    },
   };
 
   static String get(String key, {String language = 'EN'}) {
@@ -4492,6 +4504,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     final restCtrl = TextEditingController(text: '90');
     final timeCtrl = TextEditingController(text: '30');
     final noteCtrl = TextEditingController();
+    final warmupCtrl = TextEditingController();
+    final cardioCtrl = TextEditingController();
     final searchCtrl = TextEditingController();
     bool isTimeBased = false;
     String searchQuery = '';
@@ -4642,6 +4656,56 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       },
                     ),
                   if (searchQuery.isEmpty) const SizedBox(height: 12),
+                  // Rozgrzewka
+                  TextField(
+                    controller: warmupCtrl,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    decoration: InputDecoration(
+                      labelText: Translations.get('warmup_label',
+                          language: globalLanguage),
+                      hintText: Translations.get('warmup_hint',
+                          language: globalLanguage),
+                      labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                      hintStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      prefixIcon:
+                          const Icon(Icons.whatshot, color: Color(0xFFFFD700)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Cardio
+                  TextField(
+                    controller: cardioCtrl,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    decoration: InputDecoration(
+                      labelText: Translations.get('cardio_label',
+                          language: globalLanguage),
+                      hintText: Translations.get('cardio_hint',
+                          language: globalLanguage),
+                      labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                      hintStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      prefixIcon: const Icon(Icons.directions_run,
+                          color: Color(0xFFFFD700)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   // Ćwiczenie - dropdown z bazą
                   if (filteredExercises.isEmpty)
                     Padding(
@@ -4912,6 +4976,10 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           timeSeconds: isTimeBased ? (int.tryParse(timeCtrl.text) ?? 30) : 0,
           dayOfWeek: dayIndex,
           note: noteCtrl.text.trim(),
+          warmupType:
+              warmupCtrl.text.trim().isEmpty ? null : warmupCtrl.text.trim(),
+          cardioType:
+              cardioCtrl.text.trim().isEmpty ? null : cardioCtrl.text.trim(),
         );
 
         final currentEntries = _plan?.entries ?? [];
@@ -5011,6 +5079,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     final setsCtrl = TextEditingController(text: entry.sets.toString());
     final restCtrl = TextEditingController(text: entry.restSeconds.toString());
     final timeCtrl = TextEditingController(text: entry.timeSeconds.toString());
+    final noteCtrl = TextEditingController(text: entry.note);
+    final warmupCtrl = TextEditingController(text: entry.warmupType ?? '');
+    final cardioCtrl = TextEditingController(text: entry.cardioType ?? '');
     bool isTimeBased = entry.timeSeconds > 0;
 
     // Pobierz kategorie z kCategoryNames (bez 'PLAN')
@@ -5275,6 +5346,90 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  // Rozgrzewka
+                  TextField(
+                    controller: warmupCtrl,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    decoration: InputDecoration(
+                      labelText: Translations.get('warmup_label',
+                          language: globalLanguage),
+                      hintText: Translations.get('warmup_hint',
+                          language: globalLanguage),
+                      labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                      hintStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      prefixIcon:
+                          const Icon(Icons.whatshot, color: Color(0xFFFFD700)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Cardio
+                  TextField(
+                    controller: cardioCtrl,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    decoration: InputDecoration(
+                      labelText: Translations.get('cardio_label',
+                          language: globalLanguage),
+                      hintText: Translations.get('cardio_hint',
+                          language: globalLanguage),
+                      labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                      hintStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      prefixIcon: const Icon(Icons.directions_run,
+                          color: Color(0xFFFFD700)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Notatka dla klienta
+                  TextField(
+                    controller: noteCtrl,
+                    maxLines: 3,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    decoration: InputDecoration(
+                      labelText: Translations.get('note_for_client',
+                          language: globalLanguage),
+                      labelStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.7)),
+                      hintText: Translations.get('note_hint',
+                          language: globalLanguage),
+                      hintStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.4)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                            color:
+                                const Color(0xFFFFD700).withValues(alpha: 0.3)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      prefixIcon: Icon(Icons.note_add,
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.7)),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -5307,6 +5462,11 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           restSeconds: int.tryParse(restCtrl.text) ?? 90,
           timeSeconds: isTimeBased ? (int.tryParse(timeCtrl.text) ?? 30) : 0,
           dayOfWeek: entry.dayOfWeek, // Zachowaj dzień tygodnia
+          note: noteCtrl.text.trim(),
+          warmupType:
+              warmupCtrl.text.trim().isEmpty ? null : warmupCtrl.text.trim(),
+          cardioType:
+              cardioCtrl.text.trim().isEmpty ? null : cardioCtrl.text.trim(),
         );
 
         final entries = List<ClientPlanEntry>.from(_plan?.entries ?? []);
@@ -5925,13 +6085,37 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                             fontSize: 14),
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      subtitle: Text(
-                                        '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${exercise.timeSeconds > 0 ? ' • ${exercise.timeSeconds}s' : ''}',
-                                        style: TextStyle(
-                                            color:
-                                                accent.withValues(alpha: 0.6),
-                                            fontSize: 11),
-                                      ),
+                                      subtitle: Builder(builder: (_) {
+                                        final parts = <String>[];
+                                        parts.add(
+                                            '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}');
+                                        parts.add(
+                                            '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}');
+                                        if (exercise.timeSeconds > 0) {
+                                          parts.add('${exercise.timeSeconds}s');
+                                        }
+                                        if (exercise.warmupType != null &&
+                                            exercise.warmupType!
+                                                .trim()
+                                                .isNotEmpty) {
+                                          parts.add(
+                                              '${Translations.get('warmup_label', language: lang)}: ${exercise.warmupType}');
+                                        }
+                                        if (exercise.cardioType != null &&
+                                            exercise.cardioType!
+                                                .trim()
+                                                .isNotEmpty) {
+                                          parts.add(
+                                              '${Translations.get('cardio_label', language: lang)}: ${exercise.cardioType}');
+                                        }
+                                        return Text(
+                                          parts.join(' • '),
+                                          style: TextStyle(
+                                              color:
+                                                  accent.withValues(alpha: 0.6),
+                                              fontSize: 11),
+                                        );
+                                      }),
                                       trailing: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [

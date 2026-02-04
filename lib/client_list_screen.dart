@@ -106,7 +106,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
                             ),
                           ),
                           title: Text(
-                            displayName,
+                            hasDisplayName ? displayName : email,
                             style: const TextStyle(
                               color: Color(0xFFFFD700),
                               fontWeight: FontWeight.bold,
@@ -116,10 +116,10 @@ class _ClientListScreenState extends State<ClientListScreen> {
                             hasDisplayName
                                 ? email
                                 : (lang == 'PL'
-                                    ? 'Klient'
+                                    ? 'Kliknij edytuj aby nadać imię'
                                     : lang == 'NO'
-                                        ? 'Klient'
-                                        : 'Client'),
+                                        ? 'Klikk rediger for å sette navn'
+                                        : 'Click edit to set name'),
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,

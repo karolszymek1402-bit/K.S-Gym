@@ -5763,6 +5763,51 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     }
   }
 
+  Widget _buildSpecialNoteTile({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required List<String> lines,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: color.withValues(alpha: 0.18),
+          child: Icon(icon, color: color),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: lines
+              .map(
+                (line) => Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    line,
+                    style: TextStyle(
+                      color: color.withValues(alpha: 0.8),
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
@@ -5898,6 +5943,18 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ...List.generate(7, (dayIndex) {
                         final isRestDay = _isRestDay(dayIndex);
                         final exercisesForDay = _getExercisesForDay(dayIndex);
+                        final warmupNotes = exercisesForDay
+                            .map((e) => e.warmupType?.trim())
+                            .where((t) => t != null && t!.isNotEmpty)
+                            .map((t) => t!)
+                            .toSet()
+                            .toList();
+                        final cardioNotes = exercisesForDay
+                            .map((e) => e.cardioType?.trim())
+                            .where((t) => t != null && t!.isNotEmpty)
+                            .map((t) => t!)
+                            .toSet()
+                            .toList();
                         final dayName = _dayNames[dayIndex];
 
                         return Card(
@@ -6026,6 +6083,30 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               iconColor: accent,
                               collapsedIconColor: accent.withValues(alpha: 0.5),
                               children: [
+                                if (!isRestDay && warmupNotes.isNotEmpty)
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                                    child: _buildSpecialNoteTile(
+                                      icon: Icons.local_fire_department,
+                                      color: accent,
+                                      title: Translations.get('warmup_label',
+                                          language: lang),
+                                      lines: warmupNotes,
+                                    ),
+                                  ),
+                                if (!isRestDay && cardioNotes.isNotEmpty)
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                                    child: _buildSpecialNoteTile(
+                                      icon: Icons.directions_run,
+                                      color: accent,
+                                      title: Translations.get('cardio_label',
+                                          language: lang),
+                                      lines: cardioNotes,
+                                    ),
+                                  ),
                                 if (!isRestDay && exercisesForDay.isEmpty)
                                   Padding(
                                     padding: const EdgeInsets.all(16),

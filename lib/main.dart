@@ -8,6 +8,7 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'js_bridge.dart' as js_bridge;
+import 'notification_permission.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8312,6 +8313,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   bool _autoStart = true;
   static const String _autoStartKey = 'auto_start_timer';
+  String _notificationPermission = 'unknown';
 
   @override
   void initState() {
@@ -8319,6 +8321,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _animControllerInit();
     _loadHistory();
     _loadAutoStart();
+    _refreshNotificationPermission();
     // Nie pytaj o uprawnienia do powiadomień przy starcie - zrobimy to przy końcu timera
 
     // Ustaw czas przerwy zalecony przez trenera (jeśli dostępny)
@@ -8355,6 +8358,38 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     if (mounted) {
       setState(() {
         _autoStart = val ?? true;
+      });
+    }
+  }
+
+  Future<void> _refreshNotificationPermission() async {
+    if (!kIsWeb) return;
+    try {
+      final status = await getNotificationPermission();
+      if (!mounted) return;
+      setState(() {
+        _notificationPermission = status;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _notificationPermission = 'error';
+      });
+    }
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    if (!kIsWeb) return;
+    try {
+      final status = await requestNotificationPermission();
+      if (!mounted) return;
+      setState(() {
+        _notificationPermission = status;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _notificationPermission = 'error';
       });
     }
   }
@@ -9118,6 +9153,151 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     return p;
   }
 
+  Widget _buildNotificationBanner(String lang, Color accent) {
+    if (!kIsWeb) return const SizedBox.shrink();
+
+    String title;
+    String message;
+    Color borderColor;
+    Color iconColor;
+
+    switch (_notificationPermission) {
+      case 'granted':
+        title = lang == 'PL'
+            ? 'Powiadomienia włączone'
+            : lang == 'NO'
+                ? 'Varsler er på'
+                : 'Notifications enabled';
+        message = lang == 'PL'
+            ? 'Przeglądarka może wstrzymać zegar przy zablokowanym ekranie, ale spróbujemy pokazać alert o końcu przerwy.'
+            : lang == 'NO'
+                ? 'Nettleseren kan pause tidtakeren når skjermen er låst, men vi prøver å vise varsel når pausen er ferdig.'
+                : 'The browser may pause the timer on a locked screen, but we will try to show an alert when rest ends.';
+        borderColor = const Color(0xFF2ECC71);
+        iconColor = const Color(0xFF2ECC71);
+        break;
+      case 'denied':
+        title = lang == 'PL'
+            ? 'Powiadomienia zablokowane'
+            : lang == 'NO'
+                ? 'Varsler blokkert'
+                : 'Notifications blocked';
+        message = lang == 'PL'
+            ? 'Włącz powiadomienia w ustawieniach przeglądarki dla tej strony, aby dostać alarm po przerwie.'
+            : lang == 'NO'
+                ? 'Slå på varsler i nettleserens innstillinger for dette nettstedet for å få varsel etter pausen.'
+                : 'Enable notifications in your browser settings for this site to get rest alerts.';
+        borderColor = const Color(0xFFFF5252);
+        iconColor = const Color(0xFFFF5252);
+        break;
+      case 'unsupported':
+        title = lang == 'PL'
+            ? 'Powiadomienia niedostępne na tej platformie'
+            : lang == 'NO'
+                ? 'Varsler er ikke støttet på denne plattformen'
+                : 'Notifications not supported on this platform';
+        message = lang == 'PL'
+            ? 'Przeglądarka lub urządzenie nie obsługuje web notifications.'
+            : lang == 'NO'
+                ? 'Nettleseren eller enheten støtter ikke webvarsler.'
+                : 'Browser or device does not support web notifications.';
+        borderColor = Colors.orangeAccent;
+        iconColor = Colors.orangeAccent;
+        break;
+      case 'error':
+        title = lang == 'PL'
+            ? 'Błąd pobierania statusu powiadomień'
+            : lang == 'NO'
+                ? 'Feil ved henting av varslingsstatus'
+                : 'Error checking notification status';
+        message = lang == 'PL'
+            ? 'Spróbuj ponownie lub włącz powiadomienia w ustawieniach przeglądarki.'
+            : lang == 'NO'
+                ? 'Prøv igjen eller slå på varsler i nettleserens innstillinger.'
+                : 'Try again or enable notifications in browser settings.';
+        borderColor = Colors.orangeAccent;
+        iconColor = Colors.orangeAccent;
+        break;
+      default:
+        title = lang == 'PL'
+            ? 'Włącz powiadomienia o końcu przerwy'
+            : lang == 'NO'
+                ? 'Slå på varsler når pausen er ferdig'
+                : 'Enable rest-finished notifications';
+        message = lang == 'PL'
+            ? 'Zezwól na powiadomienia i nie blokuj ekranu, aby licznik przerwy działał i wysłał alert.'
+            : lang == 'NO'
+                ? 'Tillat varsler og unngå låst skjerm for at pausetelleren skal kjøre og sende varsel.'
+                : 'Allow notifications and avoid locking the screen so the timer can run and alert you.';
+        borderColor = accent;
+        iconColor = accent;
+        break;
+    }
+
+    return Card(
+      color: Colors.black.withValues(alpha: 0.35),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: borderColor.withValues(alpha: 0.6)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.notifications_active, color: iconColor),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              message,
+              style: const TextStyle(color: Colors.white70, height: 1.3),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                if (_notificationPermission != 'granted' &&
+                    _notificationPermission != 'unsupported')
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: accent, foregroundColor: Colors.black),
+                    onPressed: _requestNotificationPermission,
+                    icon: const Icon(Icons.notifications),
+                    label: Text(lang == 'PL'
+                        ? 'Włącz powiadomienia'
+                        : lang == 'NO'
+                            ? 'Slå på varsler'
+                            : 'Enable notifications'),
+                  ),
+                if (_notificationPermission != 'granted' &&
+                    _notificationPermission != 'unsupported')
+                  const SizedBox(width: 8),
+                TextButton(
+                  onPressed: _refreshNotificationPermission,
+                  child: Text(lang == 'PL'
+                      ? 'Sprawdź status'
+                      : lang == 'NO'
+                          ? 'Sjekk status'
+                          : 'Check status'),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const accent = Color(0xFFFFD700);
@@ -9163,6 +9343,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                                 title: '',
                                 language: lang),
                             const SizedBox(height: 10),
+                            if (kIsWeb) _buildNotificationBanner(lang, accent),
+                            if (kIsWeb) const SizedBox(height: 10),
                             Card(
                               color: Colors.black.withValues(alpha: 0.4),
                               shape: RoundedRectangleBorder(

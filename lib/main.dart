@@ -8696,50 +8696,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                 ? 'Tid for neste sett: $exName'
                 : 'Time for next set: $exName';
 
-        // Sprawdź czy dźwięk jest włączony
-        final prefs = await getPrefs();
-        final soundEnabled = prefs.getBool('alarm_sound_enabled') ?? true;
-
         js_bridge.evalJs('''
           (function() {
             console.log('🔔 Starting notification process...');
-            
-            // Dźwięk alarmu - działa lepiej na zablokowanym ekranie niż powiadomienia wizualne
-            var soundEnabled = $soundEnabled;
-            if (soundEnabled) {
-              try {
-                var AudioContext = window.AudioContext || window.webkitAudioContext;
-                var ctx = new AudioContext();
-                
-                // Jeśli AudioContext jest suspended (np. na iOS), próbuj go wznowić
-                if (ctx.state === 'suspended') {
-                  ctx.resume();
-                }
-                
-                function beep(freq, startTime, duration, vol) {
-                  var osc = ctx.createOscillator();
-                  var gain = ctx.createGain();
-                  osc.connect(gain);
-                  gain.connect(ctx.destination);
-                  osc.frequency.value = freq;
-                  osc.type = 'square';
-                  gain.gain.value = vol;
-                  osc.start(ctx.currentTime + startTime);
-                  osc.stop(ctx.currentTime + startTime + duration);
-                }
-                
-                // Seria głośnych beepów - alarm
-                beep(880, 0, 0.2, 0.5);
-                beep(880, 0.3, 0.2, 0.5);
-                beep(1100, 0.6, 0.3, 0.6);
-                beep(880, 1.0, 0.2, 0.5);
-                beep(1100, 1.3, 0.4, 0.7);
-                
-                console.log('🔔 Alarm sound played');
-              } catch(e) {
-                console.log('🔔 Audio error:', e);
-              }
-            }
             
             // Funkcja pokazująca powiadomienie
             function showNotification() {
@@ -10004,31 +9963,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _alarmSoundEnabled = true;
-
   @override
   void initState() {
     super.initState();
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    final prefs = await getPrefs();
-    if (mounted) {
-      setState(() {
-        _alarmSoundEnabled = prefs.getBool('alarm_sound_enabled') ?? true;
-      });
-    }
-  }
-
-  Future<void> _setAlarmSound(bool enabled) async {
-    final prefs = await getPrefs();
-    await prefs.setBool('alarm_sound_enabled', enabled);
-    if (mounted) {
-      setState(() {
-        _alarmSoundEnabled = enabled;
-      });
-    }
   }
 
   Future<void> _setLanguage(String lang) async {
@@ -10105,41 +10042,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   fontWeight: FontWeight.w800,
                                   fontSize: 20)),
                           const SizedBox(height: 12),
-                          // Przełącznik dźwięku alarmu
-                          SwitchListTile(
-                            secondary: Icon(
-                              _alarmSoundEnabled
-                                  ? Icons.volume_up
-                                  : Icons.volume_off,
-                              color: gold,
-                            ),
-                            title: Text(
-                              lang == 'PL'
-                                  ? 'Dźwięk alarmu'
-                                  : lang == 'NO'
-                                      ? 'Alarmlyd'
-                                      : 'Alarm sound',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: gold),
-                            ),
-                            subtitle: Text(
-                              lang == 'PL'
-                                  ? 'Odtwarzaj dźwięk gdy przerwa się skończy'
-                                  : lang == 'NO'
-                                      ? 'Spill av lyd når pausen er over'
-                                      : 'Play sound when rest ends',
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: gold.withValues(alpha: 0.7)),
-                            ),
-                            value: _alarmSoundEnabled,
-                            onChanged: (value) => _setAlarmSound(value),
-                            activeColor: gold,
-                            inactiveThumbColor: Colors.grey,
-                            inactiveTrackColor:
-                                Colors.grey.withValues(alpha: 0.3),
-                          ),
-                          Divider(color: Color(0x1FFFD700)),
                           ListTile(
                             leading: const Icon(Icons.language, color: gold),
                             title: Text(

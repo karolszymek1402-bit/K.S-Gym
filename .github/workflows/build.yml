@@ -10,6 +10,7 @@ on:
 jobs:
   build-ios:
     name: Build iOS
+    if: ${{ hashFiles('ios/Runner.xcodeproj/project.pbxproj') != '' }}
     runs-on: macos-latest
     
     steps:

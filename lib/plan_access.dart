@@ -558,12 +558,17 @@ class PlanAccessController {
 
       final clients = <UserProfile>[];
       for (var doc in snapshot.docs) {
-        final profile = UserProfile.fromMap(doc.data());
+        final data = doc.data();
+        debugPrint(
+            '🔍 Client doc ${doc.id}: displayName="${data['displayName']}", email="${data['email']}"');
+        final profile = UserProfile.fromMap(data);
         clients.add(profile);
       }
 
+      debugPrint('🔍 Total clients fetched: ${clients.length}');
       return clients;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('🔍 Error fetching clients: $e');
       return [];
     }
   }
@@ -605,12 +610,16 @@ class PlanAccessController {
   Future<void> updateClientDisplayName(
       String email, String? displayName) async {
     final docId = _docIdFromEmail(email);
+    debugPrint(
+        '📝 updateClientDisplayName: email=$email, docId=$docId, displayName=$displayName');
     try {
       await _usersCollection.doc(docId).update({
         'displayName':
             displayName?.trim().isNotEmpty == true ? displayName!.trim() : null,
       });
-    } catch (_) {
+      debugPrint('📝 displayName updated successfully!');
+    } catch (e) {
+      debugPrint('📝 Error updating displayName: $e');
       rethrow;
     }
   }

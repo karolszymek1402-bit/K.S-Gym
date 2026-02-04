@@ -31,13 +31,46 @@ class _ClientListScreenState extends State<ClientListScreen> {
     setState(() => _loading = true);
     try {
       final clients = await PlanAccessController.instance.fetchAllClients();
+
+      // Debug: pokaż informacje o klientach
+      for (var c in clients) {
+        debugPrint(
+            '👤 Klient: email="${c.email}", displayName="${c.displayName}"');
+      }
+
       if (mounted) {
         setState(() {
           _clients = clients;
           _loading = false;
         });
+
+        // Pokaż alert z danymi klientów
+        if (clients.isNotEmpty) {
+          final info = clients
+              .map((c) => 'Email: ${c.email}\nImię: ${c.displayName ?? "BRAK"}')
+              .join('\n\n');
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              backgroundColor: const Color(0xFF0B2E5A),
+              title: const Text('DEBUG: Dane klientów',
+                  style: TextStyle(color: Color(0xFFFFD700))),
+              content: SingleChildScrollView(
+                child: Text(info, style: const TextStyle(color: Colors.white)),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('OK',
+                      style: TextStyle(color: Color(0xFFFFD700))),
+                ),
+              ],
+            ),
+          );
+        }
       }
     } catch (e) {
+      debugPrint('❌ Error loading clients: $e');
       if (mounted) {
         setState(() => _loading = false);
       }
@@ -79,10 +112,13 @@ class _ClientListScreenState extends State<ClientListScreen> {
                     itemBuilder: (context, index) {
                       final client = _clients[index];
                       final email = client.email;
-                      final hasDisplayName =
-                          client.displayName?.isNotEmpty == true;
-                      final displayName =
-                          hasDisplayName ? client.displayName! : email;
+                        final hasDisplayName =
+                          client.displayName?.trim().isNotEmpty == true;
+                        final displayName = hasDisplayName
+                          ? client.displayName!.trim()
+                          : (email.contains('@')
+                            ? email.split('@').first
+                            : email);
                       return Card(
                         color: const Color(0xFF0B2E5A).withValues(alpha: 0.6),
                         margin: const EdgeInsets.only(bottom: 12),
@@ -106,7 +142,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
                             ),
                           ),
                           title: Text(
-                            hasDisplayName ? displayName : email,
+                            displayName,
                             style: const TextStyle(
                               color: Color(0xFFFFD700),
                               fontWeight: FontWeight.bold,
@@ -115,11 +151,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
                           subtitle: Text(
                             hasDisplayName
                                 ? email
-                                : (lang == 'PL'
-                                    ? 'Kliknij edytuj aby nadać imię'
-                                    : lang == 'NO'
-                                        ? 'Klikk rediger for å sette navn'
-                                        : 'Click edit to set name'),
+                                : '$email\n${lang == 'PL' ? 'Kliknij edytuj aby nadać imię' : lang == 'NO' ? 'Klikk rediger for å sette navn' : 'Click edit to set name'}',
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -451,7 +483,10 @@ class _ClientListScreenState extends State<ClientListScreen> {
               }
 
               // Check if anything changed
+              debugPrint(
+                  '🔧 Edit: newName="$newName", currentName="$currentName", newEmail="$newEmail", currentEmail="$currentEmail"');
               if (newEmail == currentEmail && newName == currentName) {
+                debugPrint('🔧 Nothing changed, closing dialog');
                 Navigator.pop(context);
                 return;
               }
@@ -461,6 +496,8 @@ class _ClientListScreenState extends State<ClientListScreen> {
               try {
                 // Update display name if changed
                 if (newName != currentName) {
+                  debugPrint(
+                      '🔧 Updating displayName from "$currentName" to "$newName"');
                   await PlanAccessController.instance.updateClientDisplayName(
                     currentEmail,
                     newName.isNotEmpty ? newName : null,
@@ -920,53 +957,24 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     }
   }
 
-  Future<void> _pasteFromClipboard() async {
+  Future<void> _loadClients() async {
+    setState(() => _loading = true);
     try {
-      final data = await Clipboard.getData('text/plain');
-      if (data?.text != null && data!.text!.isNotEmpty) {
+      final clients = await PlanAccessController.instance.fetchAllClients();
+
+      if (mounted) {
         setState(() {
-          _planController.text = data.text!;
+          _clients = clients;
+          _loading = false;
         });
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('❌ Error loading clients: $e');
+      if (mounted) {
+        setState(() => _loading = false);
+      }
+    }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    final lang = globalLanguage;
-    return Scaffold(
-      appBar: buildCustomAppBar(context, accentColor: widget.themeColor),
-      body: GymBackgroundWithFitness(
-        goldDumbbells: true,
-        backgroundImage: 'assets/tlo.png',
-        backgroundImageOpacity: 0.3,
-        gradientColors: const [
-          Color(0xFF0B2E5A),
-          Color(0xFF0A2652),
-          Color(0xFF0E3D8C),
-        ],
-        accentColor: widget.themeColor,
-        child: _loading
-            ? const Center(
-                child: CircularProgressIndicator(color: Color(0xFFFFD700)))
-            : SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Card(
-                      color: const Color(0xFF0B2E5A).withValues(alpha: 0.6),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: const BorderSide(
-                          color: Color(0xFFFFD700),
-                          width: 2,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [

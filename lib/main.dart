@@ -5763,46 +5763,44 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     }
   }
 
-  Widget _buildSpecialNoteTile({
+  Widget _buildSpecialNoteItem({
     required IconData icon,
     required Color color,
     required String title,
-    required List<String> lines,
+    required String line,
   }) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
+        color: Colors.black.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color.withValues(alpha: 0.18),
-          child: Icon(icon, color: color),
+        dense: true,
+        leading: Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(icon, color: color, size: 18),
         ),
         title: Text(
           title,
           style: TextStyle(
             color: color,
             fontWeight: FontWeight.w700,
+            fontSize: 13,
           ),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: lines
-              .map(
-                (line) => Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    line,
-                    style: TextStyle(
-                      color: color.withValues(alpha: 0.8),
-                      height: 1.3,
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
+        subtitle: Text(
+          line,
+          style: TextStyle(
+            color: color.withValues(alpha: 0.8),
+            fontSize: 12,
+          ),
         ),
       ),
     );
@@ -6084,27 +6082,23 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               collapsedIconColor: accent.withValues(alpha: 0.5),
                               children: [
                                 if (!isRestDay && warmupNotes.isNotEmpty)
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                                    child: _buildSpecialNoteTile(
+                                  ...warmupNotes.map(
+                                    (note) => _buildSpecialNoteItem(
                                       icon: Icons.local_fire_department,
                                       color: accent,
                                       title: Translations.get('warmup_label',
                                           language: lang),
-                                      lines: warmupNotes,
+                                      line: note,
                                     ),
                                   ),
                                 if (!isRestDay && cardioNotes.isNotEmpty)
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                                    child: _buildSpecialNoteTile(
+                                  ...cardioNotes.map(
+                                    (note) => _buildSpecialNoteItem(
                                       icon: Icons.directions_run,
                                       color: accent,
                                       title: Translations.get('cardio_label',
                                           language: lang),
-                                      lines: cardioNotes,
+                                      line: note,
                                     ),
                                   ),
                                 if (!isRestDay && exercisesForDay.isEmpty)

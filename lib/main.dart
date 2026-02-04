@@ -8699,6 +8699,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
         js_bridge.evalJs('''
           (function() {
+            console.log('🔔 Starting notification process...');
+            
             // Funkcja pokazująca powiadomienie
             function showNotification() {
               try {
@@ -8708,20 +8710,23 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                     registration.showNotification('$notificationTitle', {
                       body: '$notificationBody',
                       icon: 'icons/Icon-192.png',
+                      badge: 'icons/Icon-192.png',
                       tag: 'rest-timer-' + Date.now(),
                       requireInteraction: true,
-                      renotify: true
+                      renotify: true,
+                      silent: false
                     });
-                    console.log('Service Worker notification shown');
+                    console.log('🔔 Service Worker notification shown');
                   }).catch(function(err) {
-                    console.log('SW notification failed, trying regular:', err);
+                    console.log('🔔 SW notification failed:', err);
                     showRegularNotification();
                   });
                 } else {
+                  console.log('🔔 No active Service Worker, using regular notification');
                   showRegularNotification();
                 }
               } catch(e) {
-                console.log('Notification error:', e);
+                console.log('🔔 Notification error:', e);
                 showRegularNotification();
               }
             }
@@ -8732,27 +8737,34 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                   body: '$notificationBody',
                   icon: 'icons/Icon-192.png',
                   tag: 'rest-timer-' + Date.now(),
-                  requireInteraction: true
+                  requireInteraction: true,
+                  silent: false
                 });
                 notification.onclick = function() {
                   window.focus();
                   notification.close();
                 };
-                console.log('Regular notification shown');
+                console.log('🔔 Regular notification shown');
+              } else {
+                console.log('🔔 Notifications not available or not granted');
               }
             }
             
             // Sprawdź uprawnienia i pokaż powiadomienie
             if ('Notification' in window) {
+              console.log('🔔 Notification permission:', Notification.permission);
               if (Notification.permission === 'granted') {
                 showNotification();
               } else if (Notification.permission !== 'denied') {
                 Notification.requestPermission().then(function(permission) {
+                  console.log('🔔 Permission result:', permission);
                   if (permission === 'granted') {
                     showNotification();
                   }
                 });
               }
+            } else {
+              console.log('🔔 Notification API not available');
             }
           })();
         ''');

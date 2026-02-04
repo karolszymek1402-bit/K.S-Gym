@@ -735,6 +735,7 @@ const Map<String, List<String>> kDefaultExercises = {
     'Brzuszki (pełne) – Sit-ups',
     'Unoszenie nóg w zwisie na drążku – Hanging Leg Raise',
     'Unoszenie kolan w zwisie – Hanging Knee Raise',
+    'Unoszenie nóg leżąc na plecach – Lying Leg Raise (Supine)',
     'Scyzoryki – V-ups',
     'Nożyce – Flutter Kicks',
     'L-sit – L-Sit',
@@ -777,6 +778,12 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Wyciskanie sztangi na skosie dodatnim',
     'EN': 'Incline Barbell Bench Press',
     'NO': 'Incline Barbell Bench Press',
+  },
+  // ABS
+  'Unoszenie nóg leżąc na plecach – Lying Leg Raise (Supine)': {
+    'PL': 'Unoszenie nóg leżąc na plecach',
+    'EN': 'Lying Leg Raise (Supine)',
+    'NO': 'Liggende benhev på rygg',
   },
   'Wyciskanie sztangi na skosie ujemnym – Decline Barbell Bench Press': {
     'PL': 'Wyciskanie sztangi na skosie ujemnym',

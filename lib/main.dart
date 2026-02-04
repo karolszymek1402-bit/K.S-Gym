@@ -5531,48 +5531,146 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
               allProgress[entry.exercise] = logs;
             }
           } catch (_) {}
-        }
-      }
+            bool _isWarmupBlock(ClientPlanEntry entry) =>
+                entry.category == 'WARMUP_BLOCK';
 
-      if (!mounted) return;
-      navigator.pop();
+            bool _isCardioBlock(ClientPlanEntry entry) =>
+                entry.category == 'CARDIO_BLOCK';
 
-      // Show progress dialog
-      if (!context.mounted) return;
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: const Color(0xFF0E1117),
-          title: Row(
-            children: [
-              const Icon(Icons.insights, color: Color(0xFF2ECC71)),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  lang == 'PL'
-                      ? 'Postępy klienta'
-                      : lang == 'NO'
-                          ? 'Klientens fremgang'
-                          : 'Client Progress',
-                  style: const TextStyle(
-                      color: Color(0xFFFFD700), fontWeight: FontWeight.bold),
+            Future<void> _addSpecialBlock({
+              required int dayIndex,
+              required bool isWarmup,
+            }) async {
+              final lang = globalLanguage;
+              final controller = TextEditingController();
+              final title = isWarmup
+                  ? Translations.get('warmup_label', language: lang)
+                  : Translations.get('cardio_label', language: lang);
+
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: Colors.black.withOpacity(0.9),
+                  title: Text(title, style: const TextStyle(color: Color(0xFFFFD700))),
+                  content: TextField(
+                    controller: controller,
+                    autofocus: true,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      hintText: isWarmup
+                          ? Translations.get('warmup_hint', language: lang)
+                          : Translations.get('cardio_hint', language: lang),
+                      hintStyle:
+                          TextStyle(color: const Color(0xFFFFD700).withOpacity(0.5)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: Text(Translations.get('cancel', language: lang)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: Text(Translations.get('add', language: lang)),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            height: 400,
-            child: allProgress.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.history,
-                            color: Color(0xFFFFD700), size: 48),
-                        const SizedBox(height: 12),
-                        Text(
-                          lang == 'PL'
+              );
+
+              if (confirmed == true && controller.text.trim().isNotEmpty) {
+                final newEntry = ClientPlanEntry(
+                  category: isWarmup ? 'WARMUP_BLOCK' : 'CARDIO_BLOCK',
+                  exercise: controller.text.trim(),
+                  sets: 0,
+                  restSeconds: 0,
+                  timeSeconds: 0,
+                  dayOfWeek: dayIndex,
+                  note: '',
+                );
+
+                final entries = List<ClientPlanEntry>.from(_plan?.entries ?? []);
+                // Insert at end of this day block
+                final insertIndex = entries.lastIndexWhere(
+                      (e) => e.dayOfWeek == dayIndex,
+                    ) +
+                    1;
+                if (insertIndex <= 0) {
+                  entries.add(newEntry);
+                } else {
+                  entries.insert(insertIndex, newEntry);
+                }
+
+                await PlanAccessController.instance.updateClientPlanEntries(
+                  widget.clientEmail,
+                  entries,
+                );
+                _refreshPlan();
+              }
+            }
+
+            Future<void> _editSpecialBlock(int index) async {
+              final entry = _plan!.entries[index];
+              final isWarmup = _isWarmupBlock(entry);
+              final lang = globalLanguage;
+              final controller = TextEditingController(text: entry.exercise);
+              final title = isWarmup
+                  ? Translations.get('warmup_label', language: lang)
+                  : Translations.get('cardio_label', language: lang);
+
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: Colors.black.withOpacity(0.9),
+                  title: Text(title, style: const TextStyle(color: Color(0xFFFFD700))),
+                  content: TextField(
+                    controller: controller,
+                    autofocus: true,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      hintText: isWarmup
+                          ? Translations.get('warmup_hint', language: lang)
+                          : Translations.get('cardio_hint', language: lang),
+                      hintStyle:
+                          TextStyle(color: const Color(0xFFFFD700).withOpacity(0.5)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: Text(Translations.get('cancel', language: lang)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: Text(Translations.get('save', language: lang)),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmed == true && controller.text.trim().isNotEmpty) {
+                final entries = List<ClientPlanEntry>.from(_plan?.entries ?? []);
+                entries[index] = entry.copyWith(exercise: controller.text.trim());
+                await PlanAccessController.instance.updateClientPlanEntries(
+                  widget.clientEmail,
+                  entries,
+                );
+                _refreshPlan();
+              }
+            }
                               ? 'Brak zapisanych postępów'
                               : lang == 'NO'
                                   ? 'Ingen lagret fremgang'
@@ -5768,7 +5866,14 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     required Color color,
     required String title,
     required String line,
+    required VoidCallback onTap,
+    required VoidCallback onDelete,
+    required int entryIndex,
+    required void Function(int) onMoveUp,
+    required void Function(int) onMoveDown,
   }) {
+    final canMoveUp = entryIndex > 0;
+    final canMoveDown = entryIndex < ((_plan?.entries.length ?? 0) - 1);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
@@ -5778,6 +5883,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
       ),
       child: ListTile(
         dense: true,
+        onTap: onTap,
         leading: Container(
           width: 32,
           height: 32,
@@ -5801,6 +5907,48 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
             color: color.withValues(alpha: 0.8),
             fontSize: 12,
           ),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_upward,
+                  color: canMoveUp
+                      ? color.withValues(alpha: 0.7)
+                      : color.withValues(alpha: 0.2),
+                  size: 18),
+              onPressed: canMoveUp ? () => onMoveUp(entryIndex) : null,
+              padding: EdgeInsets.zero,
+              constraints:
+                  const BoxConstraints(minWidth: 28, minHeight: 28),
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_downward,
+                  color: canMoveDown
+                      ? color.withValues(alpha: 0.7)
+                      : color.withValues(alpha: 0.2),
+                  size: 18),
+              onPressed: canMoveDown ? () => onMoveDown(entryIndex) : null,
+              padding: EdgeInsets.zero,
+              constraints:
+                  const BoxConstraints(minWidth: 28, minHeight: 28),
+            ),
+            IconButton(
+              icon: Icon(Icons.edit, color: color.withValues(alpha: 0.7), size: 18),
+              onPressed: onTap,
+              padding: EdgeInsets.zero,
+              constraints:
+                  const BoxConstraints(minWidth: 28, minHeight: 28),
+            ),
+            IconButton(
+              icon:
+                  const Icon(Icons.delete, color: Color(0xFFFF5252), size: 18),
+              onPressed: onDelete,
+              padding: EdgeInsets.zero,
+              constraints:
+                  const BoxConstraints(minWidth: 28, minHeight: 28),
+            ),
+          ],
         ),
       ),
     );
@@ -5941,18 +6089,6 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ...List.generate(7, (dayIndex) {
                         final isRestDay = _isRestDay(dayIndex);
                         final exercisesForDay = _getExercisesForDay(dayIndex);
-                        final warmupNotes = exercisesForDay
-                            .map((e) => e.warmupType?.trim())
-                            .where((t) => t != null && t!.isNotEmpty)
-                            .map((t) => t!)
-                            .toSet()
-                            .toList();
-                        final cardioNotes = exercisesForDay
-                            .map((e) => e.cardioType?.trim())
-                            .where((t) => t != null && t!.isNotEmpty)
-                            .map((t) => t!)
-                            .toSet()
-                            .toList();
                         final dayName = _dayNames[dayIndex];
 
                         return Card(
@@ -6076,31 +6212,77 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                       onPressed: () =>
                                           _addExerciseForDay(dayIndex),
                                     ),
+                                  if (!isRestDay)
+                                    IconButton(
+                                      icon: const Icon(Icons.local_fire_department,
+                                          color: Color(0xFFFFA000), size: 22),
+                                      tooltip: Translations.get('warmup_label',
+                                          language: lang),
+                                      onPressed: () => _addSpecialBlock(
+                                          dayIndex: dayIndex, isWarmup: true),
+                                    ),
+                                  if (!isRestDay)
+                                    IconButton(
+                                      icon: const Icon(Icons.directions_run,
+                                          color: Color(0xFF64B5F6), size: 22),
+                                      tooltip: Translations.get('cardio_label',
+                                          language: lang),
+                                      onPressed: () => _addSpecialBlock(
+                                          dayIndex: dayIndex, isWarmup: false),
+                                    ),
                                 ],
                               ),
                               iconColor: accent,
                               collapsedIconColor: accent.withValues(alpha: 0.5),
                               children: [
-                                if (!isRestDay && warmupNotes.isNotEmpty)
-                                  ...warmupNotes.map(
-                                    (note) => _buildSpecialNoteItem(
-                                      icon: Icons.local_fire_department,
-                                      color: accent,
-                                      title: Translations.get('warmup_label',
-                                          language: lang),
-                                      line: note,
-                                    ),
-                                  ),
-                                if (!isRestDay && cardioNotes.isNotEmpty)
-                                  ...cardioNotes.map(
-                                    (note) => _buildSpecialNoteItem(
-                                      icon: Icons.directions_run,
-                                      color: accent,
-                                      title: Translations.get('cardio_label',
-                                          language: lang),
-                                      line: note,
-                                    ),
-                                  ),
+                                if (!isRestDay)
+                                  ...exercisesForDay
+                                      .where(_isWarmupBlock)
+                                      .map(
+                                        (entry) => _buildSpecialNoteItem(
+                                          icon: Icons.local_fire_department,
+                                          color: accent,
+                                          title: Translations.get(
+                                              'warmup_label',
+                                              language: lang),
+                                          line: entry.exercise,
+                                          onTap: () => _editSpecialBlock(
+                                              _plan!.entries.indexOf(entry)),
+                                          onDelete: () =>
+                                              _deleteExercise(_plan!.entries
+                                                  .indexOf(entry)),
+                                          entryIndex:
+                                              _plan!.entries.indexOf(entry),
+                                          onMoveUp: (idx) => _moveExercise(
+                                              idx, idx - 1),
+                                          onMoveDown: (idx) => _moveExercise(
+                                              idx, idx + 1),
+                                        ),
+                                      ),
+                                if (!isRestDay)
+                                  ...exercisesForDay
+                                      .where(_isCardioBlock)
+                                      .map(
+                                        (entry) => _buildSpecialNoteItem(
+                                          icon: Icons.directions_run,
+                                          color: accent,
+                                          title: Translations.get(
+                                              'cardio_label',
+                                              language: lang),
+                                          line: entry.exercise,
+                                          onTap: () => _editSpecialBlock(
+                                              _plan!.entries.indexOf(entry)),
+                                          onDelete: () =>
+                                              _deleteExercise(_plan!.entries
+                                                  .indexOf(entry)),
+                                          entryIndex:
+                                              _plan!.entries.indexOf(entry),
+                                          onMoveUp: (idx) => _moveExercise(
+                                              idx, idx - 1),
+                                          onMoveDown: (idx) => _moveExercise(
+                                              idx, idx + 1),
+                                        ),
+                                      ),
                                 if (!isRestDay && exercisesForDay.isEmpty)
                                   Padding(
                                     padding: const EdgeInsets.all(16),
@@ -6122,9 +6304,15 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                       ],
                                     ),
                                   ),
-                                ...exercisesForDay.map((exercise) {
+                                final regularExercises = exercisesForDay
+                                  .where((e) =>
+                                    !_isWarmupBlock(e) &&
+                                    !_isCardioBlock(e))
+                                  .toList();
+
+                                ...regularExercises.map((exercise) {
                                   final entryIndex =
-                                      _plan!.entries.indexOf(exercise);
+                                    _plan!.entries.indexOf(exercise);
                                   return Container(
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 4),

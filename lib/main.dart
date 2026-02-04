@@ -1,17 +1,18 @@
 ﻿import 'dart:async';
 import 'dart:convert';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
-    show rootBundle, HapticFeedback, Clipboard, ClipboardData;
+    show rootBundle, Clipboard, ClipboardData;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vibration/vibration.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'js_bridge.dart' as js_bridge;
 import 'firebase_options.dart';
 import 'plan_access.dart';
 
@@ -5532,7 +5533,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   Timer? _setTimer;
   DateTime? _setStart;
 
-  late final AudioPlayer _audioPlayer;
   Timer? _timer;
   DateTime? _endTime;
   int _secondsRemaining = 0;
@@ -5543,23 +5543,12 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   bool _autoStart = true;
   static const String _autoStartKey = 'auto_start_timer';
 
-  bool _vibrationEnabled = true;
-  static const String _vibrationEnabledKey = 'vibration_enabled';
-  Timer? _vibrationTimer; // Timer do ciągłych wibracji
-
-  bool _soundEnabled = true;
-  static const String _soundEnabledKey = 'sound_enabled';
-  Timer? _soundLoop; // Timer do pętli dźwięku
-
   @override
   void initState() {
     super.initState();
-    _audioPlayerInit();
     _animControllerInit();
     _loadHistory();
     _loadAutoStart();
-    _loadVibrationEnabled();
-    _loadSoundEnabled();
 
     // Ustaw czas przerwy zalecony przez trenera (jeśli dostępny)
     if (widget.recommendedRestSeconds != null &&
@@ -5568,10 +5557,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       _secondsRemaining = _totalRestSeconds;
     }
     // Czas ćwiczenia od trenera jest ustawiany w _loadHistory()
-  }
-
-  void _audioPlayerInit() {
-    _audioPlayer = AudioPlayer();
   }
 
   void _animControllerInit() {
@@ -5583,15 +5568,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   void dispose() {
     _timer?.cancel();
     _setTimer?.cancel();
-    _vibrationTimer?.cancel();
-    _soundLoop?.cancel();
-    try {
-      Vibration.cancel();
-    } catch (_) {}
-    try {
-      _audioPlayer.stop();
-      _audioPlayer.dispose();
-    } catch (_) {}
     _wController.dispose();
     _rController.dispose();
     _sController.dispose();
@@ -5620,118 +5596,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         _autoStart = v;
       });
     }
-  }
-
-  Future<void> _loadVibrationEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    final val = prefs.getBool(_vibrationEnabledKey);
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = val ?? true;
-      });
-    }
-  }
-
-  Future<void> _setVibrationEnabled(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_vibrationEnabledKey, v);
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = v;
-      });
-    }
-  }
-
-  Future<void> _loadSoundEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    final val = prefs.getBool(_soundEnabledKey);
-    if (mounted) {
-      setState(() {
-        _soundEnabled = val ?? true;
-      });
-    }
-  }
-
-  Future<void> _setSoundEnabled(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_soundEnabledKey, v);
-    if (mounted) {
-      setState(() {
-        _soundEnabled = v;
-      });
-    }
-  }
-
-  void _stopSoundLoop() {
-    _soundLoop?.cancel();
-    _soundLoop = null;
-    try {
-      _audioPlayer.stop();
-    } catch (_) {}
-  }
-
-  Future<void> _startSoundLoop() async {
-    if (!_soundEnabled) return;
-    _soundLoop?.cancel();
-    // Odtwórz dźwięk natychmiast
-    try {
-      await _audioPlayer.play(AssetSource('sounds/alert.mp3'));
-    } catch (_) {}
-    // Powtarzaj co 2 sekundy
-    _soundLoop = Timer.periodic(const Duration(seconds: 2), (_) async {
-      if (!mounted) {
-        _stopSoundLoop();
-        return;
-      }
-      try {
-        await _audioPlayer.play(AssetSource('sounds/alert.mp3'));
-      } catch (_) {}
-    });
-  }
-
-  void _stopVibration() {
-    _vibrationTimer?.cancel();
-    _vibrationTimer = null;
-    try {
-      Vibration.cancel();
-    } catch (_) {}
-  }
-
-  void _startContinuousVibration() {
-    if (!_vibrationEnabled) return;
-    _vibrationTimer?.cancel();
-    // Wibruj co 1.5 sekundy aż do zatrzymania
-    _vibrationTimer =
-        Timer.periodic(const Duration(milliseconds: 1500), (_) async {
-      if (!mounted) {
-        _stopVibration();
-        return;
-      }
-      try {
-        if (await Vibration.hasVibrator() == true) {
-          if (await Vibration.hasCustomVibrationsSupport() == true) {
-            Vibration.vibrate(pattern: [0, 300, 150, 300, 150, 300]);
-          } else {
-            await Vibration.vibrate(duration: 500);
-          }
-        }
-      } catch (_) {}
-    });
-    // Pierwsza wibracja natychmiast
-    _vibrateOnce();
-  }
-
-  Future<void> _vibrateOnce() async {
-    if (!_vibrationEnabled) return;
-    try {
-      if (await Vibration.hasVibrator() == true) {
-        if (await Vibration.hasCustomVibrationsSupport() == true) {
-          Vibration.vibrate(pattern: [0, 300, 150, 300, 150, 300]);
-        } else {
-          await Vibration.vibrate(duration: 500);
-        }
-      }
-    } catch (_) {}
   }
 
   bool _exerciseTimeNotified =
@@ -5764,8 +5628,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _stopSetStopwatch() {
     _setTimer?.cancel();
-    _stopVibration(); // Zatrzymaj wibracje
-    _stopSoundLoop(); // Zatrzymaj dźwięk
     if (_setStart != null) {
       final secs = DateTime.now().difference(_setStart!).inSeconds;
       setState(() {
@@ -5777,8 +5639,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _resetSetStopwatch() {
     _setTimer?.cancel();
-    _stopVibration(); // Zatrzymaj wibracje
-    _stopSoundLoop(); // Zatrzymaj dźwięk
     _exerciseTimeNotified = false;
     setState(() {
       _tController.clear();
@@ -5788,14 +5648,43 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   Future<void> _notifyExerciseTimeEnd() async {
     final lang = globalLanguage;
+    final exName = localizedExerciseName(widget.exerciseName, lang);
 
-    // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
-    _startContinuousVibration();
-    // Uruchom ciągły dźwięk (będzie trwać do wciśnięcia STOP)
-    await _startSoundLoop();
-    try {
-      HapticFeedback.heavyImpact();
-    } catch (_) {}
+    // Powiadomienia na web
+    if (kIsWeb) {
+      try {
+        final notificationTitle = lang == 'PL'
+            ? 'Czas ćwiczenia minął!'
+            : lang == 'NO'
+                ? 'Øvelsestiden er over!'
+                : 'Exercise time finished!';
+
+        js_bridge.evalJs('''
+          (function() {
+            if ('Notification' in window && Notification.permission === 'granted') {
+              if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.ready.then(function(registration) {
+                  registration.showNotification('$notificationTitle', {
+                    body: '$exName',
+                    icon: 'icons/Icon-192.png',
+                    badge: 'icons/Icon-192.png',
+                    tag: 'exercise-time-' + Date.now(),
+                    requireInteraction: true,
+                    vibrate: [200, 100, 200]
+                  });
+                });
+              } else {
+                new Notification('$notificationTitle', {
+                  body: '$exName',
+                  icon: 'icons/Icon-192.png'
+                });
+              }
+            }
+          })();
+        ''');
+      } catch (_) {}
+    }
+
     try {
       await NotificationService.instance.showNotification(
           title: lang == 'PL'
@@ -5803,7 +5692,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
               : lang == 'NO'
                   ? 'Øvelsestiden er over!'
                   : 'Exercise time finished!',
-          body: localizedExerciseName(widget.exerciseName, lang));
+          body: exName);
     } catch (_) {}
   }
 
@@ -5858,8 +5747,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _stopTimer() {
     _timer?.cancel();
-    _stopVibration(); // Zatrzymaj ciągłe wibracje
-    _stopSoundLoop(); // Zatrzymaj ciągły dźwięk
     setState(() {
       _isTimerRunning = false;
       _secondsRemaining = 0;
@@ -6037,13 +5924,98 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     final lang = globalLanguage;
     final exName = localizedExerciseName(widget.exerciseName, lang);
 
-    // Uruchom ciągłe wibracje (będą trwać do wciśnięcia STOP)
-    _startContinuousVibration();
-    // Uruchom ciągły dźwięk (będzie trwać do wciśnięcia STOP)
-    await _startSoundLoop();
-    try {
-      HapticFeedback.heavyImpact();
-    } catch (_) {}
+    // Powiadomienia na web
+    if (kIsWeb) {
+      try {
+        final notificationTitle = lang == 'PL'
+            ? 'Przerwa zakończona!'
+            : lang == 'NO'
+                ? 'Pause ferdig!'
+                : 'Rest finished!';
+        final notificationBody = lang == 'PL'
+            ? 'Czas na następną serię: $exName'
+            : lang == 'NO'
+                ? 'Tid for neste sett: $exName'
+                : 'Time for next set: $exName';
+
+        js_bridge.evalJs('''
+          (function() {
+            console.log('🔔 Starting notification process...');
+            
+            // Funkcja pokazująca powiadomienie
+            function showNotification() {
+              try {
+                // Najpierw spróbuj przez Service Worker (działa lepiej na zablokowanym ekranie)
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                  navigator.serviceWorker.ready.then(function(registration) {
+                    registration.showNotification('$notificationTitle', {
+                      body: '$notificationBody',
+                      icon: 'icons/Icon-192.png',
+                      badge: 'icons/Icon-192.png',
+                      tag: 'rest-timer-' + Date.now(),
+                      requireInteraction: true,
+                      renotify: true,
+                      silent: false,
+                      vibrate: [200, 100, 200, 100, 200]
+                    });
+                    console.log('🔔 Service Worker notification shown');
+                  }).catch(function(err) {
+                    console.log('🔔 SW notification failed:', err);
+                    showRegularNotification();
+                  });
+                } else {
+                  console.log('🔔 No active Service Worker, using regular notification');
+                  showRegularNotification();
+                }
+              } catch(e) {
+                console.log('🔔 Notification error:', e);
+                showRegularNotification();
+              }
+            }
+            
+            function showRegularNotification() {
+              if ('Notification' in window && Notification.permission === 'granted') {
+                var notification = new Notification('$notificationTitle', {
+                  body: '$notificationBody',
+                  icon: 'icons/Icon-192.png',
+                  tag: 'rest-timer-' + Date.now(),
+                  requireInteraction: true,
+                  silent: false
+                });
+                notification.onclick = function() {
+                  window.focus();
+                  notification.close();
+                };
+                console.log('🔔 Regular notification shown');
+              } else {
+                console.log('🔔 Notifications not available or not granted');
+              }
+            }
+            
+            // Sprawdź uprawnienia i pokaż powiadomienie
+            if ('Notification' in window) {
+              console.log('🔔 Notification permission:', Notification.permission);
+              if (Notification.permission === 'granted') {
+                showNotification();
+              } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(function(permission) {
+                  console.log('🔔 Permission result:', permission);
+                  if (permission === 'granted') {
+                    showNotification();
+                  }
+                });
+              }
+            } else {
+              console.log('🔔 Notification API not available');
+            }
+          })();
+        ''');
+        debugPrint('🔔 Web notification triggered');
+      } catch (e) {
+        debugPrint('🔔 Web notification error: $e');
+      }
+    }
+
     try {
       await NotificationService.instance.showNotification(
           title: Translations.get('rest_finished_title', language: lang),
@@ -6333,12 +6305,6 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       debugPrint(
           '[ExerciseDetailScreen] Not saving to Firebase - role: ${state.role}, email: ${state.userEmail}');
     }
-
-    try {
-      if (await Vibration.hasVibrator() == true) {
-        await Vibration.vibrate(duration: 40);
-      }
-    } catch (_) {}
 
     if (_isTimeBased) {
       _resetSetStopwatch();
@@ -7238,45 +7204,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _vibrationEnabled = true;
-  bool _soundEnabled = true;
-  static const String _vibrationEnabledKey = 'vibration_enabled';
-  static const String _soundEnabledKey = 'sound_enabled';
-
   @override
   void initState() {
     super.initState();
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = prefs.getBool(_vibrationEnabledKey) ?? true;
-        _soundEnabled = prefs.getBool(_soundEnabledKey) ?? true;
-      });
-    }
-  }
-
-  Future<void> _setVibrationEnabled(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_vibrationEnabledKey, v);
-    if (mounted) {
-      setState(() {
-        _vibrationEnabled = v;
-      });
-    }
-  }
-
-  Future<void> _setSoundEnabled(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_soundEnabledKey, v);
-    if (mounted) {
-      setState(() {
-        _soundEnabled = v;
-      });
-    }
   }
 
   Future<void> _setLanguage(String lang) async {
@@ -7439,27 +7369,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   }
                                 : null,
-                          ),
-                          Divider(color: Color(0x1FFFD700)),
-                          SwitchListTile(
-                            secondary: const Icon(Icons.vibration, color: gold),
-                            title: Text(
-                                Translations.get('vibration_enabled',
-                                    language: lang),
-                                style: const TextStyle(color: gold)),
-                            value: _vibrationEnabled,
-                            onChanged: (v) => _setVibrationEnabled(v),
-                            activeColor: gold,
-                          ),
-                          SwitchListTile(
-                            secondary: const Icon(Icons.volume_up, color: gold),
-                            title: Text(
-                                Translations.get('sound_enabled',
-                                    language: lang),
-                                style: const TextStyle(color: gold)),
-                            value: _soundEnabled,
-                            onChanged: (v) => _setSoundEnabled(v),
-                            activeColor: gold,
                           ),
                         ],
                       ),

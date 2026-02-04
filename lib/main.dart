@@ -6089,6 +6089,10 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ...List.generate(7, (dayIndex) {
                         final isRestDay = _isRestDay(dayIndex);
                         final exercisesForDay = _getExercisesForDay(dayIndex);
+                        final regularExercises = exercisesForDay
+                          .where((e) =>
+                            !_isWarmupBlock(e) && !_isCardioBlock(e))
+                          .toList();
                         final dayName = _dayNames[dayIndex];
 
                         return Card(
@@ -6304,12 +6308,6 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                       ],
                                     ),
                                   ),
-                                final regularExercises = exercisesForDay
-                                  .where((e) =>
-                                    !_isWarmupBlock(e) &&
-                                    !_isCardioBlock(e))
-                                  .toList();
-
                                 ...regularExercises.map((exercise) {
                                   final entryIndex =
                                     _plan!.entries.indexOf(exercise);

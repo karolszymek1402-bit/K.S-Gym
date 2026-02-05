@@ -576,16 +576,19 @@ class PlanAccessController {
       debugPrint('[PlanAccess] Plan data: ${doc.data()}');
       var plan = ClientPlan.fromMap(doc.data()!);
 
-      // Usuń duplikaty jeśli istnieją
+      // Usuń duplikaty jeśli istnieją - to samo ćwiczenie w tym samym dniu może być tylko raz
+      // Zachowujemy ostatni wpis (z końca listy)
       final originalCount = plan.entries.length;
       final uniqueEntries = <ClientPlanEntry>[];
       final seen = <String>{};
-      for (final entry in plan.entries) {
-        final key =
-            '${entry.dayOfWeek}_${entry.exercise}_${entry.sets}_${entry.restSeconds}_${entry.timeSeconds}';
+      for (int i = plan.entries.length - 1; i >= 0; i--) {
+        final entry = plan.entries[i];
+        // Klucz unikalności: tylko dzień + ćwiczenie (ignorujemy parametry)
+        final key = '${entry.dayOfWeek}_${entry.exercise}';
         if (!seen.contains(key)) {
           seen.add(key);
-          uniqueEntries.add(entry);
+          uniqueEntries.insert(
+              0, entry); // Wstaw na początek aby zachować kolejność
         }
       }
 
@@ -820,16 +823,18 @@ class PlanAccessController {
 
   Future<void> updateClientPlanEntries(
       String email, List<ClientPlanEntry> entries) async {
-    // Usuń duplikaty - sprawdź czy nie ma identycznych ćwiczeń w tym samym dniu
+    // Usuń duplikaty - to samo ćwiczenie w tym samym dniu może być tylko raz
+    // Zachowujemy ostatni wpis (z końca listy) - dlatego iterujemy od końca
     final uniqueEntries = <ClientPlanEntry>[];
     final seen = <String>{};
-    for (final entry in entries) {
-      // Klucz unikalności: dzień + ćwiczenie + serie + czas przerwy
-      final key =
-          '${entry.dayOfWeek}_${entry.exercise}_${entry.sets}_${entry.restSeconds}_${entry.timeSeconds}';
+    for (int i = entries.length - 1; i >= 0; i--) {
+      final entry = entries[i];
+      // Klucz unikalności: tylko dzień + ćwiczenie (ignorujemy parametry)
+      final key = '${entry.dayOfWeek}_${entry.exercise}';
       if (!seen.contains(key)) {
         seen.add(key);
-        uniqueEntries.add(entry);
+        uniqueEntries.insert(
+            0, entry); // Wstaw na początek aby zachować kolejność
       }
     }
 

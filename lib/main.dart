@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -1767,36 +1768,83 @@ class NotificationService {
 
   Future<void> init() async {
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosInit = DarwinInitializationSettings();
+    const iosInit = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      requestCriticalPermission: true,
+    );
     const initSettings =
         InitializationSettings(android: androidInit, iOS: iosInit);
     await _plugin.initialize(initSettings);
+
+    // Kanał z wysokim priorytetem dla powiadomień na zablokowanym ekranie
     const channel = AndroidNotificationChannel(
-      'ks_gym_channel',
-      'K.S-Gym notifications',
-      description: 'Notifications for timer completions',
-      importance: Importance.defaultImportance,
+      'ks_gym_timer_channel',
+      'K.S-Gym Timer',
+      description: 'Notifications for timer completions - shows on lock screen',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+      showBadge: true,
+      enableLights: true,
     );
     try {
       await _plugin
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
+
+      // Poproś o uprawnienia na Android 13+
+      await _plugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission();
+    } catch (_) {}
+
+    // iOS - poproś o uprawnienia
+    try {
+      await _plugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+            critical: true,
+          );
     } catch (_) {}
   }
 
   Future<void> showNotification(
       {required String title, required String body}) async {
-    const androidDetails = AndroidNotificationDetails(
-      'ks_gym_channel',
-      'K.S-Gym notifications',
-      channelDescription: 'Notifications for timer completions',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
+    final androidDetails = AndroidNotificationDetails(
+      'ks_gym_timer_channel',
+      'K.S-Gym Timer',
+      channelDescription:
+          'Notifications for timer completions - shows on lock screen',
+      importance: Importance.max,
+      priority: Priority.max,
+      playSound: true,
+      enableVibration: true,
+      vibrationPattern: Int64List.fromList([0, 500, 200, 500, 200, 500]),
+      visibility: NotificationVisibility.public,
+      fullScreenIntent: true,
+      category: AndroidNotificationCategory.alarm,
+      ongoing: false,
+      autoCancel: true,
+      showWhen: true,
     );
-    const details = NotificationDetails(
-        android: androidDetails, iOS: DarwinNotificationDetails());
-    await _plugin.show(0, title, body, details);
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    );
+    final details =
+        NotificationDetails(android: androidDetails, iOS: iosDetails);
+    await _plugin.show(
+        DateTime.now().millisecondsSinceEpoch ~/ 1000, title, body, details);
   }
 }
 

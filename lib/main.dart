@@ -2498,6 +2498,63 @@ class StartChoiceScreen extends StatelessWidget {
   }
 }
 
+// Lokalna struktura ćwiczenia dla trybu offline
+class LocalExercise {
+  final String name;
+  final int sets;
+  final int restSeconds;
+  final int timeSeconds;
+  final String note;
+  final String? category;
+
+  const LocalExercise({
+    required this.name,
+    required this.sets,
+    required this.restSeconds,
+    this.timeSeconds = 0,
+    this.note = '',
+    this.category,
+  });
+
+  Map<String, dynamic> toMap() => {
+        'name': name,
+        'sets': sets,
+        'restSeconds': restSeconds,
+        'timeSeconds': timeSeconds,
+        'note': note,
+        if (category != null) 'category': category,
+      };
+
+  factory LocalExercise.fromMap(Map<String, dynamic> map) {
+    return LocalExercise(
+      name: map['name'] as String? ?? '',
+      sets: (map['sets'] as num?)?.toInt() ?? 3,
+      restSeconds: (map['restSeconds'] as num?)?.toInt() ?? 60,
+      timeSeconds: (map['timeSeconds'] as num?)?.toInt() ?? 0,
+      note: map['note'] as String? ?? '',
+      category: map['category'] as String?,
+    );
+  }
+
+  LocalExercise copyWith({
+    String? name,
+    int? sets,
+    int? restSeconds,
+    int? timeSeconds,
+    String? note,
+    String? category,
+  }) {
+    return LocalExercise(
+      name: name ?? this.name,
+      sets: sets ?? this.sets,
+      restSeconds: restSeconds ?? this.restSeconds,
+      timeSeconds: timeSeconds ?? this.timeSeconds,
+      note: note ?? this.note,
+      category: category ?? this.category,
+    );
+  }
+}
+
 class PlanImportScreen extends StatefulWidget {
   final Color themeColor;
   const PlanImportScreen(
@@ -2516,10 +2573,18 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
   static const _prefsKey = 'saved_plan_text';
   static const _warmupPrefsKey = 'local_day_warmup_notes';
   static const _cardioPrefsKey = 'local_day_cardio_notes';
+  static const _exercisesPrefsKey = 'local_day_exercises';
+  static const _restDaysPrefsKey = 'local_rest_days';
 
   // Lokalne notatki rozgrzewki/cardio dla dni tygodnia (index 0-6)
   Map<int, String> _localWarmupNotes = {};
   Map<int, String> _localCardioNotes = {};
+
+  // Lokalne ćwiczenia dla każdego dnia (index 0-6)
+  Map<int, List<LocalExercise>> _localExercises = {};
+
+  // Dni wolne
+  Set<int> _restDays = {};
 
   // Nazwy dni tygodnia
   static const List<String> _dayNamesPL = [
@@ -2589,6 +2654,8 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
       final prefs = await getPrefs();
       final warmupJson = prefs.getString(_warmupPrefsKey);
       final cardioJson = prefs.getString(_cardioPrefsKey);
+      final exercisesJson = prefs.getString(_exercisesPrefsKey);
+      final restDaysJson = prefs.getString(_restDaysPrefsKey);
 
       if (warmupJson != null) {
         final Map<String, dynamic> decoded = jsonDecode(warmupJson);
@@ -2599,6 +2666,19 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
         final Map<String, dynamic> decoded = jsonDecode(cardioJson);
         _localCardioNotes =
             decoded.map((k, v) => MapEntry(int.parse(k), v as String));
+      }
+      if (exercisesJson != null) {
+        final Map<String, dynamic> decoded = jsonDecode(exercisesJson);
+        _localExercises = decoded.map((k, v) {
+          final list = (v as List)
+              .map((e) => LocalExercise.fromMap(e as Map<String, dynamic>))
+              .toList();
+          return MapEntry(int.parse(k), list);
+        });
+      }
+      if (restDaysJson != null) {
+        final List<dynamic> decoded = jsonDecode(restDaysJson);
+        _restDays = decoded.map((e) => e as int).toSet();
       }
       if (mounted) setState(() {});
     } catch (e) {
@@ -2613,8 +2693,13 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
           _localWarmupNotes.map((k, v) => MapEntry(k.toString(), v)));
       final cardioJson = jsonEncode(
           _localCardioNotes.map((k, v) => MapEntry(k.toString(), v)));
+      final exercisesJson = jsonEncode(_localExercises.map(
+          (k, v) => MapEntry(k.toString(), v.map((e) => e.toMap()).toList())));
+      final restDaysJson = jsonEncode(_restDays.toList());
       await prefs.setString(_warmupPrefsKey, warmupJson);
       await prefs.setString(_cardioPrefsKey, cardioJson);
+      await prefs.setString(_exercisesPrefsKey, exercisesJson);
+      await prefs.setString(_restDaysPrefsKey, restDaysJson);
     } catch (e) {
       debugPrint('Error saving day notes: $e');
     }
@@ -2786,19 +2871,312 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
     }
   }
 
-  // Widget dnia tygodnia z menu warmup/cardio
+  // Dialog do dodawania/edycji ćwiczenia
+  Future<void> _editLocalExercise(int dayIndex, String lang,
+      {int? exerciseIndex}) async {
+    final isEdit = exerciseIndex != null;
+    LocalExercise? existing;
+    if (isEdit) {
+      existing = _localExercises[dayIndex]?[exerciseIndex];
+    }
+
+    final nameController = TextEditingController(text: existing?.name ?? '');
+    final setsController =
+        TextEditingController(text: (existing?.sets ?? 3).toString());
+    final restController =
+        TextEditingController(text: (existing?.restSeconds ?? 60).toString());
+    final timeController =
+        TextEditingController(text: (existing?.timeSeconds ?? 0).toString());
+    final noteController = TextEditingController(text: existing?.note ?? '');
+
+    final dayNames = _getDayNames(lang);
+    final dayName = dayNames[dayIndex];
+
+    final title = isEdit
+        ? (lang == 'PL'
+            ? 'Edytuj ćwiczenie'
+            : lang == 'NO'
+                ? 'Rediger øvelse'
+                : 'Edit exercise')
+        : (lang == 'PL'
+            ? 'Dodaj ćwiczenie'
+            : lang == 'NO'
+                ? 'Legg til øvelse'
+                : 'Add exercise');
+
+    final result = await showDialog<LocalExercise?>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.black.withValues(alpha: 0.95),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: const TextStyle(
+                    color: Color(0xFFFFD700), fontWeight: FontWeight.bold)),
+            Text(dayName,
+                style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.6), fontSize: 14)),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: lang == 'PL'
+                      ? 'Nazwa ćwiczenia'
+                      : lang == 'NO'
+                          ? 'Øvelsesnavn'
+                          : 'Exercise name',
+                  labelStyle:
+                      TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color(0xFFFFD700), width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: setsController,
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: lang == 'PL'
+                            ? 'Serie'
+                            : lang == 'NO'
+                                ? 'Sett'
+                                : 'Sets',
+                        labelStyle: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.6)),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: const Color(0xFFFFD700)
+                                  .withValues(alpha: 0.5)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Color(0xFFFFD700), width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: restController,
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: lang == 'PL'
+                            ? 'Przerwa (s)'
+                            : lang == 'NO'
+                                ? 'Hvile (s)'
+                                : 'Rest (s)',
+                        labelStyle: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.6)),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: const Color(0xFFFFD700)
+                                  .withValues(alpha: 0.5)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Color(0xFFFFD700), width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: timeController,
+                keyboardType: TextInputType.number,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: lang == 'PL'
+                      ? 'Czas ćwiczenia (s) - opcjonalnie'
+                      : lang == 'NO'
+                          ? 'Øvelsestid (s) - valgfritt'
+                          : 'Exercise time (s) - optional',
+                  labelStyle:
+                      TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color(0xFFFFD700), width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: noteController,
+                style: const TextStyle(color: Colors.white),
+                maxLines: 2,
+                decoration: InputDecoration(
+                  labelText: lang == 'PL'
+                      ? 'Notatka (opcjonalnie)'
+                      : lang == 'NO'
+                          ? 'Notat (valgfritt)'
+                          : 'Note (optional)',
+                  labelStyle:
+                      TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color(0xFFFFD700), width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          if (isEdit)
+            TextButton(
+              onPressed: () {
+                // Usuń ćwiczenie
+                Navigator.pop(
+                    ctx,
+                    LocalExercise(
+                        name: '',
+                        sets: 0,
+                        restSeconds: 0)); // Marker do usunięcia
+              },
+              child: Text(
+                lang == 'PL'
+                    ? 'Usuń'
+                    : lang == 'NO'
+                        ? 'Slett'
+                        : 'Delete',
+                style: const TextStyle(color: Color(0xFFFF5252)),
+              ),
+            ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, null),
+            child: Text(
+              Translations.get('cancel', language: lang),
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final name = nameController.text.trim();
+              if (name.isEmpty) return;
+              Navigator.pop(
+                  ctx,
+                  LocalExercise(
+                    name: name,
+                    sets: int.tryParse(setsController.text) ?? 3,
+                    restSeconds: int.tryParse(restController.text) ?? 60,
+                    timeSeconds: int.tryParse(timeController.text) ?? 0,
+                    note: noteController.text.trim(),
+                  ));
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFFD700),
+              foregroundColor: Colors.black,
+            ),
+            child: Text(Translations.get('save', language: lang)),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        _localExercises[dayIndex] ??= [];
+        if (result.name.isEmpty && result.sets == 0) {
+          // Usuń ćwiczenie
+          if (exerciseIndex != null &&
+              _localExercises[dayIndex]!.length > exerciseIndex) {
+            _localExercises[dayIndex]!.removeAt(exerciseIndex);
+          }
+        } else if (isEdit && exerciseIndex != null) {
+          // Edytuj ćwiczenie
+          _localExercises[dayIndex]![exerciseIndex] = result;
+        } else {
+          // Dodaj nowe ćwiczenie
+          _localExercises[dayIndex]!.add(result);
+        }
+      });
+      await _saveDayNotes();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.name.isEmpty
+                  ? (lang == 'PL' ? 'Ćwiczenie usunięte' : 'Exercise deleted')
+                  : (lang == 'PL' ? 'Ćwiczenie zapisane' : 'Exercise saved'),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    }
+  }
+
+  // Przełącz dzień wolny
+  Future<void> _toggleRestDay(int dayIndex, String lang) async {
+    setState(() {
+      if (_restDays.contains(dayIndex)) {
+        _restDays.remove(dayIndex);
+      } else {
+        _restDays.add(dayIndex);
+      }
+    });
+    await _saveDayNotes();
+  }
+
+  // Widget dnia tygodnia z menu warmup/cardio i ćwiczeniami
   Widget _buildDayTile(int dayIndex, String lang, Color accent) {
     final dayNames = _getDayNames(lang);
     final dayName = dayNames[dayIndex];
     final hasWarmup = (_localWarmupNotes[dayIndex] ?? '').isNotEmpty;
     final hasCardio = (_localCardioNotes[dayIndex] ?? '').isNotEmpty;
+    final exercises = _localExercises[dayIndex] ?? [];
+    final isRestDay = _restDays.contains(dayIndex);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.black.withValues(alpha: 0.3),
-        border: Border.all(color: accent.withValues(alpha: 0.3)),
+        color: isRestDay
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.black.withValues(alpha: 0.3),
+        border: Border.all(
+          color: isRestDay
+              ? Colors.green.withValues(alpha: 0.5)
+              : accent.withValues(alpha: 0.3),
+        ),
       ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -2807,155 +3185,286 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.2),
+              color: isRestDay
+                  ? Colors.green.withValues(alpha: 0.2)
+                  : accent.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
-              child: Icon(Icons.calendar_today, color: accent, size: 20),
+              child: Icon(
+                isRestDay ? Icons.hotel : Icons.fitness_center,
+                color: isRestDay ? Colors.green : accent,
+                size: 20,
+              ),
             ),
           ),
           title: Text(
             dayName,
             style: TextStyle(
-              color: accent,
+              color: isRestDay ? Colors.green : accent,
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
           ),
           subtitle: Row(
             children: [
-              if (hasWarmup)
-                Container(
-                  margin: const EdgeInsets.only(right: 6, top: 4),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFF5722).withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    '🔥',
-                    style: TextStyle(fontSize: 10),
-                  ),
-                ),
-              if (hasCardio)
-                Container(
-                  margin: const EdgeInsets.only(top: 4),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2196F3).withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    '🏃',
-                    style: TextStyle(fontSize: 10),
-                  ),
-                ),
-              if (!hasWarmup && !hasCardio)
+              if (isRestDay)
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
                     lang == 'PL'
-                        ? 'Brak notatek'
+                        ? 'Dzień wolny'
                         : lang == 'NO'
-                            ? 'Ingen notater'
-                            : 'No notes',
+                            ? 'Hviledag'
+                            : 'Rest day',
                     style: TextStyle(
-                      color: accent.withValues(alpha: 0.5),
+                      color: Colors.green.withValues(alpha: 0.7),
                       fontSize: 12,
                     ),
                   ),
-                ),
+                )
+              else ...[
+                if (exercises.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(right: 6, top: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      '${exercises.length} ${lang == 'PL' ? 'ćw.' : 'ex.'}',
+                      style: TextStyle(color: accent, fontSize: 10),
+                    ),
+                  ),
+                if (hasWarmup)
+                  Container(
+                    margin: const EdgeInsets.only(right: 6, top: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF5722).withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text('🔥', style: TextStyle(fontSize: 10)),
+                  ),
+                if (hasCardio)
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2196F3).withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text('🏃', style: TextStyle(fontSize: 10)),
+                  ),
+                if (exercises.isEmpty && !hasWarmup && !hasCardio)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      lang == 'PL'
+                          ? 'Brak ćwiczeń'
+                          : lang == 'NO'
+                              ? 'Ingen øvelser'
+                              : 'No exercises',
+                      style: TextStyle(
+                          color: accent.withValues(alpha: 0.5), fontSize: 12),
+                    ),
+                  ),
+              ],
             ],
           ),
-          iconColor: accent,
-          collapsedIconColor: accent,
+          iconColor: isRestDay ? Colors.green : accent,
+          collapsedIconColor: isRestDay ? Colors.green : accent,
           children: [
-            // Warmup section
+            // Przycisk dzień wolny
             ListTile(
               dense: true,
-              leading: const Icon(Icons.whatshot,
-                  color: Color(0xFFFF5722), size: 20),
+              leading: Icon(
+                isRestDay ? Icons.fitness_center : Icons.hotel,
+                color: isRestDay ? accent : Colors.green,
+                size: 20,
+              ),
               title: Text(
-                lang == 'PL'
-                    ? '🔥 Rozgrzewka'
-                    : lang == 'NO'
-                        ? '🔥 Oppvarming'
-                        : '🔥 Warm-up',
-                style: const TextStyle(
-                  color: Color(0xFFFF5722),
+                isRestDay
+                    ? (lang == 'PL'
+                        ? 'Ustaw jako dzień treningowy'
+                        : lang == 'NO'
+                            ? 'Sett som treningsdag'
+                            : 'Set as training day')
+                    : (lang == 'PL'
+                        ? 'Ustaw jako dzień wolny'
+                        : lang == 'NO'
+                            ? 'Sett som hviledag'
+                            : 'Set as rest day'),
+                style: TextStyle(
+                  color: isRestDay ? accent : Colors.green,
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                 ),
               ),
-              subtitle: Text(
-                hasWarmup
-                    ? _localWarmupNotes[dayIndex]!
-                    : (lang == 'PL'
-                        ? 'Kliknij aby dodać...'
-                        : lang == 'NO'
-                            ? 'Klikk for å legge til...'
-                            : 'Click to add...'),
-                style: TextStyle(
-                  color: hasWarmup
-                      ? Colors.white.withValues(alpha: 0.8)
-                      : Colors.white.withValues(alpha: 0.4),
-                  fontSize: 12,
-                  fontStyle: hasWarmup ? FontStyle.normal : FontStyle.italic,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: Icon(
-                hasWarmup ? Icons.edit : Icons.add,
-                color: const Color(0xFFFF5722),
-                size: 18,
-              ),
-              onTap: () => _editLocalDayNote(dayIndex, true, lang),
+              onTap: () => _toggleRestDay(dayIndex, lang),
             ),
-            // Cardio section
-            ListTile(
-              dense: true,
-              leading: const Icon(Icons.directions_run,
-                  color: Color(0xFF2196F3), size: 20),
-              title: Text(
-                lang == 'PL'
-                    ? '🏃 Cardio na zakończenie'
-                    : lang == 'NO'
-                        ? '🏃 Avsluttende cardio'
-                        : '🏃 Finishing cardio',
-                style: const TextStyle(
-                  color: Color(0xFF2196F3),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+            if (!isRestDay) ...[
+              const Divider(color: Colors.white24, height: 1),
+              // Warmup section
+              ListTile(
+                dense: true,
+                leading: const Icon(Icons.whatshot,
+                    color: Color(0xFFFF5722), size: 20),
+                title: Text(
+                  lang == 'PL'
+                      ? '🔥 Rozgrzewka'
+                      : lang == 'NO'
+                          ? '🔥 Oppvarming'
+                          : '🔥 Warm-up',
+                  style: const TextStyle(
+                      color: Color(0xFFFF5722),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14),
                 ),
-              ),
-              subtitle: Text(
-                hasCardio
-                    ? _localCardioNotes[dayIndex]!
-                    : (lang == 'PL'
-                        ? 'Kliknij aby dodać...'
-                        : lang == 'NO'
-                            ? 'Klikk for å legge til...'
-                            : 'Click to add...'),
-                style: TextStyle(
-                  color: hasCardio
-                      ? Colors.white.withValues(alpha: 0.8)
-                      : Colors.white.withValues(alpha: 0.4),
-                  fontSize: 12,
-                  fontStyle: hasCardio ? FontStyle.normal : FontStyle.italic,
+                subtitle: Text(
+                  hasWarmup
+                      ? _localWarmupNotes[dayIndex]!
+                      : (lang == 'PL'
+                          ? 'Kliknij aby dodać...'
+                          : 'Click to add...'),
+                  style: TextStyle(
+                    color: hasWarmup
+                        ? Colors.white.withValues(alpha: 0.8)
+                        : Colors.white.withValues(alpha: 0.4),
+                    fontSize: 12,
+                    fontStyle: hasWarmup ? FontStyle.normal : FontStyle.italic,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                trailing: Icon(hasWarmup ? Icons.edit : Icons.add,
+                    color: const Color(0xFFFF5722), size: 18),
+                onTap: () => _editLocalDayNote(dayIndex, true, lang),
               ),
-              trailing: Icon(
-                hasCardio ? Icons.edit : Icons.add,
-                color: const Color(0xFF2196F3),
-                size: 18,
+              // Lista ćwiczeń
+              if (exercises.isNotEmpty) ...[
+                const Divider(color: Colors.white24, height: 1),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.fitness_center, color: accent, size: 18),
+                      const SizedBox(width: 8),
+                      Text(
+                        lang == 'PL'
+                            ? 'Ćwiczenia:'
+                            : lang == 'NO'
+                                ? 'Øvelser:'
+                                : 'Exercises:',
+                        style: TextStyle(
+                            color: accent,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+                ...exercises.asMap().entries.map((entry) {
+                  final idx = entry.key;
+                  final ex = entry.value;
+                  return ListTile(
+                    dense: true,
+                    leading: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${idx + 1}',
+                          style: TextStyle(
+                              color: accent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12),
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      ex.name,
+                      style: TextStyle(
+                          color: accent,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14),
+                    ),
+                    subtitle: Text(
+                      '${ex.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${ex.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${ex.timeSeconds > 0 ? ' • ${ex.timeSeconds}s' : ''}',
+                      style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.6),
+                          fontSize: 11),
+                    ),
+                    trailing: Icon(Icons.edit,
+                        color: accent.withValues(alpha: 0.7), size: 18),
+                    onTap: () =>
+                        _editLocalExercise(dayIndex, lang, exerciseIndex: idx),
+                  );
+                }),
+              ],
+              // Przycisk dodaj ćwiczenie
+              ListTile(
+                dense: true,
+                leading:
+                    Icon(Icons.add_circle_outline, color: accent, size: 20),
+                title: Text(
+                  lang == 'PL'
+                      ? 'Dodaj ćwiczenie'
+                      : lang == 'NO'
+                          ? 'Legg til øvelse'
+                          : 'Add exercise',
+                  style: TextStyle(
+                      color: accent, fontWeight: FontWeight.w600, fontSize: 14),
+                ),
+                onTap: () => _editLocalExercise(dayIndex, lang),
               ),
-              onTap: () => _editLocalDayNote(dayIndex, false, lang),
-            ),
+              const Divider(color: Colors.white24, height: 1),
+              // Cardio section
+              ListTile(
+                dense: true,
+                leading: const Icon(Icons.directions_run,
+                    color: Color(0xFF2196F3), size: 20),
+                title: Text(
+                  lang == 'PL'
+                      ? '🏃 Cardio na zakończenie'
+                      : lang == 'NO'
+                          ? '🏃 Avsluttende cardio'
+                          : '🏃 Finishing cardio',
+                  style: const TextStyle(
+                      color: Color(0xFF2196F3),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14),
+                ),
+                subtitle: Text(
+                  hasCardio
+                      ? _localCardioNotes[dayIndex]!
+                      : (lang == 'PL'
+                          ? 'Kliknij aby dodać...'
+                          : 'Click to add...'),
+                  style: TextStyle(
+                    color: hasCardio
+                        ? Colors.white.withValues(alpha: 0.8)
+                        : Colors.white.withValues(alpha: 0.4),
+                    fontSize: 12,
+                    fontStyle: hasCardio ? FontStyle.normal : FontStyle.italic,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: Icon(hasCardio ? Icons.edit : Icons.add,
+                    color: const Color(0xFF2196F3), size: 18),
+                onTap: () => _editLocalDayNote(dayIndex, false, lang),
+              ),
+            ],
           ],
         ),
       ),

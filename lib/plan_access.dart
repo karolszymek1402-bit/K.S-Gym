@@ -638,6 +638,27 @@ class PlanAccessController {
     }
   }
 
+  /// Update client password (trainer only - stores hashed password in Firestore)
+  /// Note: This updates the password in Firestore for offline login
+  /// For Firebase Auth, the client needs to reset their own password
+  Future<void> updateClientPassword(String email, String newPassword) async {
+    final docId = _docIdFromEmail(email);
+    debugPrint('🔐 updateClientPassword: email=$email, docId=$docId');
+    try {
+      // Store password hash in Firestore for offline login
+      // Using simple hash - in production would use bcrypt or similar
+      final passwordHash = newPassword.hashCode.toString();
+      await _usersCollection.doc(docId).update({
+        'passwordHash': passwordHash,
+        'passwordUpdatedAt': DateTime.now().toIso8601String(),
+      });
+      debugPrint('🔐 Password updated successfully!');
+    } catch (e) {
+      debugPrint('🔐 Error updating password: $e');
+      rethrow;
+    }
+  }
+
   /// Update client email (rename client)
   Future<void> updateClientEmail(String oldEmail, String newEmail) async {
     final oldDocId = _docIdFromEmail(oldEmail);

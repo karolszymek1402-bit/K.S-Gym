@@ -349,148 +349,223 @@ class _ClientListScreenState extends State<ClientListScreen> {
       BuildContext context, String currentEmail, String? currentName) {
     final emailController = TextEditingController(text: currentEmail);
     final nameController = TextEditingController(text: currentName ?? '');
+    final passwordController = TextEditingController();
     final lang = globalLanguage;
+    bool showPassword = false;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0B2E5A),
-        title: Text(
-          lang == 'PL'
-              ? 'Edytuj klienta'
-              : lang == 'NO'
-                  ? 'Rediger klient'
-                  : 'Edit client',
-          style: const TextStyle(
-            color: Color(0xFFFFD700),
-            fontWeight: FontWeight.bold,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: const Color(0xFF0B2E5A),
+          title: Text(
+            lang == 'PL'
+                ? 'Edytuj klienta'
+                : lang == 'NO'
+                    ? 'Rediger klient'
+                    : 'Edit client',
+            style: const TextStyle(
+              color: Color(0xFFFFD700),
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: lang == 'PL'
-                    ? 'Imię klienta'
-                    : lang == 'NO'
-                        ? 'Kundenavn'
-                        : 'Client name',
-                labelStyle: const TextStyle(color: Color(0xFFFFD700)),
-                prefixIcon: const Icon(Icons.person, color: Color(0xFFFFD700)),
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFFFD700)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: lang == 'PL'
+                        ? 'Imię klienta'
+                        : lang == 'NO'
+                            ? 'Kundenavn'
+                            : 'Client name',
+                    labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                    prefixIcon:
+                        const Icon(Icons.person, color: Color(0xFFFFD700)),
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFFFD700)),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(0xFFFFD700), width: 2),
+                    ),
+                  ),
                 ),
-                focusedBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailController,
+                  style: const TextStyle(color: Colors.white),
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: lang == 'PL'
+                        ? 'Email klienta'
+                        : lang == 'NO'
+                            ? 'Klient e-post'
+                            : 'Client email',
+                    labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                    prefixIcon:
+                        const Icon(Icons.email, color: Color(0xFFFFD700)),
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFFFD700)),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(0xFFFFD700), width: 2),
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: passwordController,
+                  style: const TextStyle(color: Colors.white),
+                  obscureText: !showPassword,
+                  decoration: InputDecoration(
+                    labelText: lang == 'PL'
+                        ? 'Nowe hasło (opcjonalne)'
+                        : lang == 'NO'
+                            ? 'Nytt passord (valgfritt)'
+                            : 'New password (optional)',
+                    labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                    prefixIcon:
+                        const Icon(Icons.lock, color: Color(0xFFFFD700)),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        showPassword ? Icons.visibility_off : Icons.visibility,
+                        color: const Color(0xFFFFD700),
+                      ),
+                      onPressed: () {
+                        setDialogState(() => showPassword = !showPassword);
+                      },
+                    ),
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFFFFD700)),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(0xFFFFD700), width: 2),
+                    ),
+                    helperText: lang == 'PL'
+                        ? 'Min. 6 znaków'
+                        : lang == 'NO'
+                            ? 'Min. 6 tegn'
+                            : 'Min. 6 characters',
+                    helperStyle: const TextStyle(color: Colors.white54),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                Translations.get('cancel', language: lang),
+                style: const TextStyle(color: Colors.white70),
               ),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: emailController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: lang == 'PL'
-                    ? 'Email klienta'
-                    : lang == 'NO'
-                        ? 'Klient e-post'
-                        : 'Client email',
-                labelStyle: const TextStyle(color: Color(0xFFFFD700)),
-                prefixIcon: const Icon(Icons.email, color: Color(0xFFFFD700)),
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFFFD700)),
-                ),
-                focusedBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
-                ),
+            ElevatedButton(
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final newEmail = emailController.text.trim();
+                final newName = nameController.text.trim();
+                final newPassword = passwordController.text;
+
+                if (newEmail.isEmpty) {
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        lang == 'PL'
+                            ? 'Wprowadź email'
+                            : lang == 'NO'
+                                ? 'Skriv inn e-post'
+                                : 'Enter email',
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                if (newPassword.isNotEmpty && newPassword.length < 6) {
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        lang == 'PL'
+                            ? 'Hasło musi mieć min. 6 znaków'
+                            : lang == 'NO'
+                                ? 'Passordet må ha minst 6 tegn'
+                                : 'Password must have at least 6 characters',
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.pop(context);
+
+                try {
+                  // First update display name using current email
+                  await PlanAccessController.instance.updateClientDisplayName(
+                      currentEmail, newName.isEmpty ? null : newName);
+                  debugPrint('✅ Display name updated to: $newName');
+
+                  // Then update email if changed
+                  if (newEmail != currentEmail) {
+                    await PlanAccessController.instance
+                        .updateClientEmail(currentEmail, newEmail);
+                    debugPrint(
+                        '✅ Email updated from $currentEmail to $newEmail');
+                  }
+
+                  // Update password if provided
+                  if (newPassword.isNotEmpty) {
+                    await PlanAccessController.instance
+                        .updateClientPassword(newEmail, newPassword);
+                    debugPrint('✅ Password updated for $newEmail');
+                  }
+
+                  if (!mounted) return;
+                  await _loadClients();
+                  if (!mounted) return;
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        lang == 'PL'
+                            ? 'Dane klienta zaktualizowane'
+                            : lang == 'NO'
+                                ? 'Kundedata oppdatert'
+                                : 'Client data updated',
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } catch (e) {
+                  debugPrint('❌ Error updating client: $e');
+                  if (!mounted) return;
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${Translations.get('error', language: lang)}: ${e.toString()}',
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFFD700),
+                foregroundColor: const Color(0xFF0B2E5A),
+              ),
+              child: Text(
+                Translations.get('save', language: lang),
               ),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              Translations.get('cancel', language: lang),
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final messenger = ScaffoldMessenger.of(context);
-              final newEmail = emailController.text.trim();
-              final newName = nameController.text.trim();
-
-              if (newEmail.isEmpty) {
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      lang == 'PL'
-                          ? 'Wprowadź email'
-                          : lang == 'NO'
-                              ? 'Skriv inn e-post'
-                              : 'Enter email',
-                    ),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-
-              Navigator.pop(context);
-
-              try {
-                // Update display name
-                if (newName != (currentName ?? '')) {
-                  await PlanAccessController.instance.updateClientDisplayName(
-                      currentEmail, newName.isEmpty ? null : newName);
-                }
-
-                // Update email if changed
-                if (newEmail != currentEmail) {
-                  await PlanAccessController.instance
-                      .updateClientEmail(currentEmail, newEmail);
-                }
-
-                if (!mounted) return;
-                await _loadClients();
-                if (!mounted) return;
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      lang == 'PL'
-                          ? 'Dane klienta zaktualizowane'
-                          : lang == 'NO'
-                              ? 'Kundedata oppdatert'
-                              : 'Client data updated',
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              } catch (e) {
-                if (!mounted) return;
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      '${Translations.get('error', language: lang)}: ${e.toString()}',
-                    ),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFFD700),
-              foregroundColor: const Color(0xFF0B2E5A),
-            ),
-            child: Text(
-              Translations.get('save', language: lang),
-            ),
-          ),
-        ],
       ),
     );
   }

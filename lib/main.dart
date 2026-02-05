@@ -6099,6 +6099,14 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               iconColor: accent,
                               collapsedIconColor: accent.withValues(alpha: 0.5),
                               children: [
+                                // Notatka o rozgrzewce na początku dnia
+                                if (!isRestDay)
+                                  _buildDayNoteSection(
+                                    dayIndex: dayIndex,
+                                    isWarmup: true,
+                                    lang: lang,
+                                    accent: accent,
+                                  ),
                                 if (!isRestDay && exercisesForDay.isEmpty)
                                   Padding(
                                     padding: const EdgeInsets.all(16),
@@ -6234,6 +6242,14 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                     ),
                                   );
                                 }),
+                                // Notatka o cardio na końcu dnia
+                                if (!isRestDay)
+                                  _buildDayNoteSection(
+                                    dayIndex: dayIndex,
+                                    isWarmup: false,
+                                    lang: lang,
+                                    accent: accent,
+                                  ),
                                 if (exercisesForDay.isNotEmpty)
                                   const SizedBox(height: 8),
                               ],
@@ -6247,6 +6263,236 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         );
       },
     );
+  }
+
+  // Widget do wyświetlania i edycji notatek dziennych (rozgrzewka/cardio)
+  Widget _buildDayNoteSection({
+    required int dayIndex,
+    required bool isWarmup,
+    required String lang,
+    required Color accent,
+  }) {
+    final notes =
+        isWarmup ? _plan?.dayWarmupNotes ?? {} : _plan?.dayCardioNotes ?? {};
+    final currentNote = notes[dayIndex] ?? '';
+    final hasNote = currentNote.isNotEmpty;
+
+    final title = isWarmup
+        ? (lang == 'PL'
+            ? '🔥 Rozgrzewka'
+            : lang == 'NO'
+                ? '🔥 Oppvarming'
+                : '🔥 Warm-up')
+        : (lang == 'PL'
+            ? '🏃 Cardio na zakończenie'
+            : lang == 'NO'
+                ? '🏃 Avsluttende cardio'
+                : '🏃 Finishing cardio');
+
+    final hint = isWarmup
+        ? (lang == 'PL'
+            ? 'Dodaj notatkę o rozgrzewce...'
+            : lang == 'NO'
+                ? 'Legg til oppvarmingsnotat...'
+                : 'Add warm-up note...')
+        : (lang == 'PL'
+            ? 'Dodaj notatkę o cardio...'
+            : lang == 'NO'
+                ? 'Legg til cardio-notat...'
+                : 'Add cardio note...');
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: isWarmup
+            ? const Color(0xFFFF5722).withValues(alpha: 0.15)
+            : const Color(0xFF2196F3).withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isWarmup
+              ? const Color(0xFFFF5722).withValues(alpha: 0.3)
+              : const Color(0xFF2196F3).withValues(alpha: 0.3),
+        ),
+      ),
+      child: ListTile(
+        dense: true,
+        leading: Icon(
+          isWarmup ? Icons.whatshot : Icons.directions_run,
+          color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+          size: 24,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
+        subtitle: hasNote
+            ? Text(
+                currentNote,
+                style: TextStyle(
+                  color: accent.withValues(alpha: 0.8),
+                  fontSize: 12,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              )
+            : Text(
+                hint,
+                style: TextStyle(
+                  color: accent.withValues(alpha: 0.4),
+                  fontSize: 11,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+        trailing: IconButton(
+          icon: Icon(
+            hasNote ? Icons.edit : Icons.add,
+            color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+            size: 20,
+          ),
+          onPressed: () => _editDayNote(dayIndex, isWarmup, currentNote),
+        ),
+        onTap: () => _editDayNote(dayIndex, isWarmup, currentNote),
+      ),
+    );
+  }
+
+  // Dialog do edycji notatki dziennej
+  Future<void> _editDayNote(
+      int dayIndex, bool isWarmup, String currentNote) async {
+    final lang = globalLanguage;
+    final controller = TextEditingController(text: currentNote);
+    final dayName = _dayNames[dayIndex];
+
+    final title = isWarmup
+        ? (lang == 'PL'
+            ? 'Rozgrzewka - $dayName'
+            : lang == 'NO'
+                ? 'Oppvarming - $dayName'
+                : 'Warm-up - $dayName')
+        : (lang == 'PL'
+            ? 'Cardio na zakończenie - $dayName'
+            : lang == 'NO'
+                ? 'Avsluttende cardio - $dayName'
+                : 'Finishing cardio - $dayName');
+
+    final hint = isWarmup
+        ? (lang == 'PL'
+            ? 'np. 5 min bieg, rozciąganie dynamiczne, mobilność stawów...'
+            : lang == 'NO'
+                ? 'f.eks. 5 min løping, dynamisk tøying, leddmobilitet...'
+                : 'e.g. 5 min jog, dynamic stretching, joint mobility...')
+        : (lang == 'PL'
+            ? 'np. 15 min orbitrek, 10 min rower, rozciąganie...'
+            : lang == 'NO'
+                ? 'f.eks. 15 min ellipse, 10 min sykkel, tøying...'
+                : 'e.g. 15 min elliptical, 10 min bike, stretching...');
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.black.withValues(alpha: 0.95),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: TextField(
+          controller: controller,
+          style: const TextStyle(color: Colors.white),
+          maxLines: 4,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isWarmup
+                    ? const Color(0xFFFF5722).withValues(alpha: 0.5)
+                    : const Color(0xFF2196F3).withValues(alpha: 0.5),
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isWarmup
+                    ? const Color(0xFFFF5722)
+                    : const Color(0xFF2196F3),
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        actions: [
+          if (currentNote.isNotEmpty)
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, ''),
+              child: Text(
+                lang == 'PL'
+                    ? 'Usuń'
+                    : lang == 'NO'
+                        ? 'Slett'
+                        : 'Delete',
+                style: const TextStyle(color: Color(0xFFFF5252)),
+              ),
+            ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, null),
+            child: Text(
+              Translations.get('cancel', language: lang),
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+              foregroundColor: Colors.white,
+            ),
+            child: Text(Translations.get('save', language: lang)),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && mounted) {
+      try {
+        await PlanAccessController.instance.updateClientDayNote(
+          widget.clientEmail,
+          dayIndex,
+          isWarmup,
+          result.isEmpty ? null : result,
+        );
+        await _refreshPlan();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                result.isEmpty
+                    ? (lang == 'PL' ? 'Notatka usunięta' : 'Note deleted')
+                    : (lang == 'PL' ? 'Notatka zapisana' : 'Note saved'),
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
   }
 }
 

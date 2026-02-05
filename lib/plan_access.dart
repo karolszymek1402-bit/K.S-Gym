@@ -190,6 +190,8 @@ class ClientPlan {
     required this.entries,
     required this.updatedAt,
     this.restDays = const [],
+    this.dayWarmupNotes = const {},
+    this.dayCardioNotes = const {},
   });
 
   final String title;
@@ -197,6 +199,9 @@ class ClientPlan {
   final List<ClientPlanEntry> entries;
   final DateTime updatedAt;
   final List<int> restDays; // Dni wolne: 0=Poniedziałek, ..., 6=Niedziela
+  final Map<int, String>
+      dayWarmupNotes; // Notatki o rozgrzewce na początku dnia
+  final Map<int, String> dayCardioNotes; // Notatki o cardio na końcu dnia
 
   Map<String, dynamic> toMap() => {
         'title': title,
@@ -204,11 +209,17 @@ class ClientPlan {
         'updatedAt': updatedAt.toIso8601String(),
         'entries': entries.map((e) => e.toMap()).toList(growable: false),
         'restDays': restDays,
+        'dayWarmupNotes':
+            dayWarmupNotes.map((k, v) => MapEntry(k.toString(), v)),
+        'dayCardioNotes':
+            dayCardioNotes.map((k, v) => MapEntry(k.toString(), v)),
       };
 
   factory ClientPlan.fromMap(Map<String, dynamic> map) {
     final rawEntries = map['entries'];
     final rawRestDays = map['restDays'];
+    final rawWarmupNotes = map['dayWarmupNotes'];
+    final rawCardioNotes = map['dayCardioNotes'];
     return ClientPlan(
       title: map['title'] as String? ?? '',
       notes: map['notes'] as String? ?? '',
@@ -224,6 +235,34 @@ class ClientPlan {
       restDays: rawRestDays is Iterable
           ? rawRestDays.map((e) => (e as num).toInt()).toList(growable: false)
           : const [],
+      dayWarmupNotes: rawWarmupNotes is Map
+          ? rawWarmupNotes
+              .map((k, v) => MapEntry(int.parse(k.toString()), v.toString()))
+          : const {},
+      dayCardioNotes: rawCardioNotes is Map
+          ? rawCardioNotes
+              .map((k, v) => MapEntry(int.parse(k.toString()), v.toString()))
+          : const {},
+    );
+  }
+
+  ClientPlan copyWith({
+    String? title,
+    String? notes,
+    List<ClientPlanEntry>? entries,
+    DateTime? updatedAt,
+    List<int>? restDays,
+    Map<int, String>? dayWarmupNotes,
+    Map<int, String>? dayCardioNotes,
+  }) {
+    return ClientPlan(
+      title: title ?? this.title,
+      notes: notes ?? this.notes,
+      entries: entries ?? this.entries,
+      updatedAt: updatedAt ?? this.updatedAt,
+      restDays: restDays ?? this.restDays,
+      dayWarmupNotes: dayWarmupNotes ?? this.dayWarmupNotes,
+      dayCardioNotes: dayCardioNotes ?? this.dayCardioNotes,
     );
   }
 }
@@ -796,6 +835,46 @@ class PlanAccessController {
         entries: [],
         updatedAt: DateTime.now(),
         restDays: restDays,
+      );
+      await savePlanForEmail(email, newPlan);
+    }
+  }
+
+  /// Aktualizuje notatkę dzienną (rozgrzewka lub cardio)
+  Future<void> updateClientDayNote(
+      String email, int dayIndex, bool isWarmup, String? note) async {
+    final docId = _docIdFromEmail(email);
+    final doc = await _plansCollection.doc(docId).get();
+
+    if (doc.exists) {
+      final data = doc.data()!;
+      final fieldName = isWarmup ? 'dayWarmupNotes' : 'dayCardioNotes';
+
+      // Pobierz istniejące notatki
+      final existingNotes = data[fieldName] is Map
+          ? Map<String, dynamic>.from(data[fieldName] as Map)
+          : <String, dynamic>{};
+
+      // Aktualizuj lub usuń notatkę
+      if (note != null && note.isNotEmpty) {
+        existingNotes[dayIndex.toString()] = note;
+      } else {
+        existingNotes.remove(dayIndex.toString());
+      }
+
+      data[fieldName] = existingNotes;
+      data['updatedAt'] = DateTime.now().toIso8601String();
+      await _plansCollection.doc(docId).set(data);
+    } else {
+      // Create new plan with note
+      final newPlan = ClientPlan(
+        title: 'New Training Plan',
+        notes: '',
+        entries: [],
+        updatedAt: DateTime.now(),
+        restDays: [],
+        dayWarmupNotes: isWarmup && note != null ? {dayIndex: note} : {},
+        dayCardioNotes: !isWarmup && note != null ? {dayIndex: note} : {},
       );
       await savePlanForEmail(email, newPlan);
     }

@@ -125,31 +125,45 @@ class _ClientListScreenState extends State<ClientListScreen> {
                                   ),
                                 )
                               : null,
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit,
-                                    color: Color(0xFFFFD700), size: 20),
-                                onPressed: () => _showEditClientDialog(
-                                    context, email, displayName),
-                                tooltip:
-                                    Translations.get('edit', language: lang),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete,
-                                    color: Colors.red, size: 20),
-                                onPressed: () =>
-                                    _showDeleteClientDialog(context, email),
-                                tooltip:
-                                    Translations.get('delete', language: lang),
-                              ),
-                              const Icon(
-                                Icons.arrow_forward_ios,
-                                color: Color(0xFFFFD700),
-                                size: 18,
-                              ),
-                            ],
+                          trailing: SizedBox(
+                            width: 120,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit,
+                                      color: Color(0xFFFFD700), size: 22),
+                                  onPressed: () => _showEditClientDialog(
+                                      context, email, displayName),
+                                  tooltip:
+                                      Translations.get('edit', language: lang),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(
+                                    minWidth: 36,
+                                    minHeight: 36,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red, size: 22),
+                                  onPressed: () =>
+                                      _showDeleteClientDialog(context, email),
+                                  tooltip: Translations.get('delete',
+                                      language: lang),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(
+                                    minWidth: 36,
+                                    minHeight: 36,
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Color(0xFFFFD700),
+                                  size: 18,
+                                ),
+                              ],
+                            ),
                           ),
                           onTap: () {
                             Navigator.push(

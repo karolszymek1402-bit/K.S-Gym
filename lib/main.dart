@@ -3681,6 +3681,228 @@ class _ClientsScreenState extends State<ClientsScreen> {
     }
   }
 
+  Future<void> _editClientDialog(
+      String currentEmail, String? currentName) async {
+    final nameCtrl = TextEditingController(text: currentName ?? '');
+    final emailCtrl = TextEditingController(text: currentEmail);
+    final passwordCtrl = TextEditingController();
+    bool showPassword = false;
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) => AlertDialog(
+            backgroundColor: Colors.black.withValues(alpha: 0.9),
+            title: Text(
+              globalLanguage == 'PL'
+                  ? 'Edytuj klienta'
+                  : globalLanguage == 'NO'
+                      ? 'Rediger klient'
+                      : 'Edit client',
+              style: const TextStyle(color: Color(0xFFFFD700)),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameCtrl,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    decoration: InputDecoration(
+                      labelText: globalLanguage == 'PL'
+                          ? 'Imię klienta'
+                          : globalLanguage == 'NO'
+                              ? 'Kundenavn'
+                              : 'Client name',
+                      labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                      prefixIcon:
+                          const Icon(Icons.person, color: Color(0xFFFFD700)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: emailCtrl,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: globalLanguage == 'PL'
+                          ? 'Email klienta'
+                          : globalLanguage == 'NO'
+                              ? 'Klient e-post'
+                              : 'Client email',
+                      labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                      prefixIcon:
+                          const Icon(Icons.email, color: Color(0xFFFFD700)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: passwordCtrl,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    obscureText: !showPassword,
+                    decoration: InputDecoration(
+                      labelText: globalLanguage == 'PL'
+                          ? 'Nowe hasło (opcjonalne)'
+                          : globalLanguage == 'NO'
+                              ? 'Nytt passord (valgfritt)'
+                              : 'New password (optional)',
+                      labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                      prefixIcon:
+                          const Icon(Icons.lock, color: Color(0xFFFFD700)),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          showPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: const Color(0xFFFFD700),
+                        ),
+                        onPressed: () {
+                          setDialogState(() => showPassword = !showPassword);
+                        },
+                      ),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFFFD700), width: 2),
+                      ),
+                      helperText: globalLanguage == 'PL'
+                          ? 'Min. 6 znaków'
+                          : globalLanguage == 'NO'
+                              ? 'Min. 6 tegn'
+                              : 'Min. 6 characters',
+                      helperStyle: const TextStyle(color: Colors.white54),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(
+                  Translations.get('cancel', language: globalLanguage),
+                  style: const TextStyle(color: Colors.white70),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (emailCtrl.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          globalLanguage == 'PL'
+                              ? 'Wprowadź email'
+                              : globalLanguage == 'NO'
+                                  ? 'Skriv inn e-post'
+                                  : 'Enter email',
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  if (passwordCtrl.text.isNotEmpty &&
+                      passwordCtrl.text.length < 6) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          globalLanguage == 'PL'
+                              ? 'Hasło musi mieć min. 6 znaków'
+                              : globalLanguage == 'NO'
+                                  ? 'Passordet må ha minst 6 tegn'
+                                  : 'Password must have at least 6 characters',
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  Navigator.pop(ctx, true);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFD700),
+                  foregroundColor: Colors.black,
+                ),
+                child: Text(Translations.get('save', language: globalLanguage)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (result == true) {
+      try {
+        final newName = nameCtrl.text.trim();
+        final newEmail = emailCtrl.text.trim();
+        final newPassword = passwordCtrl.text;
+
+        // Update display name
+        await PlanAccessController.instance.updateClientDisplayName(
+            currentEmail, newName.isEmpty ? null : newName);
+        debugPrint('✅ Display name updated to: $newName');
+
+        // Update email if changed
+        if (newEmail != currentEmail) {
+          await PlanAccessController.instance
+              .updateClientEmail(currentEmail, newEmail);
+          debugPrint('✅ Email updated from $currentEmail to $newEmail');
+        }
+
+        // Update password if provided
+        if (newPassword.isNotEmpty) {
+          await PlanAccessController.instance
+              .updateClientPassword(newEmail, newPassword);
+          debugPrint('✅ Password updated for $newEmail');
+        }
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                globalLanguage == 'PL'
+                    ? 'Dane klienta zaktualizowane'
+                    : globalLanguage == 'NO'
+                        ? 'Kundedata oppdatert'
+                        : 'Client data updated',
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _loadClients();
+        }
+      } catch (e) {
+        debugPrint('❌ Error updating client: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  '${Translations.get('error', language: globalLanguage)}: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final accent = widget.themeColor;
@@ -3768,10 +3990,21 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         IconButton(
+                                          icon: const Icon(Icons.edit,
+                                              color: Color(0xFFFFD700),
+                                              size: 22),
+                                          onPressed: () => _editClientDialog(
+                                              email, displayName),
+                                          tooltip: Translations.get('edit',
+                                              language: globalLanguage),
+                                        ),
+                                        IconButton(
                                           icon: const Icon(Icons.delete,
                                               color: Color(0xFFFF5252),
                                               size: 22),
                                           onPressed: () => _deleteClient(email),
+                                          tooltip: Translations.get('delete',
+                                              language: globalLanguage),
                                         ),
                                         const Icon(Icons.chevron_right,
                                             color: Color(0xFFFFD700)),

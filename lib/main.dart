@@ -493,6 +493,96 @@ class Translations {
       'PL': 'Czas ćwiczenia minął!',
       'NO': 'Øvelsestiden er over!'
     },
+    // Dodatkowe tłumaczenia - uzupełnione
+    'client_added': {
+      'EN': 'Client added successfully',
+      'PL': 'Klient dodany pomyślnie',
+      'NO': 'Klient lagt til'
+    },
+    'client_deleted': {
+      'EN': 'Client deleted',
+      'PL': 'Klient usunięty',
+      'NO': 'Klient slettet'
+    },
+    'plan_updated': {
+      'EN': 'Plan updated',
+      'PL': 'Plan zaktualizowany',
+      'NO': 'Plan oppdatert'
+    },
+    'note_deleted': {
+      'EN': 'Note deleted',
+      'PL': 'Notatka usunięta',
+      'NO': 'Notat slettet'
+    },
+    'note_saved': {
+      'EN': 'Note saved',
+      'PL': 'Notatka zapisana',
+      'NO': 'Notat lagret'
+    },
+    'exercise_deleted': {
+      'EN': 'Exercise deleted',
+      'PL': 'Ćwiczenie usunięte',
+      'NO': 'Øvelse slettet'
+    },
+    'exercise_saved': {
+      'EN': 'Exercise saved',
+      'PL': 'Ćwiczenie zapisane',
+      'NO': 'Øvelse lagret'
+    },
+    'training_day': {
+      'EN': 'Training day',
+      'PL': 'Dzień treningowy',
+      'NO': 'Treningsdag'
+    },
+    'change_password': {
+      'EN': 'Change password',
+      'PL': 'Zmień hasło',
+      'NO': 'Endre passord'
+    },
+    'current_password': {
+      'EN': 'Current password',
+      'PL': 'Obecne hasło',
+      'NO': 'Nåværende passord'
+    },
+    'new_password': {
+      'EN': 'New password',
+      'PL': 'Nowe hasło',
+      'NO': 'Nytt passord'
+    },
+    'confirm_new_password': {
+      'EN': 'Confirm new password',
+      'PL': 'Powtórz nowe hasło',
+      'NO': 'Bekreft nytt passord'
+    },
+    'password_changed': {
+      'EN': 'Password changed successfully',
+      'PL': 'Hasło zostało zmienione',
+      'NO': 'Passord endret'
+    },
+    'current_account': {
+      'EN': 'Current account',
+      'PL': 'Aktualne konto',
+      'NO': 'Gjeldende konto'
+    },
+    'login_to_change_password': {
+      'EN': 'Log in to change password',
+      'PL': 'Zaloguj się, aby zmienić hasło',
+      'NO': 'Logg inn for å endre passord'
+    },
+    'exercise_time_label': {
+      'EN': 'EXERCISE TIME',
+      'PL': 'CZAS ĆWICZENIA',
+      'NO': 'ØVELSESTID'
+    },
+    'start_button': {'EN': 'START', 'PL': 'START', 'NO': 'START'},
+    'stop_button': {'EN': 'STOP', 'PL': 'STOP', 'NO': 'STOPP'},
+    'reset_button': {'EN': 'RESET', 'PL': 'RESET', 'NO': 'NULLSTILL'},
+    'measured_time_label': {
+      'EN': 'Measured time',
+      'PL': 'Zmierzony czas',
+      'NO': 'Målt tid'
+    },
+    'ex_short': {'EN': 'ex.', 'PL': 'ćw.', 'NO': 'øv.'},
   };
 
   static String get(String key, {String language = 'EN'}) {
@@ -2861,8 +2951,8 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
           SnackBar(
             content: Text(
               result.isEmpty
-                  ? (lang == 'PL' ? 'Notatka usunięta' : 'Note deleted')
-                  : (lang == 'PL' ? 'Notatka zapisana' : 'Note saved'),
+                  ? Translations.get('note_deleted', language: lang)
+                  : Translations.get('note_saved', language: lang),
             ),
             backgroundColor: Colors.green,
           ),
@@ -3334,7 +3424,7 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
               _localExercises[dayIndex]!.length > exerciseIndex) {
             _localExercises[dayIndex]!.removeAt(exerciseIndex);
           }
-        } else if (isEdit && exerciseIndex != null) {
+        } else if (isEdit) {
           // Edytuj ćwiczenie
           _localExercises[dayIndex]![exerciseIndex] = result;
         } else {
@@ -3348,8 +3438,8 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
           SnackBar(
             content: Text(
               result.name.isEmpty
-                  ? (lang == 'PL' ? 'Ćwiczenie usunięte' : 'Exercise deleted')
-                  : (lang == 'PL' ? 'Ćwiczenie zapisane' : 'Exercise saved'),
+                  ? Translations.get('exercise_deleted', language: lang)
+                  : Translations.get('exercise_saved', language: lang),
             ),
             backgroundColor: Colors.green,
           ),
@@ -3523,7 +3613,7 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      '${exercises.length} ${lang == 'PL' ? 'ćw.' : 'ex.'}',
+                      '${exercises.length} ${Translations.get('ex_short', language: lang)}',
                       style: TextStyle(color: accent, fontSize: 10),
                     ),
                   ),
@@ -3646,15 +3736,15 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
                   size: 20,
                 ),
                 tooltip: isRestDay
-                    ? (lang == 'PL' ? 'Dzień treningowy' : 'Training day')
-                    : (lang == 'PL' ? 'Dzień wolny' : 'Rest day'),
+                    ? Translations.get('training_day', language: lang)
+                    : Translations.get('rest_day', language: lang),
                 onPressed: () => _toggleRestDay(dayIndex, lang),
               ),
               // Przycisk dodaj ćwiczenie
               if (!isRestDay)
                 IconButton(
                   icon: Icon(Icons.add_circle, color: accent, size: 24),
-                  tooltip: lang == 'PL' ? 'Dodaj ćwiczenie' : 'Add exercise',
+                  tooltip: Translations.get('add_exercise', language: lang),
                   onPressed: () => _editLocalExercise(dayIndex, lang),
                 ),
             ],
@@ -3743,7 +3833,7 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
                         fontSize: 14),
                   ),
                   subtitle: Text(
-                    '${ex.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${ex.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${ex.timeSeconds > 0 ? ' • ${ex.timeSeconds}s' : ''}',
+                    '${ex.sets} ${Translations.get('sets', language: lang)} • ${ex.restSeconds}s ${Translations.get('rest', language: lang)}${ex.timeSeconds > 0 ? ' • ${ex.timeSeconds}s' : ''}',
                     style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.6),
                         fontSize: 11),
@@ -3996,6 +4086,8 @@ class _LoginScreenState extends State<LoginScreen> {
         // Poczekaj chwilę na aktualizację stanu przez Firebase listener
         await Future.delayed(const Duration(milliseconds: 500));
 
+        if (!mounted) return;
+
         final state = PlanAccessController.instance.notifier.value;
         debugPrint(
             '🔐 State after login: isAuthenticated=${state.isAuthenticated}, role=${state.role}, email=${state.userEmail}');
@@ -4005,18 +4097,21 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state.role == PlanUserRole.client) {
             // Klient - przekieruj do CategoryScreen
             debugPrint('🔐 Redirecting to CategoryScreen (client)');
+            if (!mounted) return;
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const CategoryScreen()),
             );
           } else if (state.role == PlanUserRole.coach) {
             // Trener - przekieruj do CoachDashboardScreen
             debugPrint('🔐 Redirecting to CoachDashboardScreen (coach)');
+            if (!mounted) return;
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const CoachDashboardScreen()),
             );
           } else {
             debugPrint(
                 '🔐 Unknown role: ${state.role}, redirecting to CategoryScreen');
+            if (!mounted) return;
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const CategoryScreen()),
             );
@@ -4521,11 +4616,11 @@ class _PlanOnlineScreenState extends State<PlanOnlineScreen> {
                                 children: [
                                   _buildInfoChip(
                                       Icons.repeat,
-                                      '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}',
+                                      '${exercise.sets} ${Translations.get('sets', language: lang)}',
                                       accent),
                                   _buildInfoChip(
                                       Icons.timer_outlined,
-                                      '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}',
+                                      '${exercise.restSeconds}s ${Translations.get('rest', language: lang)}',
                                       accent),
                                   if (isTimeBased)
                                     _buildInfoChip(
@@ -4869,7 +4964,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
         );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Klient dodany pomyślnie')),
+            SnackBar(
+                content: Text(Translations.get('client_added',
+                    language: globalLanguage))),
           );
           _loadClients();
         }
@@ -4920,7 +5017,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
         await PlanAccessController.instance.deleteClient(email);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Klient usunięty')),
+            SnackBar(
+                content: Text(Translations.get('client_deleted',
+                    language: globalLanguage))),
           );
           _loadClients();
         }
@@ -5641,7 +5740,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+              content: Text('${Translations.get('error', language: lang)}: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -5884,7 +5983,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+              content: Text('${Translations.get('error', language: lang)}: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -5960,7 +6059,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         _refreshPlan();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Plan zaktualizowany')),
+            SnackBar(
+                content: Text(Translations.get('plan_updated',
+                    language: globalLanguage))),
           );
         }
       } catch (e) {
@@ -6947,8 +7048,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         subtitle: latestLog != null
                             ? Text(
                                 isTime
-                                    ? '${lang == 'PL' ? 'Ostatni' : 'Last'}: ${latestLog.durationSeconds}s'
-                                    : '${lang == 'PL' ? 'Ostatni' : 'Last'}: ${latestLog.weight} kg × ${latestLog.reps}',
+                                    ? '${Translations.get('last', language: lang)}: ${latestLog.durationSeconds}s'
+                                    : '${Translations.get('last', language: lang)}: ${latestLog.weight} kg × ${latestLog.reps}',
                                 style: const TextStyle(
                                     color: Colors.white54, fontSize: 12),
                               )
@@ -7053,8 +7154,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       if (ctx.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content:
-                                Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+                            content: Text(
+                                '${Translations.get('error', language: lang)}: $e'),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -7536,7 +7637,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       subtitle: Text(
-                                        '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${exercise.timeSeconds > 0 ? ' • ${exercise.timeSeconds}s' : ''}',
+                                        '${exercise.sets} ${Translations.get('sets', language: lang)} • ${exercise.restSeconds}s ${Translations.get('rest', language: lang)}${exercise.timeSeconds > 0 ? ' • ${exercise.timeSeconds}s' : ''}',
                                         style: TextStyle(
                                             color:
                                                 accent.withValues(alpha: 0.6),
@@ -7848,8 +7949,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
             SnackBar(
               content: Text(
                 result.isEmpty
-                    ? (lang == 'PL' ? 'Notatka usunięta' : 'Note deleted')
-                    : (lang == 'PL' ? 'Notatka zapisana' : 'Note saved'),
+                    ? Translations.get('note_deleted', language: lang)
+                    : Translations.get('note_saved', language: lang),
               ),
               backgroundColor: Colors.green,
             ),
@@ -7859,7 +7960,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+              content: Text('${Translations.get('error', language: lang)}: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -9145,7 +9246,7 @@ class _ClientDayExercisesScreenState extends State<ClientDayExercisesScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${lang == 'PL' ? 'Błąd' : 'Error'}: $e'),
+              content: Text('${Translations.get('error', language: lang)}: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -9416,12 +9517,12 @@ class _ClientDayExercisesScreenState extends State<ClientDayExercisesScreen> {
                                                 children: [
                                                   _buildInfoChip(
                                                     Icons.repeat,
-                                                    '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}',
+                                                    '${exercise.sets} ${Translations.get('sets', language: lang)}',
                                                     accent,
                                                   ),
                                                   _buildInfoChip(
                                                     Icons.timer_outlined,
-                                                    '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}',
+                                                    '${exercise.restSeconds}s ${Translations.get('rest', language: lang)}',
                                                     accent,
                                                   ),
                                                   if (isTimeBased)
@@ -10822,7 +10923,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
               TextField(
                 controller: durationCtrl,
                 decoration: InputDecoration(
-                  labelText: lang == 'PL' ? 'CZAS (s)' : 'TIME (s)',
+                  labelText: Translations.get('time_s', language: lang),
                   border: const OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
@@ -10893,8 +10994,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text(
-                    lang == 'PL' ? 'Wpis zaktualizowany' : 'Entry updated')),
+                content:
+                    Text(Translations.get('entry_updated', language: lang))),
           );
         }
       }
@@ -12083,13 +12184,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ListTile(
                             enabled: loggedIn,
                             leading: const Icon(Icons.lock, color: gold),
-                            title: const Text('Zmień hasło',
+                            title: Text(
+                                Translations.get('change_password',
+                                    language: globalLanguage),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: gold)),
+                                style: const TextStyle(color: gold)),
                             subtitle: Text(
                               loggedIn
-                                  ? 'Aktualne konto: ${userEmail.isNotEmpty ? userEmail : 'zalogowany użytkownik'}'
-                                  : 'Zaloguj się, aby zmienić hasło',
+                                  ? '${Translations.get('current_account', language: globalLanguage)}: ${userEmail.isNotEmpty ? userEmail : globalLanguage == 'PL' ? 'zalogowany użytkownik' : globalLanguage == 'NO' ? 'innlogget bruker' : 'logged in user'}'
+                                  : Translations.get('login_to_change_password',
+                                      language: globalLanguage),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: loggedIn
@@ -12575,7 +12679,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Hasło zostało zmienione')),
+          SnackBar(
+              content: Text(Translations.get('password_changed',
+                  language: globalLanguage))),
         );
       }
     } catch (e) {
@@ -12594,9 +12700,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     return AlertDialog(
       backgroundColor: Colors.black.withValues(alpha: 0.9),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text('Zmień hasło',
-          style:
-              TextStyle(color: Color(0xFFFFD700), fontWeight: FontWeight.w800)),
+      title: Text(Translations.get('change_password', language: globalLanguage),
+          style: const TextStyle(
+              color: Color(0xFFFFD700), fontWeight: FontWeight.w800)),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -12604,26 +12710,30 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             controller: _currentController,
             obscureText: true,
             style: const TextStyle(color: Color(0xFFFFD700)),
-            decoration: const InputDecoration(
-                labelText: 'Obecne hasło',
-                prefixIcon: Icon(Icons.lock_outline)),
+            decoration: InputDecoration(
+                labelText: Translations.get('current_password',
+                    language: globalLanguage),
+                prefixIcon: const Icon(Icons.lock_outline)),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: _newController,
             obscureText: true,
             style: const TextStyle(color: Color(0xFFFFD700)),
-            decoration: const InputDecoration(
-                labelText: 'Nowe hasło', prefixIcon: Icon(Icons.password)),
+            decoration: InputDecoration(
+                labelText:
+                    Translations.get('new_password', language: globalLanguage),
+                prefixIcon: const Icon(Icons.password)),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: _confirmController,
             obscureText: true,
             style: const TextStyle(color: Color(0xFFFFD700)),
-            decoration: const InputDecoration(
-                labelText: 'Powtórz nowe hasło',
-                prefixIcon: Icon(Icons.password)),
+            decoration: InputDecoration(
+                labelText: Translations.get('confirm_new_password',
+                    language: globalLanguage),
+                prefixIcon: const Icon(Icons.password)),
           ),
           if (_error != null) ...[
             const SizedBox(height: 8),

@@ -15,7 +15,7 @@ Future<String> requestNotificationPermission() async {
   try {
     if (!html.Notification.supported) return 'unsupported';
     final result = await html.Notification.requestPermission();
-    return result ?? 'default';
+    return result;
   } catch (_) {
     return 'error';
   }

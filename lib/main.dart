@@ -1792,17 +1792,23 @@ class NotificationService {
       enableLights: true,
     );
     try {
-      await _plugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(channel);
+      final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
 
-      // Poproś o uprawnienia na Android 13+
-      await _plugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestNotificationsPermission();
-    } catch (_) {}
+      if (androidPlugin != null) {
+        await androidPlugin.createNotificationChannel(channel);
+
+        // Poproś o uprawnienia na Android 13+
+        await androidPlugin.requestNotificationsPermission();
+
+        // Poproś o uprawnienia do exact alarms na Android 12+ (dla powiadomień w tle)
+        await androidPlugin.requestExactAlarmsPermission();
+
+        debugPrint('🔔 Android notification permissions requested');
+      }
+    } catch (e) {
+      debugPrint('🔔 Error setting up Android notifications: $e');
+    }
 
     // iOS - poproś o uprawnienia
     try {
@@ -1860,8 +1866,11 @@ class NotificationService {
 
     // Na web nie możemy używać zonedSchedule
     if (kIsWeb) {
+      debugPrint('🔔 Web platform - skipping zonedSchedule');
       return id;
     }
+
+    debugPrint('🔔 Scheduling notification in ${delay.inSeconds} seconds');
 
     final androidDetails = AndroidNotificationDetails(
       'ks_gym_timer_channel',
@@ -1890,16 +1899,22 @@ class NotificationService {
         NotificationDetails(android: androidDetails, iOS: iosDetails);
 
     final scheduledTime = tz.TZDateTime.now(tz.local).add(delay);
+    debugPrint('🔔 Scheduled time: $scheduledTime');
 
-    await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      scheduledTime,
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: null,
-    );
+    try {
+      await _plugin.zonedSchedule(
+        id,
+        title,
+        body,
+        scheduledTime,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        matchDateTimeComponents: null,
+      );
+      debugPrint('🔔 Notification scheduled successfully with id: $id');
+    } catch (e) {
+      debugPrint('🔔 Error scheduling notification: $e');
+    }
 
     return id;
   }
@@ -1920,6 +1935,13 @@ void main() async {
 
   // Inicjalizacja timezone
   tz_data.initializeTimeZones();
+  // Ustaw lokalną strefę czasową
+  try {
+    tz.setLocalLocation(tz.getLocation('Europe/Warsaw'));
+  } catch (_) {
+    // Jeśli nie można ustawić, użyj UTC
+    tz.setLocalLocation(tz.UTC);
+  }
 
   // Równoległa inicjalizacja dla szybszego startu
   await Future.wait([

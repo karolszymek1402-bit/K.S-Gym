@@ -3370,7 +3370,82 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
     await _saveDayNotes();
   }
 
-  // Widget dnia tygodnia z menu warmup/cardio i ćwiczeniami
+  // Widget do wyświetlania i edycji notatek dziennych (rozgrzewka/cardio) - jak u trenera
+  Widget _buildLocalDayNoteSection({
+    required int dayIndex,
+    required bool isWarmup,
+    required String lang,
+    required Color accent,
+  }) {
+    final notes = isWarmup ? _localWarmupNotes : _localCardioNotes;
+    final currentNote = notes[dayIndex] ?? '';
+    final hasNote = currentNote.isNotEmpty;
+
+    if (!hasNote) return const SizedBox.shrink();
+
+    final title = isWarmup
+        ? (lang == 'PL'
+            ? '🔥 Rozgrzewka'
+            : lang == 'NO'
+                ? '🔥 Oppvarming'
+                : '🔥 Warm-up')
+        : (lang == 'PL'
+            ? '🏃 Cardio na zakończenie'
+            : lang == 'NO'
+                ? '🏃 Avsluttende cardio'
+                : '🏃 Finishing cardio');
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: isWarmup
+            ? const Color(0xFFFF5722).withValues(alpha: 0.15)
+            : const Color(0xFF2196F3).withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isWarmup
+              ? const Color(0xFFFF5722).withValues(alpha: 0.3)
+              : const Color(0xFF2196F3).withValues(alpha: 0.3),
+        ),
+      ),
+      child: ListTile(
+        dense: true,
+        leading: Icon(
+          isWarmup ? Icons.whatshot : Icons.directions_run,
+          color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+          size: 24,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
+        subtitle: Text(
+          currentNote,
+          style: TextStyle(
+            color: accent.withValues(alpha: 0.8),
+            fontSize: 12,
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: IconButton(
+          icon: Icon(
+            Icons.edit,
+            color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+            size: 20,
+          ),
+          onPressed: () => _editLocalDayNote(dayIndex, isWarmup, lang),
+        ),
+        onTap: () => _editLocalDayNote(dayIndex, isWarmup, lang),
+      ),
+    );
+  }
+
+  // Widget dnia tygodnia z menu warmup/cardio i ćwiczeniami - jak u trenera
   Widget _buildDayTile(int dayIndex, String lang, Color accent) {
     final dayNames = _getDayNames(lang);
     final dayName = dayNames[dayIndex];
@@ -3490,195 +3565,205 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
               ],
             ],
           ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Menu z opcjami warmup/cardio - jak u trenera
+              if (!isRestDay)
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert,
+                      color: accent.withValues(alpha: 0.7), size: 20),
+                  color: Colors.black.withValues(alpha: 0.95),
+                  onSelected: (value) {
+                    if (value == 'warmup') {
+                      _editLocalDayNote(dayIndex, true, lang);
+                    } else if (value == 'cardio') {
+                      _editLocalDayNote(dayIndex, false, lang);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'warmup',
+                      child: Row(
+                        children: [
+                          Icon(
+                            hasWarmup ? Icons.edit : Icons.add,
+                            color: const Color(0xFFFF5722),
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            hasWarmup
+                                ? (lang == 'PL'
+                                    ? 'Edytuj rozgrzewkę'
+                                    : lang == 'NO'
+                                        ? 'Rediger oppvarming'
+                                        : 'Edit warm-up')
+                                : (lang == 'PL'
+                                    ? 'Dodaj rozgrzewkę'
+                                    : lang == 'NO'
+                                        ? 'Legg til oppvarming'
+                                        : 'Add warm-up'),
+                            style: const TextStyle(color: Color(0xFFFF5722)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'cardio',
+                      child: Row(
+                        children: [
+                          Icon(
+                            hasCardio ? Icons.edit : Icons.add,
+                            color: const Color(0xFF2196F3),
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            hasCardio
+                                ? (lang == 'PL'
+                                    ? 'Edytuj cardio końcowe'
+                                    : lang == 'NO'
+                                        ? 'Rediger avsluttende cardio'
+                                        : 'Edit final cardio')
+                                : (lang == 'PL'
+                                    ? 'Dodaj cardio końcowe'
+                                    : lang == 'NO'
+                                        ? 'Legg til avsluttende cardio'
+                                        : 'Add final cardio'),
+                            style: const TextStyle(color: Color(0xFF2196F3)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              // Przycisk oznacz jako dzień wolny
+              IconButton(
+                icon: Icon(
+                  isRestDay ? Icons.fitness_center : Icons.hotel,
+                  color: isRestDay ? accent : Colors.green,
+                  size: 20,
+                ),
+                tooltip: isRestDay
+                    ? (lang == 'PL' ? 'Dzień treningowy' : 'Training day')
+                    : (lang == 'PL' ? 'Dzień wolny' : 'Rest day'),
+                onPressed: () => _toggleRestDay(dayIndex, lang),
+              ),
+              // Przycisk dodaj ćwiczenie
+              if (!isRestDay)
+                IconButton(
+                  icon: Icon(Icons.add_circle, color: accent, size: 24),
+                  tooltip: lang == 'PL' ? 'Dodaj ćwiczenie' : 'Add exercise',
+                  onPressed: () => _editLocalExercise(dayIndex, lang),
+                ),
+            ],
+          ),
           iconColor: isRestDay ? Colors.green : accent,
           collapsedIconColor: isRestDay ? Colors.green : accent,
           children: [
-            // Przycisk dzień wolny
-            ListTile(
-              dense: true,
-              leading: Icon(
-                isRestDay ? Icons.fitness_center : Icons.hotel,
-                color: isRestDay ? accent : Colors.green,
-                size: 20,
+            // Notatka o rozgrzewce na początku dnia (tylko gdy dodana) - jak u trenera
+            if (!isRestDay && hasWarmup)
+              _buildLocalDayNoteSection(
+                dayIndex: dayIndex,
+                isWarmup: true,
+                lang: lang,
+                accent: accent,
               ),
-              title: Text(
-                isRestDay
-                    ? (lang == 'PL'
-                        ? 'Ustaw jako dzień treningowy'
-                        : lang == 'NO'
-                            ? 'Sett som treningsdag'
-                            : 'Set as training day')
-                    : (lang == 'PL'
-                        ? 'Ustaw jako dzień wolny'
-                        : lang == 'NO'
-                            ? 'Sett som hviledag'
-                            : 'Set as rest day'),
-                style: TextStyle(
-                  color: isRestDay ? accent : Colors.green,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+            // Lista ćwiczeń
+            if (!isRestDay && exercises.isEmpty && !hasWarmup && !hasCardio)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Icon(Icons.add_circle_outline,
+                        color: accent.withValues(alpha: 0.4), size: 32),
+                    const SizedBox(height: 8),
+                    Text(
+                      lang == 'PL'
+                          ? 'Kliknij + aby dodać ćwiczenie'
+                          : lang == 'NO'
+                              ? 'Klikk + for å legge til øvelse'
+                              : 'Click + to add exercise',
+                      style: TextStyle(
+                          color: accent.withValues(alpha: 0.5), fontSize: 12),
+                    ),
+                  ],
                 ),
               ),
-              onTap: () => _toggleRestDay(dayIndex, lang),
-            ),
-            if (!isRestDay) ...[
-              const Divider(color: Colors.white24, height: 1),
-              // Warmup section
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.whatshot,
-                    color: Color(0xFFFF5722), size: 20),
-                title: Text(
-                  lang == 'PL'
-                      ? '🔥 Rozgrzewka'
-                      : lang == 'NO'
-                          ? '🔥 Oppvarming'
-                          : '🔥 Warm-up',
-                  style: const TextStyle(
-                      color: Color(0xFFFF5722),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14),
+            if (!isRestDay && exercises.isNotEmpty) ...[
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  children: [
+                    Icon(Icons.fitness_center, color: accent, size: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      lang == 'PL'
+                          ? 'Ćwiczenia:'
+                          : lang == 'NO'
+                              ? 'Øvelser:'
+                              : 'Exercises:',
+                      style: TextStyle(
+                          color: accent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14),
+                    ),
+                  ],
                 ),
-                subtitle: Text(
-                  hasWarmup
-                      ? _localWarmupNotes[dayIndex]!
-                      : (lang == 'PL'
-                          ? 'Kliknij aby dodać...'
-                          : 'Click to add...'),
-                  style: TextStyle(
-                    color: hasWarmup
-                        ? Colors.white.withValues(alpha: 0.8)
-                        : Colors.white.withValues(alpha: 0.4),
-                    fontSize: 12,
-                    fontStyle: hasWarmup ? FontStyle.normal : FontStyle.italic,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: Icon(hasWarmup ? Icons.edit : Icons.add,
-                    color: const Color(0xFFFF5722), size: 18),
-                onTap: () => _editLocalDayNote(dayIndex, true, lang),
               ),
-              // Lista ćwiczeń
-              if (exercises.isNotEmpty) ...[
-                const Divider(color: Colors.white24, height: 1),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Row(
-                    children: [
-                      Icon(Icons.fitness_center, color: accent, size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        lang == 'PL'
-                            ? 'Ćwiczenia:'
-                            : lang == 'NO'
-                                ? 'Øvelser:'
-                                : 'Exercises:',
+              ...exercises.asMap().entries.map((entry) {
+                final idx = entry.key;
+                final ex = entry.value;
+                return ListTile(
+                  dense: true,
+                  leading: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${idx + 1}',
                         style: TextStyle(
                             color: accent,
                             fontWeight: FontWeight.bold,
-                            fontSize: 14),
+                            fontSize: 12),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                ...exercises.asMap().entries.map((entry) {
-                  final idx = entry.key;
-                  final ex = entry.value;
-                  return ListTile(
-                    dense: true,
-                    leading: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: accent.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${idx + 1}',
-                          style: TextStyle(
-                              color: accent,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12),
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      ex.name,
-                      style: TextStyle(
-                          color: accent,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    ),
-                    subtitle: Text(
-                      '${ex.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${ex.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${ex.timeSeconds > 0 ? ' • ${ex.timeSeconds}s' : ''}',
-                      style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
-                          fontSize: 11),
-                    ),
-                    trailing: Icon(Icons.edit,
-                        color: accent.withValues(alpha: 0.7), size: 18),
-                    onTap: () =>
-                        _editLocalExercise(dayIndex, lang, exerciseIndex: idx),
-                  );
-                }),
-              ],
-              // Przycisk dodaj ćwiczenie
-              ListTile(
-                dense: true,
-                leading:
-                    Icon(Icons.add_circle_outline, color: accent, size: 20),
-                title: Text(
-                  lang == 'PL'
-                      ? 'Dodaj ćwiczenie'
-                      : lang == 'NO'
-                          ? 'Legg til øvelse'
-                          : 'Add exercise',
-                  style: TextStyle(
-                      color: accent, fontWeight: FontWeight.w600, fontSize: 14),
-                ),
-                onTap: () => _editLocalExercise(dayIndex, lang),
-              ),
-              const Divider(color: Colors.white24, height: 1),
-              // Cardio section
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.directions_run,
-                    color: Color(0xFF2196F3), size: 20),
-                title: Text(
-                  lang == 'PL'
-                      ? '🏃 Cardio na zakończenie'
-                      : lang == 'NO'
-                          ? '🏃 Avsluttende cardio'
-                          : '🏃 Finishing cardio',
-                  style: const TextStyle(
-                      color: Color(0xFF2196F3),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14),
-                ),
-                subtitle: Text(
-                  hasCardio
-                      ? _localCardioNotes[dayIndex]!
-                      : (lang == 'PL'
-                          ? 'Kliknij aby dodać...'
-                          : 'Click to add...'),
-                  style: TextStyle(
-                    color: hasCardio
-                        ? Colors.white.withValues(alpha: 0.8)
-                        : Colors.white.withValues(alpha: 0.4),
-                    fontSize: 12,
-                    fontStyle: hasCardio ? FontStyle.normal : FontStyle.italic,
+                  title: Text(
+                    localizedExerciseName(ex.name, lang),
+                    style: TextStyle(
+                        color: accent,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14),
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: Icon(hasCardio ? Icons.edit : Icons.add,
-                    color: const Color(0xFF2196F3), size: 18),
-                onTap: () => _editLocalDayNote(dayIndex, false, lang),
-              ),
+                  subtitle: Text(
+                    '${ex.sets} ${lang == 'PL' ? 'serii' : 'sets'} • ${ex.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}${ex.timeSeconds > 0 ? ' • ${ex.timeSeconds}s' : ''}',
+                    style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 11),
+                  ),
+                  trailing: Icon(Icons.edit,
+                      color: accent.withValues(alpha: 0.7), size: 18),
+                  onTap: () =>
+                      _editLocalExercise(dayIndex, lang, exerciseIndex: idx),
+                );
+              }),
             ],
+            // Notatka o cardio na końcu dnia (tylko gdy dodana) - jak u trenera
+            if (!isRestDay && hasCardio)
+              _buildLocalDayNoteSection(
+                dayIndex: dayIndex,
+                isWarmup: false,
+                lang: lang,
+                accent: accent,
+              ),
+            if (!isRestDay && exercises.isNotEmpty) const SizedBox(height: 8),
           ],
         ),
       ),

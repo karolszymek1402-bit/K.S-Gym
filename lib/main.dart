@@ -7,6 +7,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz_data;
 
 import 'js_bridge.dart' as js_bridge;
 import 'package:flutter_svg/flutter_svg.dart';
@@ -1846,10 +1848,78 @@ class NotificationService {
     await _plugin.show(
         DateTime.now().millisecondsSinceEpoch ~/ 1000, title, body, details);
   }
+
+  /// Zaplanuj powiadomienie na określony czas (dla timera w tle)
+  /// Zwraca ID powiadomienia do późniejszego anulowania
+  Future<int> scheduleNotification({
+    required String title,
+    required String body,
+    required Duration delay,
+  }) async {
+    final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+    // Na web nie możemy używać zonedSchedule
+    if (kIsWeb) {
+      return id;
+    }
+
+    final androidDetails = AndroidNotificationDetails(
+      'ks_gym_timer_channel',
+      'K.S-Gym Timer',
+      channelDescription:
+          'Notifications for timer completions - shows on lock screen',
+      importance: Importance.max,
+      priority: Priority.max,
+      playSound: true,
+      enableVibration: true,
+      vibrationPattern: Int64List.fromList([0, 500, 200, 500, 200, 500]),
+      visibility: NotificationVisibility.public,
+      fullScreenIntent: true,
+      category: AndroidNotificationCategory.alarm,
+      ongoing: false,
+      autoCancel: true,
+      showWhen: true,
+    );
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    );
+    final details =
+        NotificationDetails(android: androidDetails, iOS: iosDetails);
+
+    final scheduledTime = tz.TZDateTime.now(tz.local).add(delay);
+
+    await _plugin.zonedSchedule(
+      id,
+      title,
+      body,
+      scheduledTime,
+      details,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: null,
+    );
+
+    return id;
+  }
+
+  /// Anuluj zaplanowane powiadomienie
+  Future<void> cancelNotification(int id) async {
+    await _plugin.cancel(id);
+  }
+
+  /// Anuluj wszystkie zaplanowane powiadomienia
+  Future<void> cancelAllNotifications() async {
+    await _plugin.cancelAll();
+  }
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicjalizacja timezone
+  tz_data.initializeTimeZones();
 
   // Równoległa inicjalizacja dla szybszego startu
   await Future.wait([
@@ -10436,6 +10506,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   int _totalRestSeconds = 60;
   bool _isTimerRunning = false;
   late final AnimationController _animController;
+  int? _scheduledNotificationId; // ID zaplanowanego powiadomienia w tle
 
   bool _autoStart = true;
   static const String _autoStartKey = 'auto_start_timer';
@@ -10466,6 +10537,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   void dispose() {
     _timer?.cancel();
     _setTimer?.cancel();
+    // NIE anulujemy zaplanowanego powiadomienia - niech się pokaże nawet po zamknięciu ekranu
     _wController.dispose();
     _rController.dispose();
     _sController.dispose();
@@ -10560,6 +10632,9 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _startRestTimer({bool resume = false}) {
     _timer?.cancel();
+    // Anuluj poprzednie zaplanowane powiadomienie
+    _cancelScheduledNotification();
+
     // Włącz wakelock żeby ekran nie gasł podczas przerwy
     try {
       WakelockPlus.enable();
@@ -10580,16 +10655,21 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       } catch (_) {}
     }
 
+    final seconds = (!resume || _secondsRemaining == 0)
+        ? _totalRestSeconds
+        : _secondsRemaining;
+
     setState(() {
-      if (!resume || _secondsRemaining == 0) {
-        _secondsRemaining = _totalRestSeconds;
-      }
+      _secondsRemaining = seconds;
       _isTimerRunning = true;
-      _endTime = DateTime.now().add(Duration(seconds: _secondsRemaining));
+      _endTime = DateTime.now().add(Duration(seconds: seconds));
       try {
         _animController.forward(from: 0);
       } catch (_) {}
     });
+
+    // Zaplanuj powiadomienie w tle (dla Android/iOS)
+    _scheduleBackgroundNotification(Duration(seconds: seconds));
 
     _timer = Timer.periodic(const Duration(milliseconds: 200), (t) {
       if (!mounted) {
@@ -10606,6 +10686,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       }
       if (remainingMs <= 0) {
         t.cancel();
+        // Anuluj zaplanowane powiadomienie (bo właśnie się kończy i pokażemy natychmiast)
+        _cancelScheduledNotification();
         setState(() {
           _isTimerRunning = false;
           _secondsRemaining = 0;
@@ -10616,8 +10698,44 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     });
   }
 
+  Future<void> _scheduleBackgroundNotification(Duration delay) async {
+    if (kIsWeb) return; // Na web nie działa
+
+    final lang = globalLanguage;
+    final exName = localizedExerciseName(widget.exerciseName, lang);
+
+    try {
+      final id = await NotificationService.instance.scheduleNotification(
+        title: lang == 'PL'
+            ? 'Przerwa zakończona!'
+            : lang == 'NO'
+                ? 'Pause ferdig!'
+                : 'Rest finished!',
+        body: lang == 'PL'
+            ? 'Czas na następną serię: $exName'
+            : lang == 'NO'
+                ? 'Tid for neste sett: $exName'
+                : 'Time for next set: $exName',
+        delay: delay,
+      );
+      _scheduledNotificationId = id;
+    } catch (e) {
+      debugPrint('Error scheduling notification: $e');
+    }
+  }
+
+  void _cancelScheduledNotification() {
+    if (_scheduledNotificationId != null) {
+      NotificationService.instance
+          .cancelNotification(_scheduledNotificationId!);
+      _scheduledNotificationId = null;
+    }
+  }
+
   void _pauseTimer() {
     _timer?.cancel();
+    // Anuluj zaplanowane powiadomienie przy pauzie
+    _cancelScheduledNotification();
     setState(() {
       _isTimerRunning = false;
       _endTime = null;
@@ -10629,6 +10747,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _stopTimer() {
     _timer?.cancel();
+    // Anuluj zaplanowane powiadomienie
+    _cancelScheduledNotification();
     // Wyłącz wakelock
     try {
       WakelockPlus.disable();
@@ -10645,6 +10765,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _resetTimer() {
     _timer?.cancel();
+    // Anuluj poprzednie zaplanowane powiadomienie
+    _cancelScheduledNotification();
     // Włącz wakelock podczas resetu
     try {
       WakelockPlus.enable();
@@ -10657,6 +10779,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         _animController.forward(from: 0);
       } catch (_) {}
     });
+
+    // Zaplanuj powiadomienie w tle
+    _scheduleBackgroundNotification(Duration(seconds: _totalRestSeconds));
+
     _timer = Timer.periodic(const Duration(milliseconds: 200), (t) {
       if (!mounted) {
         t.cancel();
@@ -10672,6 +10798,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       }
       if (remainingMs <= 0) {
         t.cancel();
+        // Anuluj zaplanowane powiadomienie
+        _cancelScheduledNotification();
         setState(() {
           _isTimerRunning = false;
           _secondsRemaining = 0;

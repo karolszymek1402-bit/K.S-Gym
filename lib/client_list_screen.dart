@@ -13,7 +13,7 @@ class ClientListScreen extends StatefulWidget {
 }
 
 class _ClientListScreenState extends State<ClientListScreen> {
-  List<String> _clients = [];
+  List<UserProfile> _clients = [];
   bool _loading = true;
 
   @override
@@ -30,10 +30,10 @@ class _ClientListScreenState extends State<ClientListScreen> {
   Future<void> _loadClients() async {
     setState(() => _loading = true);
     try {
-      final emails = await PlanAccessController.instance.fetchAllClientEmails();
+      final clients = await PlanAccessController.instance.fetchAllClients();
       if (mounted) {
         setState(() {
-          _clients = emails;
+          _clients = clients;
           _loading = false;
         });
       }
@@ -77,7 +77,11 @@ class _ClientListScreenState extends State<ClientListScreen> {
                     padding: const EdgeInsets.all(16),
                     itemCount: _clients.length,
                     itemBuilder: (context, index) {
-                      final email = _clients[index];
+                      final client = _clients[index];
+                      final email = client.email;
+                      final displayName = client.displayName;
+                      final hasName =
+                          displayName != null && displayName.trim().isNotEmpty;
                       return Card(
                         color: const Color(0xFF0B2E5A).withValues(alpha: 0.6),
                         margin: const EdgeInsets.only(bottom: 12),
@@ -93,28 +97,42 @@ class _ClientListScreenState extends State<ClientListScreen> {
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          leading: const CircleAvatar(
-                            backgroundColor: Color(0xFFFFD700),
-                            child: Icon(
-                              Icons.person,
-                              color: Color(0xFF0B2E5A),
+                          leading: CircleAvatar(
+                            backgroundColor: const Color(0xFFFFD700),
+                            child: Text(
+                              hasName
+                                  ? displayName[0].toUpperCase()
+                                  : email[0].toUpperCase(),
+                              style: const TextStyle(
+                                color: Color(0xFF0B2E5A),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           title: Text(
-                            email,
+                            hasName ? displayName : email,
                             style: const TextStyle(
                               color: Color(0xFFFFD700),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          subtitle: hasName
+                              ? Text(
+                                  email,
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              : null,
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
                                 icon: const Icon(Icons.edit,
                                     color: Color(0xFFFFD700), size: 20),
-                                onPressed: () =>
-                                    _showEditClientDialog(context, email),
+                                onPressed: () => _showEditClientDialog(
+                                    context, email, displayName),
                                 tooltip:
                                     Translations.get('edit', language: lang),
                               ),
@@ -165,6 +183,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
   }
 
   void _showAddClientDialog(BuildContext context) {
+    final nameController = TextEditingController();
     final emailController = TextEditingController();
     final passwordController = TextEditingController(text: '000000');
     final lang = globalLanguage;
@@ -187,6 +206,26 @@ class _ClientListScreenState extends State<ClientListScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            TextField(
+              controller: nameController,
+              style: const TextStyle(color: Color(0xFFFFD700)),
+              decoration: InputDecoration(
+                labelText: lang == 'PL'
+                    ? 'Imię klienta (opcjonalnie)'
+                    : lang == 'NO'
+                        ? 'Kundenavn (valgfritt)'
+                        : 'Client name (optional)',
+                labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                prefixIcon: const Icon(Icons.person, color: Color(0xFFFFD700)),
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFD700)),
+                ),
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: emailController,
               style: const TextStyle(color: Color(0xFFFFD700)),
@@ -240,6 +279,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
           ElevatedButton(
             onPressed: () async {
               final messenger = ScaffoldMessenger.of(context);
+              final name = nameController.text.trim();
               final email = emailController.text.trim();
               final password = passwordController.text.trim();
 
@@ -262,8 +302,9 @@ class _ClientListScreenState extends State<ClientListScreen> {
               Navigator.pop(context);
 
               try {
-                await PlanAccessController.instance
-                    .createClientAccount(email, password);
+                await PlanAccessController.instance.createClientAccount(
+                    email, password,
+                    displayName: name.isEmpty ? null : name);
                 if (!mounted) return;
                 await _loadClients();
                 if (!mounted) return;
@@ -304,8 +345,10 @@ class _ClientListScreenState extends State<ClientListScreen> {
     );
   }
 
-  void _showEditClientDialog(BuildContext context, String currentEmail) {
+  void _showEditClientDialog(
+      BuildContext context, String currentEmail, String? currentName) {
     final emailController = TextEditingController(text: currentEmail);
+    final nameController = TextEditingController(text: currentName ?? '');
     final lang = globalLanguage;
 
     showDialog(
@@ -323,24 +366,49 @@ class _ClientListScreenState extends State<ClientListScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        content: TextField(
-          controller: emailController,
-          style: const TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            labelText: lang == 'PL'
-                ? 'Nowy email klienta'
-                : lang == 'NO'
-                    ? 'Ny klient e-post'
-                    : 'New client email',
-            labelStyle: const TextStyle(color: Color(0xFFFFD700)),
-            prefixIcon: const Icon(Icons.email, color: Color(0xFFFFD700)),
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFFFD700)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: lang == 'PL'
+                    ? 'Imię klienta'
+                    : lang == 'NO'
+                        ? 'Kundenavn'
+                        : 'Client name',
+                labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                prefixIcon: const Icon(Icons.person, color: Color(0xFFFFD700)),
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFD700)),
+                ),
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
+                ),
+              ),
             ),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: lang == 'PL'
+                    ? 'Email klienta'
+                    : lang == 'NO'
+                        ? 'Klient e-post'
+                        : 'Client email',
+                labelStyle: const TextStyle(color: Color(0xFFFFD700)),
+                prefixIcon: const Icon(Icons.email, color: Color(0xFFFFD700)),
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFD700)),
+                ),
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFFFD700), width: 2),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
         actions: [
           TextButton(
@@ -354,6 +422,7 @@ class _ClientListScreenState extends State<ClientListScreen> {
             onPressed: () async {
               final messenger = ScaffoldMessenger.of(context);
               final newEmail = emailController.text.trim();
+              final newName = nameController.text.trim();
 
               if (newEmail.isEmpty) {
                 messenger.showSnackBar(
@@ -371,16 +440,21 @@ class _ClientListScreenState extends State<ClientListScreen> {
                 return;
               }
 
-              if (newEmail == currentEmail) {
-                Navigator.pop(context);
-                return;
-              }
-
               Navigator.pop(context);
 
               try {
-                await PlanAccessController.instance
-                    .updateClientEmail(currentEmail, newEmail);
+                // Update display name
+                if (newName != (currentName ?? '')) {
+                  await PlanAccessController.instance.updateClientDisplayName(
+                      currentEmail, newName.isEmpty ? null : newName);
+                }
+
+                // Update email if changed
+                if (newEmail != currentEmail) {
+                  await PlanAccessController.instance
+                      .updateClientEmail(currentEmail, newEmail);
+                }
+
                 if (!mounted) return;
                 await _loadClients();
                 if (!mounted) return;
@@ -388,10 +462,10 @@ class _ClientListScreenState extends State<ClientListScreen> {
                   SnackBar(
                     content: Text(
                       lang == 'PL'
-                          ? 'Email klienta zmieniony'
+                          ? 'Dane klienta zaktualizowane'
                           : lang == 'NO'
-                              ? 'Klient e-post endret'
-                              : 'Client email updated',
+                              ? 'Kundedata oppdatert'
+                              : 'Client data updated',
                     ),
                     backgroundColor: Colors.green,
                   ),

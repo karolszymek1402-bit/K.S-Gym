@@ -2986,16 +2986,33 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
         kCategoryNames.keys.where((key) => key != 'PLAN').toList();
     String selectedCategory = existing?.category ?? categories.first;
 
-    // Ćwiczenia z wybranej kategorii
+    // Wczytaj własne ćwiczenia użytkownika z SharedPreferences
+    final prefs = await getPrefs();
+    final Map<String, List<String>> userExercisesByCategory = {};
+    for (final cat in categories) {
+      final userList = prefs.getStringList('ex_$cat') ?? [];
+      userExercisesByCategory[cat] = userList;
+    }
+
+    // Funkcja łącząca domyślne i własne ćwiczenia dla kategorii
+    List<String> getExercisesForCategory(String category) {
+      final defaultExercises = kDefaultExercises[category] ?? [];
+      final userExercises = userExercisesByCategory[category] ?? [];
+      // Połącz listy usuwając duplikaty
+      final combined = <String>{...defaultExercises, ...userExercises};
+      return combined.toList();
+    }
+
+    // Ćwiczenia z wybranej kategorii (domyślne + własne)
     List<String> exercisesForCategory =
-        kDefaultExercises[selectedCategory] ?? [];
+        getExercisesForCategory(selectedCategory);
     String? selectedExercise = existing?.name ??
         (exercisesForCategory.isNotEmpty ? exercisesForCategory.first : null);
 
-    // Mapa ćwiczenie -> kategoria dla wyszukiwania
+    // Mapa ćwiczenie -> kategoria dla wyszukiwania (domyślne + własne)
     final Map<String, String> exerciseToCategoryMap = {};
     for (final cat in categories) {
-      for (final ex in kDefaultExercises[cat] ?? []) {
+      for (final ex in getExercisesForCategory(cat)) {
         exerciseToCategoryMap[ex] = cat;
       }
     }
@@ -3022,10 +3039,10 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
           // Filtruj ćwiczenia na podstawie wyszukiwania
           List<String> filteredExercises;
           if (searchQuery.isNotEmpty) {
-            // Szukaj we wszystkich kategoriach
+            // Szukaj we wszystkich kategoriach (domyślne + własne użytkownika)
             final allExercisesSet = <String>{};
             for (final cat in categories) {
-              allExercisesSet.addAll(kDefaultExercises[cat] ?? []);
+              allExercisesSet.addAll(getExercisesForCategory(cat));
             }
             filteredExercises = allExercisesSet
                 .where((ex) =>
@@ -3033,7 +3050,7 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
                 .toSet()
                 .toList();
           } else {
-            exercisesForCategory = kDefaultExercises[selectedCategory] ?? [];
+            exercisesForCategory = getExercisesForCategory(selectedCategory);
             filteredExercises = exercisesForCategory.toSet().toList();
           }
 
@@ -3432,6 +3449,21 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
           _localExercises[dayIndex]!.add(result);
         }
       });
+
+      // Synchronizacja: zapisz ćwiczenie także do listy kategorii
+      final category = result.category;
+      if (result.name.isNotEmpty && category != null && category.isNotEmpty) {
+        final categoryKey = 'ex_$category';
+        final existingList = prefs.getStringList(categoryKey) ?? [];
+        if (!existingList.contains(result.name)) {
+          existingList.add(result.name);
+          await prefs.setStringList(categoryKey, existingList);
+          // Zapisz też typ ćwiczenia (czasowe czy nie)
+          await prefs.setBool(
+              'ex_type_time_${result.name}', result.timeSeconds > 0);
+        }
+      }
+
       await _saveDayNotes();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

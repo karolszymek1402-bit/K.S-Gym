@@ -2514,11 +2514,58 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
   bool _statusSuccess = false;
 
   static const _prefsKey = 'saved_plan_text';
+  static const _warmupPrefsKey = 'local_day_warmup_notes';
+  static const _cardioPrefsKey = 'local_day_cardio_notes';
+
+  // Lokalne notatki rozgrzewki/cardio dla dni tygodnia (index 0-6)
+  Map<int, String> _localWarmupNotes = {};
+  Map<int, String> _localCardioNotes = {};
+
+  // Nazwy dni tygodnia
+  static const List<String> _dayNamesPL = [
+    'Poniedziałek',
+    'Wtorek',
+    'Środa',
+    'Czwartek',
+    'Piątek',
+    'Sobota',
+    'Niedziela'
+  ];
+  static const List<String> _dayNamesEN = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
+  static const List<String> _dayNamesNO = [
+    'Mandag',
+    'Tirsdag',
+    'Onsdag',
+    'Torsdag',
+    'Fredag',
+    'Lørdag',
+    'Søndag'
+  ];
+
+  List<String> _getDayNames(String lang) {
+    switch (lang) {
+      case 'NO':
+        return _dayNamesNO;
+      case 'EN':
+        return _dayNamesEN;
+      default:
+        return _dayNamesPL;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _loadPlan();
+    _loadDayNotes();
   }
 
   @override
@@ -2535,6 +2582,42 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
         _planController.text = cached;
       }
     } catch (_) {}
+  }
+
+  Future<void> _loadDayNotes() async {
+    try {
+      final prefs = await getPrefs();
+      final warmupJson = prefs.getString(_warmupPrefsKey);
+      final cardioJson = prefs.getString(_cardioPrefsKey);
+
+      if (warmupJson != null) {
+        final Map<String, dynamic> decoded = jsonDecode(warmupJson);
+        _localWarmupNotes =
+            decoded.map((k, v) => MapEntry(int.parse(k), v as String));
+      }
+      if (cardioJson != null) {
+        final Map<String, dynamic> decoded = jsonDecode(cardioJson);
+        _localCardioNotes =
+            decoded.map((k, v) => MapEntry(int.parse(k), v as String));
+      }
+      if (mounted) setState(() {});
+    } catch (e) {
+      debugPrint('Error loading day notes: $e');
+    }
+  }
+
+  Future<void> _saveDayNotes() async {
+    try {
+      final prefs = await getPrefs();
+      final warmupJson = jsonEncode(
+          _localWarmupNotes.map((k, v) => MapEntry(k.toString(), v)));
+      final cardioJson = jsonEncode(
+          _localCardioNotes.map((k, v) => MapEntry(k.toString(), v)));
+      await prefs.setString(_warmupPrefsKey, warmupJson);
+      await prefs.setString(_cardioPrefsKey, cardioJson);
+    } catch (e) {
+      debugPrint('Error saving day notes: $e');
+    }
   }
 
   Future<void> _savePlan() async {
@@ -2565,6 +2648,318 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
         });
       }
     }
+  }
+
+  // Dialog do edycji notatki dziennej (rozgrzewka/cardio)
+  Future<void> _editLocalDayNote(
+      int dayIndex, bool isWarmup, String lang) async {
+    final currentNote = isWarmup
+        ? (_localWarmupNotes[dayIndex] ?? '')
+        : (_localCardioNotes[dayIndex] ?? '');
+    final controller = TextEditingController(text: currentNote);
+    final dayNames = _getDayNames(lang);
+    final dayName = dayNames[dayIndex];
+
+    final title = isWarmup
+        ? (lang == 'PL'
+            ? 'Rozgrzewka - $dayName'
+            : lang == 'NO'
+                ? 'Oppvarming - $dayName'
+                : 'Warm-up - $dayName')
+        : (lang == 'PL'
+            ? 'Cardio na zakończenie - $dayName'
+            : lang == 'NO'
+                ? 'Avsluttende cardio - $dayName'
+                : 'Finishing cardio - $dayName');
+
+    final hint = isWarmup
+        ? (lang == 'PL'
+            ? 'np. 5 min bieg, rozciąganie dynamiczne...'
+            : lang == 'NO'
+                ? 'f.eks. 5 min løping, dynamisk tøying...'
+                : 'e.g. 5 min jog, dynamic stretching...')
+        : (lang == 'PL'
+            ? 'np. 15 min orbitrek, rozciąganie...'
+            : lang == 'NO'
+                ? 'f.eks. 15 min ellipse, tøying...'
+                : 'e.g. 15 min elliptical, stretching...');
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.black.withValues(alpha: 0.95),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: TextField(
+          controller: controller,
+          style: const TextStyle(color: Colors.white),
+          maxLines: 4,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isWarmup
+                    ? const Color(0xFFFF5722).withValues(alpha: 0.5)
+                    : const Color(0xFF2196F3).withValues(alpha: 0.5),
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isWarmup
+                    ? const Color(0xFFFF5722)
+                    : const Color(0xFF2196F3),
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        actions: [
+          if (currentNote.isNotEmpty)
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, ''),
+              child: Text(
+                lang == 'PL'
+                    ? 'Usuń'
+                    : lang == 'NO'
+                        ? 'Slett'
+                        : 'Delete',
+                style: const TextStyle(color: Color(0xFFFF5252)),
+              ),
+            ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, null),
+            child: Text(
+              Translations.get('cancel', language: lang),
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+              foregroundColor: Colors.white,
+            ),
+            child: Text(Translations.get('save', language: lang)),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        if (isWarmup) {
+          if (result.isEmpty) {
+            _localWarmupNotes.remove(dayIndex);
+          } else {
+            _localWarmupNotes[dayIndex] = result;
+          }
+        } else {
+          if (result.isEmpty) {
+            _localCardioNotes.remove(dayIndex);
+          } else {
+            _localCardioNotes[dayIndex] = result;
+          }
+        }
+      });
+      await _saveDayNotes();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.isEmpty
+                  ? (lang == 'PL' ? 'Notatka usunięta' : 'Note deleted')
+                  : (lang == 'PL' ? 'Notatka zapisana' : 'Note saved'),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    }
+  }
+
+  // Widget dnia tygodnia z menu warmup/cardio
+  Widget _buildDayTile(int dayIndex, String lang, Color accent) {
+    final dayNames = _getDayNames(lang);
+    final dayName = dayNames[dayIndex];
+    final hasWarmup = (_localWarmupNotes[dayIndex] ?? '').isNotEmpty;
+    final hasCardio = (_localCardioNotes[dayIndex] ?? '').isNotEmpty;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.black.withValues(alpha: 0.3),
+        border: Border.all(color: accent.withValues(alpha: 0.3)),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Icon(Icons.calendar_today, color: accent, size: 20),
+            ),
+          ),
+          title: Text(
+            dayName,
+            style: TextStyle(
+              color: accent,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+          subtitle: Row(
+            children: [
+              if (hasWarmup)
+                Container(
+                  margin: const EdgeInsets.only(right: 6, top: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFF5722).withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text(
+                    '🔥',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ),
+              if (hasCardio)
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2196F3).withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text(
+                    '🏃',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ),
+              if (!hasWarmup && !hasCardio)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    lang == 'PL'
+                        ? 'Brak notatek'
+                        : lang == 'NO'
+                            ? 'Ingen notater'
+                            : 'No notes',
+                    style: TextStyle(
+                      color: accent.withValues(alpha: 0.5),
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          iconColor: accent,
+          collapsedIconColor: accent,
+          children: [
+            // Warmup section
+            ListTile(
+              dense: true,
+              leading: const Icon(Icons.whatshot,
+                  color: Color(0xFFFF5722), size: 20),
+              title: Text(
+                lang == 'PL'
+                    ? '🔥 Rozgrzewka'
+                    : lang == 'NO'
+                        ? '🔥 Oppvarming'
+                        : '🔥 Warm-up',
+                style: const TextStyle(
+                  color: Color(0xFFFF5722),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              subtitle: Text(
+                hasWarmup
+                    ? _localWarmupNotes[dayIndex]!
+                    : (lang == 'PL'
+                        ? 'Kliknij aby dodać...'
+                        : lang == 'NO'
+                            ? 'Klikk for å legge til...'
+                            : 'Click to add...'),
+                style: TextStyle(
+                  color: hasWarmup
+                      ? Colors.white.withValues(alpha: 0.8)
+                      : Colors.white.withValues(alpha: 0.4),
+                  fontSize: 12,
+                  fontStyle: hasWarmup ? FontStyle.normal : FontStyle.italic,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Icon(
+                hasWarmup ? Icons.edit : Icons.add,
+                color: const Color(0xFFFF5722),
+                size: 18,
+              ),
+              onTap: () => _editLocalDayNote(dayIndex, true, lang),
+            ),
+            // Cardio section
+            ListTile(
+              dense: true,
+              leading: const Icon(Icons.directions_run,
+                  color: Color(0xFF2196F3), size: 20),
+              title: Text(
+                lang == 'PL'
+                    ? '🏃 Cardio na zakończenie'
+                    : lang == 'NO'
+                        ? '🏃 Avsluttende cardio'
+                        : '🏃 Finishing cardio',
+                style: const TextStyle(
+                  color: Color(0xFF2196F3),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              subtitle: Text(
+                hasCardio
+                    ? _localCardioNotes[dayIndex]!
+                    : (lang == 'PL'
+                        ? 'Kliknij aby dodać...'
+                        : lang == 'NO'
+                            ? 'Klikk for å legge til...'
+                            : 'Click to add...'),
+                style: TextStyle(
+                  color: hasCardio
+                      ? Colors.white.withValues(alpha: 0.8)
+                      : Colors.white.withValues(alpha: 0.4),
+                  fontSize: 12,
+                  fontStyle: hasCardio ? FontStyle.normal : FontStyle.italic,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Icon(
+                hasCardio ? Icons.edit : Icons.add,
+                color: const Color(0xFF2196F3),
+                size: 18,
+              ),
+              onTap: () => _editLocalDayNote(dayIndex, false, lang),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -2647,6 +3042,58 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
                           ),
                         ),
                       ],
+                    ),
+                    // Sekcja dni tygodnia z warmup/cardio
+                    const SizedBox(height: 24),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: accent.withValues(alpha: 0.2)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.fitness_center,
+                                  color: accent, size: 20),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  lang == 'PL'
+                                      ? 'Rozgrzewka i Cardio dla każdego dnia'
+                                      : lang == 'NO'
+                                          ? 'Oppvarming og Cardio for hver dag'
+                                          : 'Warm-up and Cardio for each day',
+                                  style: TextStyle(
+                                    color: accent,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            lang == 'PL'
+                                ? 'Kliknij na dzień, aby dodać notatki rozgrzewki i cardio'
+                                : lang == 'NO'
+                                    ? 'Klikk på en dag for å legge til oppvarming og cardio notater'
+                                    : 'Click on a day to add warm-up and cardio notes',
+                            style: TextStyle(
+                              color: accent.withValues(alpha: 0.6),
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          ...List.generate(
+                              7, (index) => _buildDayTile(index, lang, accent)),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -4298,7 +4745,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ),
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ),
             actions: [
@@ -8054,180 +8501,209 @@ class _ClientDayExercisesScreenState extends State<ClientDayExercisesScreen> {
                                   ],
                                 ),
                               )
-                            : ListView.builder(
+                            : ListView(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: _exercises.length,
-                                itemBuilder: (context, index) {
-                                  final exercise = _exercises[index];
-                                  final isTimeBased = exercise.timeSeconds > 0;
-
-                                  return Container(
-                                    margin: const EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          accent.withValues(alpha: 0.1),
-                                          Colors.black.withValues(alpha: 0.35),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                          color: accent.withValues(alpha: 0.2)),
+                                children: [
+                                  // Warmup note od trenera
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 12),
+                                    child: _buildClientDayNoteWidget(
+                                      isWarmup: true,
+                                      lang: lang,
+                                      accent: accent,
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ListTile(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 14, vertical: 6),
-                                          leading: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  accent,
-                                                  accent.withValues(alpha: 0.7)
-                                                ],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: accent.withValues(
-                                                      alpha: 0.3),
-                                                  blurRadius: 6,
-                                                  spreadRadius: 1,
-                                                ),
-                                              ],
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                '${index + 1}',
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          title: Text(
-                                            localizedExerciseName(
-                                                exercise.exercise, lang),
-                                            style: const TextStyle(
-                                              color: accent,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          subtitle: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 6),
-                                            child: Wrap(
-                                              spacing: 8,
-                                              runSpacing: 4,
-                                              children: [
-                                                _buildInfoChip(
-                                                  Icons.repeat,
-                                                  '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}',
-                                                  accent,
-                                                ),
-                                                _buildInfoChip(
-                                                  Icons.timer_outlined,
-                                                  '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}',
-                                                  accent,
-                                                ),
-                                                if (isTimeBased)
-                                                  _buildInfoChip(
-                                                    Icons.hourglass_bottom,
-                                                    '${exercise.timeSeconds}s',
-                                                    const Color(0xFFFFD700),
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ExerciseDetailScreen(
-                                                  exerciseName:
-                                                      exercise.exercise,
-                                                  themeColor: accent,
-                                                  recommendedSets:
-                                                      exercise.sets,
-                                                  recommendedRestSeconds:
-                                                      exercise.restSeconds,
-                                                  recommendedTimeSeconds:
-                                                      exercise.timeSeconds > 0
-                                                          ? exercise.timeSeconds
-                                                          : null,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          trailing: const Icon(
-                                              Icons.chevron_right,
-                                              color: accent,
-                                              size: 22),
+                                  ),
+                                  // Lista ćwiczeń
+                                  ..._exercises.asMap().entries.map((entry) {
+                                    final index = entry.key;
+                                    final exercise = entry.value;
+                                    final isTimeBased =
+                                        exercise.timeSeconds > 0;
+
+                                    return Container(
+                                      margin: const EdgeInsets.only(bottom: 10),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            accent.withValues(alpha: 0.1),
+                                            Colors.black
+                                                .withValues(alpha: 0.35),
+                                          ],
                                         ),
-                                        // Notatka od trenera
-                                        if (exercise.note.isNotEmpty)
-                                          Container(
-                                            width: double.infinity,
-                                            padding: const EdgeInsets.fromLTRB(
-                                                14, 0, 14, 12),
-                                            child: Container(
-                                              padding: const EdgeInsets.all(10),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                            color:
+                                                accent.withValues(alpha: 0.2)),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ListTile(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 14,
+                                                    vertical: 6),
+                                            leading: Container(
+                                              width: 40,
+                                              height: 40,
                                               decoration: BoxDecoration(
-                                                color: Colors.blue
-                                                    .withValues(alpha: 0.15),
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    accent,
+                                                    accent.withValues(
+                                                        alpha: 0.7)
+                                                  ],
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                ),
                                                 borderRadius:
-                                                    BorderRadius.circular(8),
-                                                border: Border.all(
-                                                    color: Colors.blue
-                                                        .withValues(
-                                                            alpha: 0.3)),
+                                                    BorderRadius.circular(10),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: accent.withValues(
+                                                        alpha: 0.3),
+                                                    blurRadius: 6,
+                                                    spreadRadius: 1,
+                                                  ),
+                                                ],
                                               ),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                              child: Center(
+                                                child: Text(
+                                                  '${index + 1}',
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            title: Text(
+                                              localizedExerciseName(
+                                                  exercise.exercise, lang),
+                                              style: const TextStyle(
+                                                color: accent,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 15,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            subtitle: Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 6),
+                                              child: Wrap(
+                                                spacing: 8,
+                                                runSpacing: 4,
                                                 children: [
-                                                  Icon(Icons.note,
+                                                  _buildInfoChip(
+                                                    Icons.repeat,
+                                                    '${exercise.sets} ${lang == 'PL' ? 'serii' : 'sets'}',
+                                                    accent,
+                                                  ),
+                                                  _buildInfoChip(
+                                                    Icons.timer_outlined,
+                                                    '${exercise.restSeconds}s ${lang == 'PL' ? 'przerwy' : 'rest'}',
+                                                    accent,
+                                                  ),
+                                                  if (isTimeBased)
+                                                    _buildInfoChip(
+                                                      Icons.hourglass_bottom,
+                                                      '${exercise.timeSeconds}s',
+                                                      const Color(0xFFFFD700),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ExerciseDetailScreen(
+                                                    exerciseName:
+                                                        exercise.exercise,
+                                                    themeColor: accent,
+                                                    recommendedSets:
+                                                        exercise.sets,
+                                                    recommendedRestSeconds:
+                                                        exercise.restSeconds,
+                                                    recommendedTimeSeconds:
+                                                        exercise.timeSeconds > 0
+                                                            ? exercise
+                                                                .timeSeconds
+                                                            : null,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            trailing: const Icon(
+                                                Icons.chevron_right,
+                                                color: accent,
+                                                size: 22),
+                                          ),
+                                          // Notatka od trenera
+                                          if (exercise.note.isNotEmpty)
+                                            Container(
+                                              width: double.infinity,
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      14, 0, 14, 12),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue
+                                                      .withValues(alpha: 0.15),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
                                                       color: Colors.blue
                                                           .withValues(
-                                                              alpha: 0.8),
-                                                      size: 16),
-                                                  const SizedBox(width: 8),
-                                                  Expanded(
-                                                    child: Text(
-                                                      exercise.note,
-                                                      style: TextStyle(
+                                                              alpha: 0.3)),
+                                                ),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Icon(Icons.note,
                                                         color: Colors.blue
                                                             .withValues(
-                                                                alpha: 0.9),
-                                                        fontSize: 13,
-                                                        fontStyle:
-                                                            FontStyle.italic,
+                                                                alpha: 0.8),
+                                                        size: 16),
+                                                    const SizedBox(width: 8),
+                                                    Expanded(
+                                                      child: Text(
+                                                        exercise.note,
+                                                        style: TextStyle(
+                                                          color: Colors.blue
+                                                              .withValues(
+                                                                  alpha: 0.9),
+                                                          fontSize: 13,
+                                                          fontStyle:
+                                                              FontStyle.italic,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                      ],
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                  // Cardio note od trenera
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: _buildClientDayNoteWidget(
+                                      isWarmup: false,
+                                      lang: lang,
+                                      accent: accent,
                                     ),
-                                  );
-                                },
+                                  ),
+                                ],
                               ),
                   ),
                 ],
@@ -8261,6 +8737,71 @@ class _ClientDayExercisesScreenState extends State<ClientDayExercisesScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Widget do wyświetlania notatki rozgrzewki/cardio dla klienta
+  Widget _buildClientDayNoteWidget({
+    required bool isWarmup,
+    required String lang,
+    required Color accent,
+  }) {
+    final notes = isWarmup
+        ? _clientPlan?.dayWarmupNotes ?? {}
+        : _clientPlan?.dayCardioNotes ?? {};
+    final currentNote = notes[widget.dayIndex] ?? '';
+    if (currentNote.isEmpty) return const SizedBox.shrink();
+
+    final title = isWarmup
+        ? (lang == 'PL'
+            ? '🔥 Rozgrzewka'
+            : lang == 'NO'
+                ? '🔥 Oppvarming'
+                : '🔥 Warm-up')
+        : (lang == 'PL'
+            ? '🏃 Cardio na zakończenie'
+            : lang == 'NO'
+                ? '🏃 Avsluttende cardio'
+                : '🏃 Finishing cardio');
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isWarmup
+            ? const Color(0xFFFF5722).withValues(alpha: 0.15)
+            : const Color(0xFF2196F3).withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isWarmup
+              ? const Color(0xFFFF5722).withValues(alpha: 0.3)
+              : const Color(0xFF2196F3).withValues(alpha: 0.3),
+        ),
+      ),
+      child: ListTile(
+        dense: true,
+        leading: Icon(
+          isWarmup ? Icons.whatshot : Icons.directions_run,
+          color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+          size: 28,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isWarmup ? const Color(0xFFFF5722) : const Color(0xFF2196F3),
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            currentNote,
+            style: TextStyle(
+              color: accent.withValues(alpha: 0.9),
+              fontSize: 13,
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -6039,31 +6039,134 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // Przycisk kopiuj trening na inny dzień
-                                  if (!isRestDay && exercisesForDay.isNotEmpty)
-                                    IconButton(
-                                      icon: const Icon(Icons.copy,
-                                          color: Color(0xFF9C27B0), size: 20),
-                                      tooltip: lang == 'PL'
-                                          ? 'Kopiuj na inny dzień'
-                                          : lang == 'NO'
-                                              ? 'Kopier til annen dag'
-                                              : 'Copy to another day',
-                                      onPressed: () =>
-                                          _copyDayExercises(dayIndex),
-                                    ),
-                                  // Przycisk przenieś trening na inny dzień
-                                  if (!isRestDay && exercisesForDay.isNotEmpty)
-                                    IconButton(
-                                      icon: const Icon(Icons.swap_horiz,
-                                          color: Color(0xFF2196F3), size: 22),
-                                      tooltip: lang == 'PL'
-                                          ? 'Przenieś na inny dzień'
-                                          : lang == 'NO'
-                                              ? 'Flytt til annen dag'
-                                              : 'Move to another day',
-                                      onPressed: () =>
-                                          _moveDayExercises(dayIndex),
+                                  // Menu z dodatkowymi opcjami
+                                  if (!isRestDay)
+                                    PopupMenuButton<String>(
+                                      icon: Icon(Icons.more_vert,
+                                          color: accent.withValues(alpha: 0.7),
+                                          size: 20),
+                                      color:
+                                          Colors.black.withValues(alpha: 0.95),
+                                      onSelected: (value) {
+                                        if (value == 'warmup') {
+                                          _editDayNote(
+                                              dayIndex,
+                                              true,
+                                              _plan?.dayWarmupNotes[dayIndex] ??
+                                                  '');
+                                        } else if (value == 'cardio') {
+                                          _editDayNote(
+                                              dayIndex,
+                                              false,
+                                              _plan?.dayCardioNotes[dayIndex] ??
+                                                  '');
+                                        } else if (value == 'copy') {
+                                          _copyDayExercises(dayIndex);
+                                        } else if (value == 'move') {
+                                          _moveDayExercises(dayIndex);
+                                        }
+                                      },
+                                      itemBuilder: (context) => [
+                                        PopupMenuItem(
+                                          value: 'warmup',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                (_plan?.dayWarmupNotes[dayIndex]
+                                                            ?.isNotEmpty ??
+                                                        false)
+                                                    ? Icons.edit
+                                                    : Icons.add,
+                                                color: const Color(0xFFFF5722),
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                (_plan?.dayWarmupNotes[dayIndex]
+                                                            ?.isNotEmpty ??
+                                                        false)
+                                                    ? (lang == 'PL'
+                                                        ? 'Edytuj rozgrzewkę'
+                                                        : 'Edit warm-up')
+                                                    : (lang == 'PL'
+                                                        ? 'Dodaj rozgrzewkę'
+                                                        : 'Add warm-up'),
+                                                style: const TextStyle(
+                                                    color: Color(0xFFFF5722)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 'cardio',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                (_plan?.dayCardioNotes[dayIndex]
+                                                            ?.isNotEmpty ??
+                                                        false)
+                                                    ? Icons.edit
+                                                    : Icons.add,
+                                                color: const Color(0xFF2196F3),
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                (_plan?.dayCardioNotes[dayIndex]
+                                                            ?.isNotEmpty ??
+                                                        false)
+                                                    ? (lang == 'PL'
+                                                        ? 'Edytuj cardio końcowe'
+                                                        : 'Edit final cardio')
+                                                    : (lang == 'PL'
+                                                        ? 'Dodaj cardio końcowe'
+                                                        : 'Add final cardio'),
+                                                style: const TextStyle(
+                                                    color: Color(0xFF2196F3)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        if (exercisesForDay.isNotEmpty) ...[
+                                          const PopupMenuDivider(),
+                                          PopupMenuItem(
+                                            value: 'copy',
+                                            child: Row(
+                                              children: [
+                                                const Icon(Icons.copy,
+                                                    color: Color(0xFF9C27B0),
+                                                    size: 20),
+                                                const SizedBox(width: 12),
+                                                Text(
+                                                  lang == 'PL'
+                                                      ? 'Kopiuj na inny dzień'
+                                                      : 'Copy to another day',
+                                                  style: const TextStyle(
+                                                      color: Color(0xFF9C27B0)),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'move',
+                                            child: Row(
+                                              children: [
+                                                const Icon(Icons.swap_horiz,
+                                                    color: Color(0xFF2196F3),
+                                                    size: 20),
+                                                const SizedBox(width: 12),
+                                                Text(
+                                                  lang == 'PL'
+                                                      ? 'Przenieś na inny dzień'
+                                                      : 'Move to another day',
+                                                  style: const TextStyle(
+                                                      color: Color(0xFF2196F3)),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                   // Przycisk oznacz jako dzień wolny
                                   IconButton(
@@ -6099,8 +6202,11 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                               iconColor: accent,
                               collapsedIconColor: accent.withValues(alpha: 0.5),
                               children: [
-                                // Notatka o rozgrzewce na początku dnia
-                                if (!isRestDay)
+                                // Notatka o rozgrzewce na początku dnia (tylko gdy dodana)
+                                if (!isRestDay &&
+                                    (_plan?.dayWarmupNotes[dayIndex]
+                                            ?.isNotEmpty ??
+                                        false))
                                   _buildDayNoteSection(
                                     dayIndex: dayIndex,
                                     isWarmup: true,
@@ -6242,8 +6348,11 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                     ),
                                   );
                                 }),
-                                // Notatka o cardio na końcu dnia
-                                if (!isRestDay)
+                                // Notatka o cardio na końcu dnia (tylko gdy dodana)
+                                if (!isRestDay &&
+                                    (_plan?.dayCardioNotes[dayIndex]
+                                            ?.isNotEmpty ??
+                                        false))
                                   _buildDayNoteSection(
                                     dayIndex: dayIndex,
                                     isWarmup: false,

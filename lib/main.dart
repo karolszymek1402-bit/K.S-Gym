@@ -5295,6 +5295,7 @@ class ClientDetailScreen extends StatefulWidget {
 class _ClientDetailScreenState extends State<ClientDetailScreen> {
   ClientPlan? _plan;
   bool _loading = true;
+  bool _isAddingExercise = false; // Blokada podwójnego dodawania
   final ScrollController _scrollController = ScrollController();
 
   // Nazwy dni tygodnia
@@ -5975,6 +5976,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
   }
 
   Future<void> _addExerciseForDay(int dayIndex) async {
+    // Blokada podwójnego dodawania
+    if (_isAddingExercise) return;
+
     final setsCtrl = TextEditingController(text: '3');
     final restCtrl = TextEditingController(text: '90');
     final timeCtrl = TextEditingController(text: '30');
@@ -6390,6 +6394,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     );
 
     if (result == true && selectedExercise != null) {
+      // Ustaw blokadę przed zapisaniem
+      setState(() => _isAddingExercise = true);
       try {
         final newEntry = ClientPlanEntry(
           exercise: selectedExercise!,
@@ -6422,6 +6428,9 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                     '${Translations.get('error', language: globalLanguage)}: $e')),
           );
         }
+      } finally {
+        // Zawsze zdejmij blokadę
+        if (mounted) setState(() => _isAddingExercise = false);
       }
     }
   }

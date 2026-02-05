@@ -574,7 +574,30 @@ class PlanAccessController {
         return await _loadCachedPlan(email);
       }
       debugPrint('[PlanAccess] Plan data: ${doc.data()}');
-      final plan = ClientPlan.fromMap(doc.data()!);
+      var plan = ClientPlan.fromMap(doc.data()!);
+
+      // Usuń duplikaty jeśli istnieją
+      final originalCount = plan.entries.length;
+      final uniqueEntries = <ClientPlanEntry>[];
+      final seen = <String>{};
+      for (final entry in plan.entries) {
+        final key =
+            '${entry.dayOfWeek}_${entry.exercise}_${entry.sets}_${entry.restSeconds}_${entry.timeSeconds}';
+        if (!seen.contains(key)) {
+          seen.add(key);
+          uniqueEntries.add(entry);
+        }
+      }
+
+      // Jeśli były duplikaty, zaktualizuj plan w bazie
+      if (uniqueEntries.length < originalCount) {
+        debugPrint(
+            '[PlanAccess] Found ${originalCount - uniqueEntries.length} duplicate entries, cleaning up...');
+        plan = plan.copyWith(entries: uniqueEntries);
+        // Zapisz oczyszczony plan
+        await savePlanForEmail(email, plan);
+      }
+
       debugPrint(
           '[PlanAccess] Parsed plan: title=${plan.title}, entries=${plan.entries.length}');
       await _cachePlan(email, plan);
@@ -797,12 +820,25 @@ class PlanAccessController {
 
   Future<void> updateClientPlanEntries(
       String email, List<ClientPlanEntry> entries) async {
+    // Usuń duplikaty - sprawdź czy nie ma identycznych ćwiczeń w tym samym dniu
+    final uniqueEntries = <ClientPlanEntry>[];
+    final seen = <String>{};
+    for (final entry in entries) {
+      // Klucz unikalności: dzień + ćwiczenie + serie + czas przerwy
+      final key =
+          '${entry.dayOfWeek}_${entry.exercise}_${entry.sets}_${entry.restSeconds}_${entry.timeSeconds}';
+      if (!seen.contains(key)) {
+        seen.add(key);
+        uniqueEntries.add(entry);
+      }
+    }
+
     final docId = _docIdFromEmail(email);
     final doc = await _plansCollection.doc(docId).get();
 
     if (doc.exists) {
       final data = doc.data()!;
-      data['entries'] = entries.map((e) => e.toMap()).toList();
+      data['entries'] = uniqueEntries.map((e) => e.toMap()).toList();
       data['updatedAt'] = DateTime.now().toIso8601String();
       await _plansCollection.doc(docId).set(data);
     } else {
@@ -810,7 +846,7 @@ class PlanAccessController {
       final newPlan = ClientPlan(
         title: 'New Training Plan',
         notes: '',
-        entries: entries,
+        entries: uniqueEntries,
         updatedAt: DateTime.now(),
       );
       await savePlanForEmail(email, newPlan);

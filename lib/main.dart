@@ -2880,14 +2880,35 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
       existing = _localExercises[dayIndex]?[exerciseIndex];
     }
 
-    final nameController = TextEditingController(text: existing?.name ?? '');
     final setsController =
         TextEditingController(text: (existing?.sets ?? 3).toString());
     final restController =
-        TextEditingController(text: (existing?.restSeconds ?? 60).toString());
+        TextEditingController(text: (existing?.restSeconds ?? 90).toString());
     final timeController =
-        TextEditingController(text: (existing?.timeSeconds ?? 0).toString());
+        TextEditingController(text: (existing?.timeSeconds ?? 30).toString());
     final noteController = TextEditingController(text: existing?.note ?? '');
+    final searchController = TextEditingController();
+    String searchQuery = '';
+    bool isTimeBased = false;
+
+    // Kategorie z kCategoryNames (bez 'PLAN')
+    final categories =
+        kCategoryNames.keys.where((key) => key != 'PLAN').toList();
+    String selectedCategory = existing?.category ?? categories.first;
+
+    // Ćwiczenia z wybranej kategorii
+    List<String> exercisesForCategory =
+        kDefaultExercises[selectedCategory] ?? [];
+    String? selectedExercise = existing?.name ??
+        (exercisesForCategory.isNotEmpty ? exercisesForCategory.first : null);
+
+    // Mapa ćwiczenie -> kategoria dla wyszukiwania
+    final Map<String, String> exerciseToCategoryMap = {};
+    for (final cat in categories) {
+      for (final ex in kDefaultExercises[cat] ?? []) {
+        exerciseToCategoryMap[ex] = cat;
+      }
+    }
 
     final dayNames = _getDayNames(lang);
     final dayName = dayNames[dayIndex];
@@ -2906,60 +2927,300 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
 
     final result = await showDialog<LocalExercise?>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.black.withValues(alpha: 0.95),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: const TextStyle(
-                    color: Color(0xFFFFD700), fontWeight: FontWeight.bold)),
-            Text(dayName,
-                style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.6), fontSize: 14)),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: lang == 'PL'
-                      ? 'Nazwa ćwiczenia'
-                      : lang == 'NO'
-                          ? 'Øvelsesnavn'
-                          : 'Exercise name',
-                  labelStyle:
-                      TextStyle(color: Colors.white.withValues(alpha: 0.6)),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Color(0xFFFFD700), width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          // Filtruj ćwiczenia na podstawie wyszukiwania
+          List<String> filteredExercises;
+          if (searchQuery.isNotEmpty) {
+            // Szukaj we wszystkich kategoriach
+            final allExercisesSet = <String>{};
+            for (final cat in categories) {
+              allExercisesSet.addAll(kDefaultExercises[cat] ?? []);
+            }
+            filteredExercises = allExercisesSet
+                .where((ex) =>
+                    ex.toLowerCase().contains(searchQuery.toLowerCase()))
+                .toSet()
+                .toList();
+          } else {
+            exercisesForCategory = kDefaultExercises[selectedCategory] ?? [];
+            filteredExercises = exercisesForCategory.toSet().toList();
+          }
+
+          // Upewnij się że selectedExercise jest w liście
+          if (filteredExercises.isEmpty) {
+            selectedExercise = null;
+          } else if (selectedExercise == null ||
+              !filteredExercises.contains(selectedExercise)) {
+            selectedExercise = filteredExercises.first;
+          }
+
+          // Automatycznie ustaw czy ćwiczenie jest na czas
+          if (selectedExercise != null) {
+            isTimeBased = kTimeBasedExercises.contains(selectedExercise);
+          }
+
+          return AlertDialog(
+            backgroundColor: Colors.black.withValues(alpha: 0.95),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(
+                        color: Color(0xFFFFD700), fontWeight: FontWeight.bold)),
+                Text(dayName,
+                    style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 14)),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: TextField(
-                      controller: setsController,
+                  // Pole wyszukiwania
+                  TextField(
+                    controller: searchController,
+                    style: const TextStyle(color: Color(0xFFFFD700)),
+                    decoration: InputDecoration(
+                      hintText: lang == 'PL'
+                          ? 'Szukaj ćwiczenia...'
+                          : lang == 'NO'
+                              ? 'Søk etter øvelse...'
+                              : 'Search exercise...',
+                      hintStyle: TextStyle(
+                          color:
+                              const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      prefixIcon:
+                          const Icon(Icons.search, color: Color(0xFFFFD700)),
+                      suffixIcon: searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear,
+                                  color: Color(0xFFFFD700)),
+                              onPressed: () {
+                                searchController.clear();
+                                setDialogState(() {
+                                  searchQuery = '';
+                                });
+                              },
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                            color:
+                                const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                    ),
+                    onChanged: (val) {
+                      setDialogState(() {
+                        searchQuery = val;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  // Kategoria - dropdown (ukryty gdy wyszukiwanie aktywne)
+                  if (searchQuery.isEmpty)
+                    DropdownButtonFormField<String>(
+                      value: selectedCategory,
+                      dropdownColor: const Color(0xFF1A1A2E),
+                      style: const TextStyle(color: Color(0xFF2ECC71)),
+                      decoration: InputDecoration(
+                        labelText: lang == 'PL'
+                            ? 'Kategoria'
+                            : lang == 'NO'
+                                ? 'Kategori'
+                                : 'Category',
+                        labelStyle: const TextStyle(color: Color(0xFF2ECC71)),
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: categories
+                          .map((cat) => DropdownMenuItem(
+                                value: cat,
+                                child: Text(localizedCategoryName(cat, lang),
+                                    style: const TextStyle(
+                                        color: Color(0xFF2ECC71))),
+                              ))
+                          .toList(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          setDialogState(() {
+                            selectedCategory = val;
+                            exercisesForCategory = kDefaultExercises[val] ?? [];
+                            selectedExercise = exercisesForCategory.isNotEmpty
+                                ? exercisesForCategory.first
+                                : null;
+                            if (selectedExercise != null) {
+                              isTimeBased = kTimeBasedExercises
+                                  .contains(selectedExercise);
+                            }
+                          });
+                        }
+                      },
+                    ),
+                  if (searchQuery.isEmpty) const SizedBox(height: 12),
+                  // Ćwiczenie - dropdown z bazy
+                  if (filteredExercises.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        lang == 'PL'
+                            ? 'Brak wyników'
+                            : lang == 'NO'
+                                ? 'Ingen resultater'
+                                : 'No results',
+                        style: TextStyle(
+                            color:
+                                const Color(0xFFFFD700).withValues(alpha: 0.6)),
+                      ),
+                    )
+                  else
+                    DropdownButtonFormField<String>(
+                      value: selectedExercise,
+                      dropdownColor: const Color(0xFF1A1A2E),
+                      isExpanded: true,
+                      menuMaxHeight: 300,
+                      style: const TextStyle(
+                          color: Color(0xFF2ECC71), fontSize: 13),
+                      decoration: InputDecoration(
+                        labelText:
+                            '${lang == 'PL' ? 'Ćwiczenie' : lang == 'NO' ? 'Øvelse' : 'Exercise'} (${filteredExercises.length})',
+                        labelStyle: const TextStyle(color: Color(0xFF2ECC71)),
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: filteredExercises.map((ex) {
+                        final category = exerciseToCategoryMap[ex] ?? '';
+                        final categoryLabel =
+                            searchQuery.isNotEmpty && category.isNotEmpty
+                                ? ' [${localizedCategoryName(category, lang)}]'
+                                : '';
+                        final exerciseName = localizedExerciseName(ex, lang);
+                        return DropdownMenuItem(
+                          value: ex,
+                          child: Text(
+                            '$exerciseName$categoryLabel',
+                            style: const TextStyle(color: Color(0xFF2ECC71)),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          setDialogState(() {
+                            selectedExercise = val;
+                            isTimeBased = kTimeBasedExercises.contains(val);
+                          });
+                        }
+                      },
+                    ),
+                  const SizedBox(height: 12),
+                  // Info czy ćwiczenie na czas
+                  if (isTimeBased)
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFD700).withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.timer,
+                              color: Color(0xFFFFD700), size: 18),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              lang == 'PL'
+                                  ? 'Ćwiczenie na czas'
+                                  : lang == 'NO'
+                                      ? 'Tidsbasert øvelse'
+                                      : 'Time-based exercise',
+                              style: const TextStyle(
+                                  color: Color(0xFFFFD700), fontSize: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (isTimeBased) const SizedBox(height: 12),
+                  // Serie
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: setsController,
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: lang == 'PL'
+                                ? 'Serie'
+                                : lang == 'NO'
+                                    ? 'Sett'
+                                    : 'Sets',
+                            labelStyle: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.6)),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: const Color(0xFFFFD700)
+                                      .withValues(alpha: 0.5)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFFFFD700), width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: restController,
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: lang == 'PL'
+                                ? 'Przerwa (s)'
+                                : lang == 'NO'
+                                    ? 'Hvile (s)'
+                                    : 'Rest (s)',
+                            labelStyle: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.6)),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: const Color(0xFFFFD700)
+                                      .withValues(alpha: 0.5)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFFFFD700), width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Czas trwania - tylko dla ćwiczeń na czas
+                  if (isTimeBased)
+                    TextField(
+                      controller: timeController,
                       keyboardType: TextInputType.number,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: lang == 'PL'
-                            ? 'Serie'
+                            ? 'Czas ćwiczenia (s)'
                             : lang == 'NO'
-                                ? 'Sett'
-                                : 'Sets',
+                                ? 'Øvelsestid (s)'
+                                : 'Exercise time (s)',
                         labelStyle: TextStyle(
                             color: Colors.white.withValues(alpha: 0.6)),
                         enabledBorder: OutlineInputBorder(
@@ -2975,139 +3236,92 @@ class _PlanImportScreenState extends State<PlanImportScreen> {
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextField(
-                      controller: restController,
-                      keyboardType: TextInputType.number,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: lang == 'PL'
-                            ? 'Przerwa (s)'
-                            : lang == 'NO'
-                                ? 'Hvile (s)'
-                                : 'Rest (s)',
-                        labelStyle: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.6)),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: const Color(0xFFFFD700)
-                                  .withValues(alpha: 0.5)),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Color(0xFFFFD700), width: 2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                  if (isTimeBased) const SizedBox(height: 12),
+                  // Notatka
+                  TextField(
+                    controller: noteController,
+                    style: const TextStyle(color: Colors.white),
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: lang == 'PL'
+                          ? 'Notatka (opcjonalnie)'
+                          : lang == 'NO'
+                              ? 'Notat (valgfritt)'
+                              : 'Note (optional)',
+                      labelStyle:
+                          TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color:
+                                const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFFFFD700), width: 2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: timeController,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: lang == 'PL'
-                      ? 'Czas ćwiczenia (s) - opcjonalnie'
-                      : lang == 'NO'
-                          ? 'Øvelsestid (s) - valgfritt'
-                          : 'Exercise time (s) - optional',
-                  labelStyle:
-                      TextStyle(color: Colors.white.withValues(alpha: 0.6)),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
-                    borderRadius: BorderRadius.circular(8),
+            ),
+            actions: [
+              if (isEdit)
+                TextButton(
+                  onPressed: () {
+                    // Usuń ćwiczenie
+                    Navigator.pop(
+                        ctx,
+                        LocalExercise(
+                            name: '',
+                            sets: 0,
+                            restSeconds: 0)); // Marker do usunięcia
+                  },
+                  child: Text(
+                    lang == 'PL'
+                        ? 'Usuń'
+                        : lang == 'NO'
+                            ? 'Slett'
+                            : 'Delete',
+                    style: const TextStyle(color: Color(0xFFFF5252)),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Color(0xFFFFD700), width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, null),
+                child: Text(
+                  Translations.get('cancel', language: lang),
+                  style: const TextStyle(color: Colors.white70),
                 ),
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: noteController,
-                style: const TextStyle(color: Colors.white),
-                maxLines: 2,
-                decoration: InputDecoration(
-                  labelText: lang == 'PL'
-                      ? 'Notatka (opcjonalnie)'
-                      : lang == 'NO'
-                          ? 'Notat (valgfritt)'
-                          : 'Note (optional)',
-                  labelStyle:
-                      TextStyle(color: Colors.white.withValues(alpha: 0.6)),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Color(0xFFFFD700), width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+              ElevatedButton(
+                onPressed: () {
+                  if (selectedExercise == null) return;
+                  // Pobierz kategorię dla wybranego ćwiczenia
+                  final category = exerciseToCategoryMap[selectedExercise] ??
+                      selectedCategory;
+                  Navigator.pop(
+                      ctx,
+                      LocalExercise(
+                        name: selectedExercise!,
+                        sets: int.tryParse(setsController.text) ?? 3,
+                        restSeconds: int.tryParse(restController.text) ?? 90,
+                        timeSeconds: isTimeBased
+                            ? (int.tryParse(timeController.text) ?? 30)
+                            : 0,
+                        note: noteController.text.trim(),
+                        category: category,
+                      ));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFD700),
+                  foregroundColor: Colors.black,
                 ),
+                child: Text(Translations.get('save', language: lang)),
               ),
             ],
-          ),
-        ),
-        actions: [
-          if (isEdit)
-            TextButton(
-              onPressed: () {
-                // Usuń ćwiczenie
-                Navigator.pop(
-                    ctx,
-                    LocalExercise(
-                        name: '',
-                        sets: 0,
-                        restSeconds: 0)); // Marker do usunięcia
-              },
-              child: Text(
-                lang == 'PL'
-                    ? 'Usuń'
-                    : lang == 'NO'
-                        ? 'Slett'
-                        : 'Delete',
-                style: const TextStyle(color: Color(0xFFFF5252)),
-              ),
-            ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, null),
-            child: Text(
-              Translations.get('cancel', language: lang),
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final name = nameController.text.trim();
-              if (name.isEmpty) return;
-              Navigator.pop(
-                  ctx,
-                  LocalExercise(
-                    name: name,
-                    sets: int.tryParse(setsController.text) ?? 3,
-                    restSeconds: int.tryParse(restController.text) ?? 60,
-                    timeSeconds: int.tryParse(timeController.text) ?? 0,
-                    note: noteController.text.trim(),
-                  ));
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFFD700),
-              foregroundColor: Colors.black,
-            ),
-            child: Text(Translations.get('save', language: lang)),
-          ),
-        ],
+          );
+        },
       ),
     );
 

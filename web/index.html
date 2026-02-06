@@ -37,6 +37,59 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script>
+    // Rejestracja Service Worker dla powiadomień w tle
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js', { scope: '/' })
+          .then(function(registration) {
+            console.log('🔔 Service Worker registered with scope:', registration.scope);
+            
+            // Poproś o uprawnienia do powiadomień
+            if ('Notification' in window && Notification.permission === 'default') {
+              Notification.requestPermission().then(function(permission) {
+                console.log('🔔 Notification permission:', permission);
+              });
+            }
+          })
+          .catch(function(error) {
+            console.log('🔔 Service Worker registration failed:', error);
+          });
+      });
+    }
+    
+    // Funkcja do wysyłania wiadomości do Service Worker
+    window.sendToServiceWorker = function(message) {
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage(message);
+        return true;
+      } else {
+        console.log('🔔 No active Service Worker controller');
+        return false;
+      }
+    };
+    
+    // Funkcja do planowania powiadomienia przez Service Worker
+    window.scheduleNotificationSW = function(id, title, body, delayMs) {
+      console.log('🔔 scheduleNotificationSW called:', id, title, delayMs);
+      return window.sendToServiceWorker({
+        type: 'SCHEDULE_NOTIFICATION',
+        id: id,
+        title: title,
+        body: body,
+        delayMs: delayMs
+      });
+    };
+    
+    // Funkcja do anulowania powiadomienia
+    window.cancelNotificationSW = function(id) {
+      console.log('🔔 cancelNotificationSW called:', id);
+      return window.sendToServiceWorker({
+        type: 'CANCEL_NOTIFICATION',
+        id: id
+      });
+    };
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

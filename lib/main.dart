@@ -10801,23 +10801,49 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
   }
 
   Future<void> _scheduleBackgroundNotification(Duration delay) async {
-    if (kIsWeb) return; // Na web nie działa
-
     final lang = globalLanguage;
     final exName = localizedExerciseName(widget.exerciseName, lang);
 
+    final title = lang == 'PL'
+        ? 'Przerwa zakończona!'
+        : lang == 'NO'
+            ? 'Pause ferdig!'
+            : 'Rest finished!';
+    final body = lang == 'PL'
+        ? 'Czas na następną serię: $exName'
+        : lang == 'NO'
+            ? 'Tid for neste sett: $exName'
+            : 'Time for next set: $exName';
+
+    // Na web - użyj Service Worker
+    if (kIsWeb) {
+      try {
+        final id = DateTime.now().millisecondsSinceEpoch;
+        _scheduledNotificationId = id;
+
+        // Wyślij do Service Worker
+        js_bridge.evalJs('''
+          (function() {
+            if (window.scheduleNotificationSW) {
+              var success = window.scheduleNotificationSW($id, '$title', '$body', ${delay.inMilliseconds});
+              console.log('🔔 Web notification scheduled via SW:', success);
+            } else {
+              console.log('🔔 scheduleNotificationSW not available');
+            }
+          })();
+        ''');
+        debugPrint('🔔 Web: Scheduled notification via Service Worker');
+      } catch (e) {
+        debugPrint('🔔 Web scheduling error: $e');
+      }
+      return;
+    }
+
+    // Na Android/iOS - użyj natywnych powiadomień
     try {
       final id = await NotificationService.instance.scheduleNotification(
-        title: lang == 'PL'
-            ? 'Przerwa zakończona!'
-            : lang == 'NO'
-                ? 'Pause ferdig!'
-                : 'Rest finished!',
-        body: lang == 'PL'
-            ? 'Czas na następną serię: $exName'
-            : lang == 'NO'
-                ? 'Tid for neste sett: $exName'
-                : 'Time for next set: $exName',
+        title: title,
+        body: body,
         delay: delay,
       );
       _scheduledNotificationId = id;
@@ -10828,8 +10854,24 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   void _cancelScheduledNotification() {
     if (_scheduledNotificationId != null) {
-      NotificationService.instance
-          .cancelNotification(_scheduledNotificationId!);
+      // Na web - anuluj przez Service Worker
+      if (kIsWeb) {
+        try {
+          final id = _scheduledNotificationId!;
+          js_bridge.evalJs('''
+            (function() {
+              if (window.cancelNotificationSW) {
+                window.cancelNotificationSW($id);
+                console.log('🔔 Web notification canceled');
+              }
+            })();
+          ''');
+        } catch (_) {}
+      } else {
+        // Na Android/iOS
+        NotificationService.instance
+            .cancelNotification(_scheduledNotificationId!);
+      }
       _scheduledNotificationId = null;
     }
   }

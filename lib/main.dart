@@ -1,6 +1,7 @@
 ﻿import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -1864,14 +1865,56 @@ class NotificationService {
   }) async {
     final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-    // Na web nie możemy używać zonedSchedule
+    // Na web nie możemy używać alarmów
     if (kIsWeb) {
-      debugPrint('🔔 Web platform - skipping zonedSchedule');
+      debugPrint('🔔 Web platform - skipping alarm');
       return id;
     }
 
-    debugPrint('🔔 Scheduling notification in ${delay.inSeconds} seconds');
+    debugPrint(
+        '🔔 Scheduling alarm notification in ${delay.inSeconds} seconds');
 
+    // Zapisz tytuł i treść do SharedPreferences (dla callbacka)
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('alarm_title', title);
+      await prefs.setString('alarm_body', body);
+    } catch (e) {
+      debugPrint('🔔 Error saving alarm data: $e');
+    }
+
+    // Użyj AndroidAlarmManager do ustawienia alarmu w tle
+    try {
+      final success = await AndroidAlarmManager.oneShot(
+        delay,
+        id,
+        alarmCallback,
+        exact: true,
+        wakeup: true,
+        rescheduleOnReboot: false,
+        alarmClock: true, // Pokazuje jako alarm - najwyższy priorytet
+      );
+
+      if (success) {
+        debugPrint('🔔 Alarm scheduled successfully with id: $id');
+      } else {
+        debugPrint(
+            '🔔 Failed to schedule alarm, falling back to zonedSchedule');
+        // Fallback do zonedSchedule
+        await _scheduleWithZonedSchedule(id, title, body, delay);
+      }
+    } catch (e) {
+      debugPrint(
+          '🔔 AndroidAlarmManager error: $e, falling back to zonedSchedule');
+      // Fallback do zonedSchedule dla iOS lub błędów
+      await _scheduleWithZonedSchedule(id, title, body, delay);
+    }
+
+    return id;
+  }
+
+  Future<void> _scheduleWithZonedSchedule(
+      int id, String title, String body, Duration delay) async {
     final androidDetails = AndroidNotificationDetails(
       'ks_gym_timer_channel',
       'K.S-Gym Timer',
@@ -1899,7 +1942,7 @@ class NotificationService {
         NotificationDetails(android: androidDetails, iOS: iosDetails);
 
     final scheduledTime = tz.TZDateTime.now(tz.local).add(delay);
-    debugPrint('🔔 Scheduled time: $scheduledTime');
+    debugPrint('🔔 zonedSchedule time: $scheduledTime');
 
     try {
       await _plugin.zonedSchedule(
@@ -1911,16 +1954,21 @@ class NotificationService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         matchDateTimeComponents: null,
       );
-      debugPrint('🔔 Notification scheduled successfully with id: $id');
+      debugPrint('🔔 zonedSchedule successful with id: $id');
     } catch (e) {
-      debugPrint('🔔 Error scheduling notification: $e');
+      debugPrint('🔔 zonedSchedule error: $e');
     }
-
-    return id;
   }
 
   /// Anuluj zaplanowane powiadomienie
   Future<void> cancelNotification(int id) async {
+    // Anuluj alarm (Android)
+    if (!kIsWeb) {
+      try {
+        await AndroidAlarmManager.cancel(id);
+      } catch (_) {}
+    }
+    // Anuluj powiadomienie
     await _plugin.cancel(id);
   }
 
@@ -1943,6 +1991,16 @@ void main() async {
     tz.setLocalLocation(tz.UTC);
   }
 
+  // Inicjalizacja Android Alarm Manager (tylko na Android)
+  if (!kIsWeb) {
+    try {
+      await AndroidAlarmManager.initialize();
+      debugPrint('🔔 AndroidAlarmManager initialized');
+    } catch (e) {
+      debugPrint('🔔 AndroidAlarmManager init error: $e');
+    }
+  }
+
   // Równoległa inicjalizacja dla szybszego startu
   await Future.wait([
     _initFirebase(),
@@ -1952,6 +2010,28 @@ void main() async {
   ]);
 
   runApp(const KsGymApp());
+}
+
+/// Callback dla AndroidAlarmManager - musi być top-level lub static
+@pragma('vm:entry-point')
+void alarmCallback() async {
+  debugPrint('🔔 Alarm callback triggered!');
+
+  // Inicjalizuj Flutter binding
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicjalizuj powiadomienia
+  await NotificationService.instance.init();
+
+  // Pobierz zapisany tytuł i treść
+  final prefs = await SharedPreferences.getInstance();
+  final title = prefs.getString('alarm_title') ?? 'Rest finished!';
+  final body = prefs.getString('alarm_body') ?? 'Time for next set!';
+
+  // Pokaż powiadomienie
+  await NotificationService.instance.showNotification(title: title, body: body);
+
+  debugPrint('🔔 Alarm notification shown: $title');
 }
 
 Future<void> _initFirebase() async {

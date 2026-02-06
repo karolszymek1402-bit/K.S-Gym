@@ -21,6 +21,7 @@ dependencies:
   cloud_firestore: ^6.1.1
   wakelock_plus: ^1.2.10
   timezone: ^0.10.1
+  android_alarm_manager_plus: ^5.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1177,6 +1177,19 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'EN': 'Dumbbell Pullover',
     'NO': 'Dumbbell Pullover',
   },
+  'Narciarz (Ściąganie linki prostymi rękami) – Straight Arm Cable Pulldown (Skier)':
+      {
+    'PL': 'Narciarz (Ściąganie linki prostymi rękami)',
+    'EN': 'Straight Arm Cable Pulldown (Skier)',
+    'NO': 'Skiøvelse (Kabelnedfelling med strake armer)',
+  },
+  'Narciarz (Ściąganie linki prostymi rękami) w podparciu o ławkę skośną – Incline Bench Straight Arm Cable Pulldown':
+      {
+    'PL':
+        'Narciarz (Ściąganie linki prostymi rękami) w podparciu o ławkę skośną',
+    'EN': 'Incline Bench Straight Arm Cable Pulldown',
+    'NO': 'Skiøvelse med støtte på skråbenk',
+  },
 
   // LEGS
   'Przysiad ze sztangą na karku (High Bar) – High Bar Squat': {

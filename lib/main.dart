@@ -7608,14 +7608,14 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                         return Card(
                           color: isRestDay
                               ? restDayColor.withValues(alpha: 0.15)
-                              : Colors.black.withValues(alpha: 0.45),
+                              : Colors.black.withValues(alpha: 0.6),
                           margin: const EdgeInsets.only(bottom: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide(
                               color: isRestDay
                                   ? restDayColor.withValues(alpha: 0.5)
-                                  : accent.withValues(alpha: 0.3),
+                                  : Colors.white.withValues(alpha: 0.2),
                               width: 1.5,
                             ),
                           ),
@@ -7874,11 +7874,11 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                         horizontal: 12, vertical: 4),
                                     decoration: BoxDecoration(
                                       color:
-                                          Colors.black.withValues(alpha: 0.3),
+                                          Colors.black.withValues(alpha: 0.5),
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
-                                          color:
-                                              accent.withValues(alpha: 0.15)),
+                                          color: Colors.white
+                                              .withValues(alpha: 0.15)),
                                     ),
                                     child: ListTile(
                                       dense: true,
@@ -7887,7 +7887,8 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                         width: 32,
                                         height: 32,
                                         decoration: BoxDecoration(
-                                          color: accent.withValues(alpha: 0.2),
+                                          color: Colors.black
+                                              .withValues(alpha: 0.4),
                                           borderRadius:
                                               BorderRadius.circular(6),
                                         ),

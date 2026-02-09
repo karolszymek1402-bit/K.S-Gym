@@ -719,6 +719,8 @@ const Map<String, List<String>> kDefaultExercises = {
     'Odwrotne wyprosty (nogi w górę) – Reverse Hyperextension',
     'Face Pull (przyciąganie liny do twarzy) – Face Pull',
     'Przenoszenie hantla za głowę – Dumbbell Pullover',
+    'Narciarz (Ściąganie linki prostymi rękami) – Straight Arm Cable Pulldown (Skier)',
+    'Narciarz (Ściąganie linki prostymi rękami) w podparciu o ławkę skośną – Incline Bench Straight Arm Cable Pulldown',
   ],
   'LEGS': [
     // Czworogłowe

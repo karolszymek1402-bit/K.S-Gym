@@ -1,5 +1,5 @@
 // Service Worker dla K.S-Gym - obsługa powiadomień w tle
-const CACHE_NAME = 'ks-gym-cache-v1';
+const CACHE_NAME = 'ks-gym-cache-v2';
 
 // Instalacja Service Worker
 self.addEventListener('install', (event) => {
@@ -23,6 +23,10 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SCHEDULE_NOTIFICATION') {
     const { id, title, body, delayMs } = event.data;
     scheduleNotification(id, title, body, delayMs);
+    // Odpowiedz do klienta
+    if (event.ports && event.ports[0]) {
+      event.ports[0].postMessage({ success: true, id: id });
+    }
   }
   
   if (event.data && event.data.type === 'CANCEL_NOTIFICATION') {
@@ -33,6 +37,20 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'CANCEL_ALL_NOTIFICATIONS') {
     cancelAllScheduledNotifications();
   }
+  
+  // Ping do utrzymania Service Worker przy życiu
+  if (event.data && event.data.type === 'KEEPALIVE') {
+    console.log('🔔 SW keepalive ping received');
+    if (event.ports && event.ports[0]) {
+      event.ports[0].postMessage({ alive: true });
+    }
+  }
+  
+  // Natychmiastowe powiadomienie (dla iOS który nie wspiera setTimeout w tle)
+  if (event.data && event.data.type === 'SHOW_NOTIFICATION_NOW') {
+    const { title, body } = event.data;
+    showNotification(title, body);
+  }
 });
 
 // Planowanie powiadomienia
@@ -41,16 +59,32 @@ function scheduleNotification(id, title, body, delayMs) {
   
   // Anuluj poprzedni timer jeśli istnieje
   if (scheduledNotifications.has(id)) {
-    clearTimeout(scheduledNotifications.get(id));
+    clearTimeout(scheduledNotifications.get(id).timerId);
   }
   
-  // Ustaw nowy timer
-  const timerId = setTimeout(() => {
+  // Zapisz dane powiadomienia (na wypadek gdyby SW był zamrożony i odmrożony)
+  const notificationData = {
+    id: id,
+    title: title,
+    body: body,
+    scheduledAt: Date.now(),
+    delayMs: delayMs,
+    timerId: null
+  };
+  
+  // Ustaw timer
+  notificationData.timerId = setTimeout(() => {
     showNotification(title, body);
     scheduledNotifications.delete(id);
+    // Powiadom wszystkich klientów że powiadomienie zostało wyświetlone
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({ type: 'NOTIFICATION_SHOWN', id: id });
+      });
+    });
   }, delayMs);
   
-  scheduledNotifications.set(id, timerId);
+  scheduledNotifications.set(id, notificationData);
   console.log(`🔔 Notification ${id} scheduled successfully`);
 }
 
@@ -58,7 +92,10 @@ function scheduleNotification(id, title, body, delayMs) {
 function cancelScheduledNotification(id) {
   console.log(`🔔 Canceling notification ${id}`);
   if (scheduledNotifications.has(id)) {
-    clearTimeout(scheduledNotifications.get(id));
+    const data = scheduledNotifications.get(id);
+    if (data && data.timerId) {
+      clearTimeout(data.timerId);
+    }
     scheduledNotifications.delete(id);
     console.log(`🔔 Notification ${id} canceled`);
   }
@@ -67,8 +104,10 @@ function cancelScheduledNotification(id) {
 // Anulowanie wszystkich zaplanowanych powiadomień
 function cancelAllScheduledNotifications() {
   console.log('🔔 Canceling all notifications');
-  for (const [id, timerId] of scheduledNotifications) {
-    clearTimeout(timerId);
+  for (const [id, data] of scheduledNotifications) {
+    if (data && data.timerId) {
+      clearTimeout(data.timerId);
+    }
   }
   scheduledNotifications.clear();
 }

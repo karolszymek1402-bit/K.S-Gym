@@ -37,20 +37,35 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <!-- Audio element for iOS keepalive (silent audio to prevent app from being suspended) -->
+  <audio id="keepalive-audio" loop playsinline style="display:none;">
+    <source src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYoRwmHAAAAAAD/+9DEAAAIAANIAAAASVAAaQAAAATEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+9DELwAADSAAAAAAAAANIAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==" type="audio/mp3">
+  </audio>
+  
   <script>
+    // Wykryj iOS
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    console.log('🔔 Platform detection - iOS:', isIOS, 'Safari:', isSafari);
+    
     // Rejestracja Service Worker dla powiadomień w tle
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('sw.js', { scope: '/' })
           .then(function(registration) {
             console.log('🔔 Service Worker registered with scope:', registration.scope);
+            window.swRegistration = registration;
             
-            // Poproś o uprawnienia do powiadomień
-            if ('Notification' in window && Notification.permission === 'default') {
-              Notification.requestPermission().then(function(permission) {
-                console.log('🔔 Notification permission:', permission);
-              });
-            }
+            // Nasłuchuj wiadomości od Service Worker
+            navigator.serviceWorker.addEventListener('message', function(event) {
+              console.log('🔔 Message from SW:', event.data);
+              if (event.data && event.data.type === 'NOTIFICATION_SHOWN') {
+                // Powiadomienie zostało wyświetlone przez SW
+                window.dispatchEvent(new CustomEvent('sw-notification-shown', { detail: event.data }));
+              }
+            });
           })
           .catch(function(error) {
             console.log('🔔 Service Worker registration failed:', error);
@@ -58,10 +73,41 @@
       });
     }
     
+    // Funkcja do prośby o uprawnienia do powiadomień (musi być wywołana przy interakcji użytkownika!)
+    window.requestNotificationPermission = function() {
+      return new Promise(function(resolve) {
+        if (!('Notification' in window)) {
+          console.log('🔔 Notifications not supported');
+          resolve('not-supported');
+          return;
+        }
+        
+        if (Notification.permission === 'granted') {
+          console.log('🔔 Notifications already granted');
+          resolve('granted');
+          return;
+        }
+        
+        if (Notification.permission === 'denied') {
+          console.log('🔔 Notifications denied');
+          resolve('denied');
+          return;
+        }
+        
+        Notification.requestPermission().then(function(permission) {
+          console.log('🔔 Notification permission:', permission);
+          resolve(permission);
+        });
+      });
+    };
+    
     // Funkcja do wysyłania wiadomości do Service Worker
     window.sendToServiceWorker = function(message) {
       if (navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage(message);
+        return true;
+      } else if (window.swRegistration && window.swRegistration.active) {
+        window.swRegistration.active.postMessage(message);
         return true;
       } else {
         console.log('🔔 No active Service Worker controller');
@@ -72,6 +118,26 @@
     // Funkcja do planowania powiadomienia przez Service Worker
     window.scheduleNotificationSW = function(id, title, body, delayMs) {
       console.log('🔔 scheduleNotificationSW called:', id, title, delayMs);
+      
+      // Na iOS/Safari - uruchom audio keepalive żeby zapobiec zamrożeniu
+      if (isIOS) {
+        startIOSKeepalive();
+      }
+      
+      // Zapisz dane do localStorage jako backup
+      try {
+        var notifData = {
+          id: id,
+          title: title,
+          body: body,
+          scheduledAt: Date.now(),
+          triggerAt: Date.now() + delayMs
+        };
+        localStorage.setItem('scheduled_notification', JSON.stringify(notifData));
+      } catch(e) {
+        console.log('🔔 Error saving to localStorage:', e);
+      }
+      
       return window.sendToServiceWorker({
         type: 'SCHEDULE_NOTIFICATION',
         id: id,
@@ -84,11 +150,105 @@
     // Funkcja do anulowania powiadomienia
     window.cancelNotificationSW = function(id) {
       console.log('🔔 cancelNotificationSW called:', id);
+      
+      // Zatrzymaj iOS keepalive
+      if (isIOS) {
+        stopIOSKeepalive();
+      }
+      
+      // Wyczyść localStorage
+      try {
+        localStorage.removeItem('scheduled_notification');
+      } catch(e) {}
+      
       return window.sendToServiceWorker({
         type: 'CANCEL_NOTIFICATION',
         id: id
       });
     };
+    
+    // iOS Keepalive - utrzymuje aplikację przy życiu poprzez ciche audio
+    var iosKeepaliveInterval = null;
+    
+    function startIOSKeepalive() {
+      if (!isIOS) return;
+      
+      console.log('🔔 Starting iOS keepalive');
+      var audio = document.getElementById('keepalive-audio');
+      if (audio) {
+        audio.play().catch(function(e) {
+          console.log('🔔 iOS keepalive audio play failed:', e);
+        });
+      }
+      
+      // Dodatkowo - ping Service Worker co 10 sekund
+      if (!iosKeepaliveInterval) {
+        iosKeepaliveInterval = setInterval(function() {
+          window.sendToServiceWorker({ type: 'KEEPALIVE' });
+        }, 10000);
+      }
+    }
+    
+    function stopIOSKeepalive() {
+      if (!isIOS) return;
+      
+      console.log('🔔 Stopping iOS keepalive');
+      var audio = document.getElementById('keepalive-audio');
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+      
+      if (iosKeepaliveInterval) {
+        clearInterval(iosKeepaliveInterval);
+        iosKeepaliveInterval = null;
+      }
+    }
+    
+    // Natychmiastowe wyświetlenie powiadomienia (fallback dla iOS)
+    window.showNotificationNow = function(title, body) {
+      console.log('🔔 showNotificationNow called:', title);
+      
+      // Najpierw spróbuj przez SW
+      var sent = window.sendToServiceWorker({
+        type: 'SHOW_NOTIFICATION_NOW',
+        title: title,
+        body: body
+      });
+      
+      // Fallback - bezpośrednio przez Notification API
+      if (!sent && 'Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(title, {
+            body: body,
+            icon: 'icons/Icon-192.png',
+            tag: 'ks-gym-timer',
+            requireInteraction: true
+          });
+        } catch(e) {
+          console.log('🔔 Direct notification failed:', e);
+        }
+      }
+    };
+    
+    // Sprawdź czy są zaległe powiadomienia przy starcie
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        try {
+          var saved = localStorage.getItem('scheduled_notification');
+          if (saved) {
+            var data = JSON.parse(saved);
+            if (data.triggerAt && Date.now() >= data.triggerAt) {
+              console.log('🔔 Found overdue notification, showing now');
+              window.showNotificationNow(data.title, data.body);
+              localStorage.removeItem('scheduled_notification');
+            }
+          }
+        } catch(e) {
+          console.log('🔔 Error checking saved notification:', e);
+        }
+      }, 1000);
+    });
   </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>

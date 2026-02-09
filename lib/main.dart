@@ -10747,9 +10747,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       try {
         js_bridge.evalJs('''
           (function() {
-            if ('Notification' in window && Notification.permission === 'default') {
+            if (window.requestNotificationPermission) {
+              window.requestNotificationPermission().then(function(permission) {
+                console.log('🔔 Notification permission result:', permission);
+              });
+            } else if ('Notification' in window && Notification.permission === 'default') {
               Notification.requestPermission().then(function(permission) {
-                console.log('Notification permission granted:', permission);
+                console.log('🔔 Notification permission granted:', permission);
               });
             }
           })();
@@ -11106,7 +11110,14 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
           (function() {
             console.log('🔔 Starting notification process...');
             
-            // Funkcja pokazująca powiadomienie
+            // Najpierw użyj dedykowanej funkcji showNotificationNow (obsługuje iOS)
+            if (window.showNotificationNow) {
+              window.showNotificationNow('$notificationTitle', '$notificationBody');
+              console.log('🔔 Called showNotificationNow');
+              return;
+            }
+            
+            // Fallback - funkcja pokazująca powiadomienie
             function showNotification() {
               try {
                 // Najpierw spróbuj przez Service Worker (działa lepiej na zablokowanym ekranie)

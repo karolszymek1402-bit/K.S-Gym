@@ -698,7 +698,6 @@ const Map<String, List<String>> kDefaultExercises = {
     'Wiosłowanie sztangą w opadzie – Bent Over Barbell Row',
     'Wiosłowanie sztangą chwytem neutralnym – Neutral Grip Barbell Row',
     'Wiosłowanie półsztangą (T-sztanga) – T-Bar Row',
-    'T-Row – T-Row',
     'Wiosłowanie Pendlay (z martwego punktu) – Pendlay Row',
     'Wiosłowanie hantlem jednorącz – One Arm Dumbbell Row',
     'Wiosłowanie na wyciągu dolnym siedząc – Seated Cable Row',
@@ -1209,9 +1208,8 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'EN': 'Front Squat',
     'NO': 'Front Squat',
   },
-  'Przysiad ze sztangą trzymaną skrzyżnie (stary styl) – Cross Grip Front Squat':
-      {
-    'PL': 'Przysiad ze sztangą trzymaną skrzyżnie (stary styl)',
+  'Przysiad ze sztangą trzymaną skrzyżnie – Cross Grip Front Squat': {
+    'PL': 'Przysiad ze sztangą trzymaną skrzyżnie',
     'EN': 'Cross Grip Front Squat',
     'NO': 'Cross Grip Front Squat',
   },
@@ -1664,6 +1662,12 @@ const Map<String, Map<String, String>> kExerciseTranslations = {
     'PL': 'Wyciskanie francuskie sztangi do czoła',
     'EN': 'Skullcrushers / Lying Triceps Extension',
     'NO': 'Skullcrushers / Lying Triceps Extension',
+  },
+  'Wyciskanie francuskie sztanga za głowę – Overhead Barbell Triceps Extension':
+      {
+    'PL': 'Wyciskanie francuskie sztanga za głowę',
+    'EN': 'Overhead Barbell Triceps Extension',
+    'NO': 'Overhead Barbell Triceps Extension',
   },
   'Wyciskanie francuskie hantla oburącz (siedząc) – Overhead Dumbbell Triceps Extension':
       {

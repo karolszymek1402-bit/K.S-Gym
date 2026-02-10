@@ -6875,6 +6875,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
     final setsCtrl = TextEditingController(text: entry.sets.toString());
     final restCtrl = TextEditingController(text: entry.restSeconds.toString());
     final timeCtrl = TextEditingController(text: entry.timeSeconds.toString());
+    final noteCtrl = TextEditingController(text: entry.note);
     bool isTimeBased = entry.timeSeconds > 0;
 
     // Pobierz kategorie z kCategoryNames (bez 'PLAN')
@@ -7139,6 +7140,34 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  // Notatka dla klienta
+                  TextField(
+                    controller: noteCtrl,
+                    maxLines: 3,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: globalLanguage == 'PL'
+                          ? 'Notatka dla klienta'
+                          : globalLanguage == 'NO'
+                              ? 'Notat til klient'
+                              : 'Note for client',
+                      labelStyle: TextStyle(color: Colors.white70),
+                      hintText: globalLanguage == 'PL'
+                          ? 'np. Pamiętaj o pełnym zakresie ruchu'
+                          : globalLanguage == 'NO'
+                              ? 'f.eks. Husk fullt bevegelsesomfang'
+                              : 'e.g. Remember full range of motion',
+                      hintStyle: TextStyle(color: Colors.white30),
+                      border: OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white24),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFFFD700)),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -7171,6 +7200,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
           restSeconds: int.tryParse(restCtrl.text) ?? 90,
           timeSeconds: isTimeBased ? (int.tryParse(timeCtrl.text) ?? 30) : 0,
           dayOfWeek: entry.dayOfWeek, // Zachowaj dzień tygodnia
+          note: noteCtrl.text.trim(), // Zachowaj notatkę
         );
 
         final entries = List<ClientPlanEntry>.from(_plan?.entries ?? []);
@@ -7869,6 +7899,7 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                 ...exercisesForDay.map((exercise) {
                                   final entryIndex =
                                       _plan!.entries.indexOf(exercise);
+                                  final hasNote = exercise.note.isNotEmpty;
                                   return Container(
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 4),
@@ -7880,104 +7911,168 @@ class _ClientDetailScreenState extends State<ClientDetailScreen> {
                                           color: Colors.white
                                               .withValues(alpha: 0.15)),
                                     ),
-                                    child: ListTile(
-                                      dense: true,
-                                      onTap: () => _editExercise(entryIndex),
-                                      leading: Container(
-                                        width: 32,
-                                        height: 32,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.4),
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                        ),
-                                        child: const Icon(Icons.fitness_center,
-                                            color: accent, size: 18),
-                                      ),
-                                      title: Text(
-                                        localizedExerciseName(
-                                            exercise.exercise, lang),
-                                        style: const TextStyle(
-                                            color: accent,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      subtitle: Text(
-                                        '${exercise.sets} ${Translations.get('sets', language: lang)} • ${exercise.restSeconds}s ${Translations.get('rest', language: lang)}${exercise.timeSeconds > 0 ? ' • ${exercise.timeSeconds}s' : ''}',
-                                        style: TextStyle(
-                                            color:
-                                                accent.withValues(alpha: 0.6),
-                                            fontSize: 11),
-                                      ),
-                                      trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          // Strzałka w górę
-                                          IconButton(
-                                            icon: Icon(Icons.arrow_upward,
-                                                color: entryIndex > 0
-                                                    ? accent.withValues(
-                                                        alpha: 0.7)
-                                                    : accent.withValues(
-                                                        alpha: 0.2),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ListTile(
+                                          dense: true,
+                                          onTap: () =>
+                                              _editExercise(entryIndex),
+                                          leading: Container(
+                                            width: 32,
+                                            height: 32,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black
+                                                  .withValues(alpha: 0.4),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                            ),
+                                            child: const Icon(
+                                                Icons.fitness_center,
+                                                color: accent,
                                                 size: 18),
-                                            onPressed: entryIndex > 0
-                                                ? () => _moveExercise(
-                                                    entryIndex, entryIndex - 1)
-                                                : null,
-                                            padding: EdgeInsets.zero,
-                                            constraints: const BoxConstraints(
-                                                minWidth: 28, minHeight: 28),
                                           ),
-                                          // Strzałka w dół
-                                          IconButton(
-                                            icon: Icon(Icons.arrow_downward,
-                                                color: entryIndex <
+                                          title: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  localizedExerciseName(
+                                                      exercise.exercise, lang),
+                                                  style: const TextStyle(
+                                                      color: accent,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 14),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              if (hasNote)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 4),
+                                                  child: Icon(Icons.note,
+                                                      color: Colors.white70,
+                                                      size: 14),
+                                                ),
+                                            ],
+                                          ),
+                                          subtitle: Text(
+                                            '${exercise.sets} ${Translations.get('sets', language: lang)} • ${exercise.restSeconds}s ${Translations.get('rest', language: lang)}${exercise.timeSeconds > 0 ? ' • ${exercise.timeSeconds}s' : ''}',
+                                            style: TextStyle(
+                                                color: accent.withValues(
+                                                    alpha: 0.6),
+                                                fontSize: 11),
+                                          ),
+                                          trailing: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              // Strzałka w górę
+                                              IconButton(
+                                                icon: Icon(Icons.arrow_upward,
+                                                    color: entryIndex > 0
+                                                        ? accent.withValues(
+                                                            alpha: 0.7)
+                                                        : accent.withValues(
+                                                            alpha: 0.2),
+                                                    size: 18),
+                                                onPressed: entryIndex > 0
+                                                    ? () => _moveExercise(
+                                                        entryIndex,
+                                                        entryIndex - 1)
+                                                    : null,
+                                                padding: EdgeInsets.zero,
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        minWidth: 28,
+                                                        minHeight: 28),
+                                              ),
+                                              // Strzałka w dół
+                                              IconButton(
+                                                icon: Icon(Icons.arrow_downward,
+                                                    color: entryIndex <
+                                                            (_plan?.entries
+                                                                        .length ??
+                                                                    0) -
+                                                                1
+                                                        ? accent.withValues(
+                                                            alpha: 0.7)
+                                                        : accent.withValues(
+                                                            alpha: 0.2),
+                                                    size: 18),
+                                                onPressed: entryIndex <
                                                         (_plan?.entries
                                                                     .length ??
                                                                 0) -
                                                             1
-                                                    ? accent.withValues(
-                                                        alpha: 0.7)
-                                                    : accent.withValues(
-                                                        alpha: 0.2),
-                                                size: 18),
-                                            onPressed: entryIndex <
-                                                    (_plan?.entries.length ??
-                                                            0) -
-                                                        1
-                                                ? () => _moveExercise(
-                                                    entryIndex, entryIndex + 1)
-                                                : null,
-                                            padding: EdgeInsets.zero,
-                                            constraints: const BoxConstraints(
-                                                minWidth: 28, minHeight: 28),
+                                                    ? () => _moveExercise(
+                                                        entryIndex,
+                                                        entryIndex + 1)
+                                                    : null,
+                                                padding: EdgeInsets.zero,
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        minWidth: 28,
+                                                        minHeight: 28),
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.edit,
+                                                    color: accent.withValues(
+                                                        alpha: 0.7),
+                                                    size: 18),
+                                                onPressed: () =>
+                                                    _editExercise(entryIndex),
+                                                padding: EdgeInsets.zero,
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        minWidth: 28,
+                                                        minHeight: 28),
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(Icons.delete,
+                                                    color: Color(0xFFFF5252),
+                                                    size: 18),
+                                                onPressed: () =>
+                                                    _deleteExercise(entryIndex),
+                                                padding: EdgeInsets.zero,
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        minWidth: 28,
+                                                        minHeight: 28),
+                                              ),
+                                            ],
                                           ),
-                                          IconButton(
-                                            icon: Icon(Icons.edit,
-                                                color: accent.withValues(
-                                                    alpha: 0.7),
-                                                size: 18),
-                                            onPressed: () =>
-                                                _editExercise(entryIndex),
-                                            padding: EdgeInsets.zero,
-                                            constraints: const BoxConstraints(
-                                                minWidth: 28, minHeight: 28),
+                                        ),
+                                        // Wyświetl notatkę jeśli istnieje
+                                        if (hasNote)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 16, right: 16, bottom: 8),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Icon(Icons.note,
+                                                    color: Colors.white54,
+                                                    size: 14),
+                                                const SizedBox(width: 6),
+                                                Expanded(
+                                                  child: Text(
+                                                    exercise.note,
+                                                    style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize: 11,
+                                                      fontStyle:
+                                                          FontStyle.italic,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          IconButton(
-                                            icon: const Icon(Icons.delete,
-                                                color: Color(0xFFFF5252),
-                                                size: 18),
-                                            onPressed: () =>
-                                                _deleteExercise(entryIndex),
-                                            padding: EdgeInsets.zero,
-                                            constraints: const BoxConstraints(
-                                                minWidth: 28, minHeight: 28),
-                                          ),
-                                        ],
-                                      ),
+                                      ],
                                     ),
                                   );
                                 }),

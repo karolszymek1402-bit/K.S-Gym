@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart'
+    hide NotificationVisibility;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 
@@ -1788,6 +1790,11 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
+  Timer? _foregroundTimer;
+  int? _currentTimerId;
+  String? _pendingTitle;
+  String? _pendingBody;
+
   Future<void> init() async {
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosInit = DarwinInitializationSettings(
@@ -1842,6 +1849,37 @@ class NotificationService {
             critical: true,
           );
     } catch (_) {}
+
+    // Inicjalizacja Foreground Service (Android)
+    if (!kIsWeb) {
+      await _initForegroundTask();
+    }
+  }
+
+  Future<void> _initForegroundTask() async {
+    FlutterForegroundTask.init(
+      androidNotificationOptions: AndroidNotificationOptions(
+        channelId: 'ks_gym_foreground_channel',
+        channelName: 'K.S-Gym Timer Running',
+        channelDescription: 'Timer running in background',
+        channelImportance: NotificationChannelImportance.LOW,
+        priority: NotificationPriority.LOW,
+        playSound: false,
+        enableVibration: false,
+        showWhen: true,
+      ),
+      iosNotificationOptions: const IOSNotificationOptions(
+        showNotification: false,
+        playSound: false,
+      ),
+      foregroundTaskOptions: ForegroundTaskOptions(
+        eventAction: ForegroundTaskEventAction.repeat(1000),
+        autoRunOnBoot: false,
+        autoRunOnMyPackageReplaced: false,
+        allowWakeLock: true,
+        allowWifiLock: false,
+      ),
+    );
   }
 
   Future<void> showNotification(
@@ -1883,116 +1921,138 @@ class NotificationService {
     required Duration delay,
   }) async {
     final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    _currentTimerId = id;
+    _pendingTitle = title;
+    _pendingBody = body;
 
-    // Na web nie możemy używać alarmów
+    // Na web używamy setTimeout przez JS bridge
     if (kIsWeb) {
-      debugPrint('🔔 Web platform - skipping alarm');
+      debugPrint('🔔 Web platform - using JS setTimeout');
+      try {
+        js_bridge.scheduleNotification(title, body, delay.inSeconds);
+      } catch (e) {
+        debugPrint('🔔 Web notification error: $e');
+      }
       return id;
     }
 
-    debugPrint(
-        '🔔 Scheduling alarm notification in ${delay.inSeconds} seconds');
+    debugPrint('🔔 Scheduling notification in ${delay.inSeconds} seconds');
 
-    // Zapisz tytuł i treść do SharedPreferences (dla callbacka)
+    // Anuluj poprzedni timer jeśli istnieje
+    _foregroundTimer?.cancel();
+
+    // Uruchom Foreground Service żeby utrzymać timer aktywny
+    final endTime = DateTime.now().add(delay);
+
+    try {
+      // Uruchom foreground service z informacją o timerze
+      await FlutterForegroundTask.startService(
+        notificationTitle: '⏱️ Timer K.S-Gym',
+        notificationText: 'Przerwa: ${delay.inSeconds}s pozostało',
+        notificationIcon: null,
+        notificationButtons: [
+          const NotificationButton(id: 'cancel', text: 'Anuluj'),
+        ],
+        callback: null,
+      );
+      debugPrint('🔔 Foreground service started');
+    } catch (e) {
+      debugPrint('🔔 Foreground service error: $e');
+    }
+
+    // Użyj Timer.periodic do aktualizacji i powiadomienia
+    int remainingSeconds = delay.inSeconds;
+    _foregroundTimer =
+        Timer.periodic(const Duration(seconds: 1), (timer) async {
+      remainingSeconds--;
+
+      // Aktualizuj powiadomienie foreground co 5 sekund
+      if (remainingSeconds > 0 && remainingSeconds % 5 == 0) {
+        try {
+          await FlutterForegroundTask.updateService(
+            notificationTitle: '⏱️ Timer K.S-Gym',
+            notificationText: 'Przerwa: ${remainingSeconds}s pozostało',
+          );
+        } catch (_) {}
+      }
+
+      if (remainingSeconds <= 0) {
+        timer.cancel();
+        _foregroundTimer = null;
+
+        // Zatrzymaj foreground service
+        try {
+          await FlutterForegroundTask.stopService();
+        } catch (_) {}
+
+        // Pokaż główne powiadomienie
+        await showNotification(
+          title: _pendingTitle ?? title,
+          body: _pendingBody ?? body,
+        );
+        debugPrint('🔔 Timer finished - notification shown');
+      }
+    });
+
+    // Dodatkowo użyj AndroidAlarmManager jako backup
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('alarm_title', title);
       await prefs.setString('alarm_body', body);
-    } catch (e) {
-      debugPrint('🔔 Error saving alarm data: $e');
-    }
+      await prefs.setInt('alarm_end_time', endTime.millisecondsSinceEpoch);
 
-    // Użyj AndroidAlarmManager do ustawienia alarmu w tle
-    try {
-      final success = await AndroidAlarmManager.oneShot(
+      await AndroidAlarmManager.oneShot(
         delay,
         id,
         alarmCallback,
         exact: true,
         wakeup: true,
         rescheduleOnReboot: false,
-        alarmClock: true, // Pokazuje jako alarm - najwyższy priorytet
+        alarmClock: true,
       );
-
-      if (success) {
-        debugPrint('🔔 Alarm scheduled successfully with id: $id');
-      } else {
-        debugPrint(
-            '🔔 Failed to schedule alarm, falling back to zonedSchedule');
-        // Fallback do zonedSchedule
-        await _scheduleWithZonedSchedule(id, title, body, delay);
-      }
+      debugPrint('🔔 Backup alarm also scheduled');
     } catch (e) {
-      debugPrint(
-          '🔔 AndroidAlarmManager error: $e, falling back to zonedSchedule');
-      // Fallback do zonedSchedule dla iOS lub błędów
-      await _scheduleWithZonedSchedule(id, title, body, delay);
+      debugPrint('🔔 Backup alarm error: $e');
     }
 
     return id;
   }
 
-  Future<void> _scheduleWithZonedSchedule(
-      int id, String title, String body, Duration delay) async {
-    final androidDetails = AndroidNotificationDetails(
-      'ks_gym_timer_channel',
-      'K.S-Gym Timer',
-      channelDescription:
-          'Notifications for timer completions - shows on lock screen',
-      importance: Importance.max,
-      priority: Priority.max,
-      playSound: true,
-      enableVibration: true,
-      vibrationPattern: Int64List.fromList([0, 500, 200, 500, 200, 500]),
-      visibility: NotificationVisibility.public,
-      fullScreenIntent: true,
-      category: AndroidNotificationCategory.alarm,
-      ongoing: false,
-      autoCancel: true,
-      showWhen: true,
-    );
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-      interruptionLevel: InterruptionLevel.timeSensitive,
-    );
-    final details =
-        NotificationDetails(android: androidDetails, iOS: iosDetails);
-
-    final scheduledTime = tz.TZDateTime.now(tz.local).add(delay);
-    debugPrint('🔔 zonedSchedule time: $scheduledTime');
-
-    try {
-      await _plugin.zonedSchedule(
-        id,
-        title,
-        body,
-        scheduledTime,
-        details,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        matchDateTimeComponents: null,
-      );
-      debugPrint('🔔 zonedSchedule successful with id: $id');
-    } catch (e) {
-      debugPrint('🔔 zonedSchedule error: $e');
-    }
-  }
-
   /// Anuluj zaplanowane powiadomienie
   Future<void> cancelNotification(int id) async {
-    // Anuluj alarm (Android)
+    debugPrint('🔔 Cancelling notification $id');
+
+    // Anuluj timer
+    _foregroundTimer?.cancel();
+    _foregroundTimer = null;
+
+    // Zatrzymaj foreground service
     if (!kIsWeb) {
+      try {
+        await FlutterForegroundTask.stopService();
+      } catch (_) {}
+
+      // Anuluj alarm backup
       try {
         await AndroidAlarmManager.cancel(id);
       } catch (_) {}
     }
+
     // Anuluj powiadomienie
     await _plugin.cancel(id);
   }
 
   /// Anuluj wszystkie zaplanowane powiadomienia
   Future<void> cancelAllNotifications() async {
+    _foregroundTimer?.cancel();
+    _foregroundTimer = null;
+
+    if (!kIsWeb) {
+      try {
+        await FlutterForegroundTask.stopService();
+      } catch (_) {}
+    }
+
     await _plugin.cancelAll();
   }
 }

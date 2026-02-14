@@ -24,6 +24,12 @@
 @import firebase_core;
 #endif
 
+#if __has_include(<flutter_foreground_task/FlutterForegroundTaskPlugin.h>)
+#import <flutter_foreground_task/FlutterForegroundTaskPlugin.h>
+#else
+@import flutter_foreground_task;
+#endif
+
 #if __has_include(<flutter_local_notifications/FlutterLocalNotificationsPlugin.h>)
 #import <flutter_local_notifications/FlutterLocalNotificationsPlugin.h>
 #else
@@ -60,6 +66,7 @@
   [FLTFirebaseFirestorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseFirestorePlugin"]];
   [FLTFirebaseAuthPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseAuthPlugin"]];
   [FLTFirebaseCorePlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseCorePlugin"]];
+  [FlutterForegroundTaskPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterForegroundTaskPlugin"]];
   [FlutterLocalNotificationsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterLocalNotificationsPlugin"]];
   [FPPPackageInfoPlusPlugin registerWithRegistrar:[registry registrarForPlugin:@"FPPPackageInfoPlusPlugin"]];
   [SharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"SharedPreferencesPlugin"]];

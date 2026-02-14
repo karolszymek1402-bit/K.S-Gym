@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <!-- Foreground Service dla timera w tle -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <application
         android:label="silownia_app"
         android:name="${applicationName}"
@@ -72,6 +76,12 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        
+        <!-- Flutter Foreground Task Service - timer w tle -->
+        <service
+            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:foregroundServiceType="specialUse"
+            android:exported="false"/>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
